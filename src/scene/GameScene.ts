@@ -1,12 +1,13 @@
-import { AmbientLight, PerspectiveCamera, Scene, WebGLRenderer, Vector3, Clock, Object3D } from "three";
+import { AmbientLight, PerspectiveCamera, Scene, WebGLRenderer, Vector3, Clock, Object3D, Group, Object3DEventMap } from "three";
 import ModelLoader from "./ModelLoader";
-import GameObject from "./GameObject";
 import InfoObject from "./InfoObject";
 import HelperScene from "../globals/HelperScene";
 import ERSScene from "./ERSScene";
 import ERSSceneInits from "./ERSSceneInits";
 import HelperGeneral from "../globals/HelperGeneral";
 import RenderObject from "./RenderObject";
+import InteractiveObject from "./InteractiveObject";
+import ERSPlayer from "./ERSPlayer";
 
 class GameScene
 {
@@ -22,11 +23,11 @@ class GameScene
     private _renderer:WebGLRenderer;
     private _camera:PerspectiveCamera;
     private readonly _scene = new Scene();
-    private readonly _gameObjects:GameObject[] = [];
+    private readonly _movingObjects:InteractiveObject[] = [];
     private readonly _infoObjects:InfoObject[] = []; 
     private readonly _renderObjects:RenderObject[] = []; 
     private readonly _clock:Clock;
-    private readonly _modelDatabase:Map<string, Object>;
+    private readonly _modelDatabase:Map<string, Group>;
     private _dtAccumulator:number;
 
     private constructor()
@@ -53,7 +54,7 @@ class GameScene
         this._targetElement.appendChild(this._renderer.domElement);
         const aspectRatio = this._width / this._height;
         this._camera = new PerspectiveCamera(45, aspectRatio, 0.1, 1000);
-        this._camera.position.set(0, 25, 100);
+        this._camera.position.set(0, 5, 25);
         this._camera.lookAt(new Vector3(0,0,0));
 
         this._clock = new Clock();
@@ -73,39 +74,54 @@ class GameScene
         this._dtAccumulator += frametime;
         while (this._dtAccumulator >= HelperGeneral.DTFrameSize)
         {
-            // todo: update objects...
-
+            for(let i:number = 0; i < this._movingObjects.length; i++)
+            {
+                this._movingObjects[i].stateBackup();
+                this._movingObjects[i].act();
+            }
             this._dtAccumulator -= HelperGeneral.DTFrameSize;
-            
         }
         //todo:
         //blend objects' states based on the remaining accumulator value...
         let alpha:number = HelperGeneral.clamp(this._dtAccumulator / HelperGeneral.DTFrameSize, 0.0, 1.0);
-        // ...
+        for(let i:number = 0; i < this._movingObjects.length; i++)
+        {
+            this._movingObjects[i].stateBlendToRender(alpha);
+        }
 
         requestAnimationFrame(this.render);
         this._renderer.render(this._scene, this._camera);
     }
 
-    public load = async (sceneName:string) => 
+    public async load(sceneName:string) 
     {
         let s:ERSScene = HelperScene.parseSceneSettings(sceneName);
-        //console.log(s);
 
         for(let i:number = 0; i < s.loads.models.length; i++)
         {
-            let model = await ModelLoader.instance.loadAsync("/public/models/" + s.loads.models[i]);
-            this._modelDatabase.set(s.loads.models[i], model);
-            console.log(this._modelDatabase);
+            let model = await ModelLoader.instance.loadAsync("/models/" + s.loads.models[i]);
+            this._modelDatabase.set(s.loads.models[i], model.scene);
         }
         this.init(s.inits);
     }
 
-    private init = (inits:ERSSceneInits) =>
+    private init(inits:ERSSceneInits)
     {
         const ambientlight = new AmbientLight(parseInt(inits.ambientLight));
         this._scene.add(ambientlight);
 
+        for(let i:number = 0; i < inits.renderObjects.length; i++)
+        {
+            let model:Group = this._modelDatabase.get(inits.renderObjects[i].model)!;
+            let player:ERSPlayer = new ERSPlayer(model, inits.renderObjects[i].name);
+            this.addObject(player);
+        }
+    }
+
+    private addObject(o : InteractiveObject):void
+    {
+        this._movingObjects.push(o);
+        this._scene.add(o.get3DObject());
     }
 }
 

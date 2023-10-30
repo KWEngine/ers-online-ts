@@ -1,8 +1,6 @@
 import './style.css';
 import GameScene from './scene/GameScene';
 
-await GameScene.instance.load("simple_gltftest");
-
 function onWindowResize()
 {
     GameScene.instance.updateViewport();
@@ -11,5 +9,5 @@ function onWindowResize()
 window.addEventListener( 'resize', onWindowResize, false );
 window.addEventListener( 'orientationchange', onWindowResize, false);
 
-
+await GameScene.instance.load("simple_gltftest");
 GameScene.instance.render();

@@ -4,6 +4,9 @@ import { Vector3, Quaternion } from "three";
 class HelperGeneral
 {
     private static readonly _zeroVector:Vector3 = new Vector3(0,0,0);
+    private static readonly _unitX:Vector3 = new Vector3(1,0,0);
+    private static readonly _unitY:Vector3 = new Vector3(0,1,0);
+    private static readonly _unitZ:Vector3 = new Vector3(0,0,1);
     private static readonly _identityQuaternion = new Quaternion(0,0,0,1);
 
     public static rad2deg(radians:number):number
@@ -42,9 +45,28 @@ class HelperGeneral
 
     public static blendStates(a:State, b:State, alpha:number, renderState:State):void
     {
-        renderState._position = this._zeroVector.lerpVectors(a._position, b._position, alpha);
-        renderState._scale = this._zeroVector.lerpVectors(a._scale, b._scale, alpha);
-        renderState._rotation = this._identityQuaternion.slerpQuaternions(a._rotation, b._rotation, alpha);
+        
+        renderState._position = this._zeroVector.lerpVectors(a._position, b._position, alpha).clone();
+        renderState._scale = this._zeroVector.lerpVectors(a._scale, b._scale, alpha).clone();
+        renderState._rotation = this._identityQuaternion.slerpQuaternions(a._rotation, b._rotation, alpha).clone();
+
+        //console.log(renderState._position);
+    }
+
+    public static quaternionFromAxisAngle(axisInput:string, angleInDegrees:number):Quaternion
+    {
+        let axis:Vector3 = axisInput == "x" ? this._unitX : axisInput == "y" ? this._unitY : this._unitZ;
+        let result:Quaternion = new Quaternion(0, 0, 0, 1);
+        let angle:number = this.deg2rad(angleInDegrees);
+        angle *= 0.5;
+
+        result.x = axis.x * Math.sin(angle);
+        result.y = axis.y * Math.sin(angle);
+        result.z = axis.z * Math.sin(angle);
+        result.w = Math.cos(angle);
+        result.normalize();
+
+        return result;
     }
 }
 

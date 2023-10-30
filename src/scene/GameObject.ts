@@ -1,4 +1,4 @@
-import { Object3D, Vector3 } from "three";
+import { Object3D, Vector3, Group, QuadraticBezierCurve, Quaternion } from "three";
 import Hitbox from "./Hitbox";
 import HelperGeneral from "../globals/HelperGeneral";
 import State from "./State";
@@ -6,20 +6,20 @@ import HelperCollision from "../globals/HelperCollision";
 
 abstract class GameObject
 {
-    private _object3d:Object3D;
+    private _object3d:Group;
     private _name:string;
     private _hitboxes:Hitbox[];
     private _leftrightmost:number[];
     private _backfrontmost:number[];
     private _bottomtopmost:number[];
     private _centerOfAllHitboxes:Vector3;
-    protected _stateCurrent:State;
+    private _stateCurrent:State;
     private _statePrevious:State;
     private _stateRender:State;
 
-    constructor(_object3d:Object3D, name:string)
+    constructor(object3d:Group, name:string)
     {
-        this._object3d = _object3d.clone();
+        this._object3d = object3d.clone(true);
         this._name = name;
         this._hitboxes = [];
         this._leftrightmost = [0,0];
@@ -245,51 +245,51 @@ abstract class GameObject
 
     public getPosition():Vector3
     {
-        return this._object3d.position.clone();
+        return this._stateCurrent._position.clone();
     }
 
     public setPosition(x:number, y:number, z:number):void
     {
-        this._object3d.position.x = x;
-        this._object3d.position.y = y;
-        this._object3d.position.z = z;
-
+        this._stateCurrent._position.x = x;
+        this._stateCurrent._position.y = y;
+        this._stateCurrent._position.z = z;
         this.updateHitbox();
     }
 
     public moveOffset(x:number, y:number, z:number):void
     {
-        this._object3d.position.x += x;
-        this._object3d.position.y += y;
-        this._object3d.position.z += z;
-
+        this._stateCurrent._position.x += x;
+        this._stateCurrent._position.y += y;
+        this._stateCurrent._position.z += z;
         this.updateHitbox();
     }
 
     public moveOffsetByVector(vec:Vector3):void
     {
-        this._object3d.position.x += vec.x;
-        this._object3d.position.y += vec.y;
-        this._object3d.position.z += vec.z;
-
+        this._stateCurrent._position.x += vec.x;
+        this._stateCurrent._position.y += vec.y;
+        this._stateCurrent._position.z += vec.z;
         this.updateHitbox();
     }
 
     public addRotationX(degrees:number):void
     {
-        this._object3d.rotation.x += HelperGeneral.deg2rad(degrees);
+        let addedRotation:Quaternion = HelperGeneral.quaternionFromAxisAngle("x", degrees);
+        this._stateCurrent._rotation.multiply(addedRotation);
         this.updateHitbox();
     }
 
     public addRotationY(degrees:number):void
     {
-        this._object3d.rotation.y += HelperGeneral.deg2rad(degrees);
+        let addedRotation:Quaternion = HelperGeneral.quaternionFromAxisAngle("y", degrees);
+        this._stateCurrent._rotation.multiply(addedRotation);
         this.updateHitbox();
     }
 
     public addRotationZ(degrees:number):void
     {
-        this._object3d.rotation.z += HelperGeneral.deg2rad(degrees);
+        let addedRotation:Quaternion = HelperGeneral.quaternionFromAxisAngle("z", degrees);
+        this._stateCurrent._rotation.multiply(addedRotation);
         this.updateHitbox();
     }
 
@@ -352,11 +352,6 @@ abstract class GameObject
             return this._leftrightmost;
     }
 
-    public act()
-    {
-        
-    }
-
     // Collision testing:
     public getIntersections()
     {
@@ -369,6 +364,25 @@ abstract class GameObject
         {
             this._hitboxes[i].clearCollisionCandidates();
         }
+    }
+
+    public get3DObject():Object3D
+    {
+        return this._object3d;
+    }
+
+    public stateBackup():void
+    {
+        HelperGeneral.copyStates(this._stateCurrent, this._statePrevious);
+    }
+
+    public stateBlendToRender(alpha:number):void
+    {
+        HelperGeneral.blendStates(this._statePrevious, this._stateCurrent, alpha, this._stateRender);
+        this._object3d.position.set(
+            this._stateRender._position.x, 
+            this._stateRender._position.y, 
+            this._stateRender._position.z);
     }
 }
 

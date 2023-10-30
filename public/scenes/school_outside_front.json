@@ -7,6 +7,16 @@
     "inits":
     {
         "ambientLight": "0xaaaaaa",
-        "playerStart": [0, 0, 0]
+        "playerStart": [0, 0, 0],
+        "renderObjects":
+        [
+            {
+                "name": "school_outside_front",
+                "position": [0, 0, 0],
+                "rotation": [0, 0, 0],
+                "scale":[1, 1, 1],
+                "model": "Arrow_Up.gltf"
+            }
+        ]
     }
 }
