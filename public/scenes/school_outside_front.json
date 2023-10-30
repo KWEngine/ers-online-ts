@@ -1,0 +1,12 @@
+{
+    "loads":
+    {
+        "models": ["school_outside_front.glb"]
+    },
+    
+    "inits":
+    {
+        "ambientLight": "0xaaaaaa",
+        "playerStart": [0, 0, 0]
+    }
+}

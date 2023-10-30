@@ -14,6 +14,8 @@
     "vite": "^4.4.5"
   },
   "dependencies": {
-    "three": "^0.158.0"
+    "three": "^0.158.0",
+    "three-addons": "^1.2.0",
+    "three-gltfloader-static": "^1.152.0"
   }
 }

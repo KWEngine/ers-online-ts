@@ -1,0 +1,26 @@
+{
+    "loads":
+    {
+        "models": ["Arrow_Up.gltf"]
+    },
+    
+    "inits":
+    {
+        "ambientLight": "0xffffff",
+        "player":
+        {
+            "position": [0, 0, 0],
+            "rotation": [0, 0, 0],
+            "scale":[1, 1, 1]
+        },
+        "renderObjects":
+        [
+            {
+                "position": [0, 0, 0],
+                "rotation": [0, 0, 0],
+                "scale":[1, 1, 1],
+                "model": "Arrow_Up.gltf"
+            }
+        ]
+    }
+}
