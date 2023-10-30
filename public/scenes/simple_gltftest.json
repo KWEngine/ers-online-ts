@@ -1,7 +1,7 @@
 {
     "loads":
     {
-        "models": ["Arrow_Up.gltf"]
+        "models": ["Arrow_Up2.gltf"]
     },
     
     "inits":
@@ -20,7 +20,7 @@
                 "position": [0, 0, 0],
                 "rotation": [0, 0, 0],
                 "scale":[1, 1, 1],
-                "model": "Arrow_Up.gltf"
+                "model": "Arrow_Up2.gltf"
             }
         ]
     }

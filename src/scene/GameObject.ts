@@ -1,4 +1,4 @@
-import { Object3D, Vector3, Group, QuadraticBezierCurve, Quaternion } from "three";
+import { Object3D, Vector3, Group, QuadraticBezierCurve, Quaternion, Mesh } from "three";
 import Hitbox from "./Hitbox";
 import HelperGeneral from "../globals/HelperGeneral";
 import State from "./State";
@@ -26,7 +26,7 @@ abstract class GameObject
         this._bottomtopmost = [0,0];
         this._backfrontmost = [0,0];
         this._centerOfAllHitboxes = new Vector3(0,0,0);
-        this.generateHitboxes();
+        this.generateHitboxes(this._object3d);
         this._object3d.receiveShadow = false;
         this._object3d.castShadow = false;
         this._stateCurrent = new State();
@@ -48,9 +48,29 @@ abstract class GameObject
         });
     }
 
-    private generateHitboxes()
+    private generateHitboxFor(mesh : Mesh):void
     {
-        console.log(this._object3d);
+
+    }
+
+    private generateHitboxes(o : Object3D):void
+    {
+        /*
+        console.log(o.name);
+        console.log(o);
+        if(o instanceof Mesh)
+        {
+            this.generateHitboxFor(o);
+        }
+        else
+        {
+
+            for(let i:number = 0; i < o.children.length; i++)
+            {
+
+            }
+        }
+        */
         /*
         if(this._object3d.isObject3D)
         {

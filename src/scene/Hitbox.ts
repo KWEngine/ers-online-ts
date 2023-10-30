@@ -1,33 +1,41 @@
-import { Vector3, Matrix4, Quaternion } from "three";
+import { Vector3, Matrix4, Quaternion, Box3, BufferGeometry, BufferAttribute } from "three";
 import  GameObject from "../scene/GameObject";
+import HelperCollision from "../globals/HelperCollision";
+import Face from "./Face";
 
 class Hitbox {
 
+    private _gameObject:GameObject|null;
+    private _boundsMin:Vector3;
+    private _boundsMax:Vector3;
+    private _matrixFromNode:Matrix4;
+    private _name:string;
+    private _meshvertices:Vector3[];
+    private _meshnormals:Vector3[];
+    private _meshfaces:Face[];
+
     constructor(
-        gameObject:GameObject, 
-        meshCenter:Vector3, 
-        minX:number, 
-        minY:number, 
-        minZ:number, 
-        maxX:number, 
-        maxY:number, 
-        maxZ:number, 
-        nodePosition:Vector3, 
-        nodeRotation:Quaternion, 
-        nodeScale:Vector3, 
-        //isFloor, 
-        meshData, 
-        nodeName)
+        matrixFromNode:Matrix4,
+        geometry:BufferGeometry,
+        name:string)
     {
-        this.gameObject = gameObject;
-        this.box3 = null;
-        this.meshCenter = meshCenter;
-        this.minX = minX;
-        this.minY = minY;
-        this.minZ = minZ;
-        this.maxX = maxX;
-        this.maxY = maxY;
-        this.maxZ = maxZ;
+        this._gameObject = null;
+        this._boundsMax = geometry.boundingBox!.max.clone();
+        this._boundsMin = geometry.boundingBox!.min.clone();
+        this._matrixFromNode = matrixFromNode.clone();
+        this._name = name;
+        this._meshnormals = [];
+        this._meshvertices = [];
+        this._meshfaces = [];
+        //this.box3 = null;
+        /*
+        this._meshCenter = meshCenter;
+        this._minX = minX;
+        this._minY = minY;
+        this._minZ = minZ;
+        this._maxX = maxX;
+        this._maxY = maxY;
+        this._maxZ = maxZ;
         this.nodePosition = nodePosition;
         this.nodeRotation = nodeRotation;
         this.nodeScale = nodeScale;
@@ -37,12 +45,59 @@ class Hitbox {
         //this.isFloor = isFloor;
         this.meshData = meshData;
         this.nodeName = nodeName;
-        this._init();
+        */
+        this.init(geometry);
+
     }
 
-    init()
+    private init(geometry:BufferGeometry):void
     {
-        
+        // Finde einzigartige Vertices:
+        const index:BufferAttribute = geometry.getIndex()!;
+        for ( let i = 0; i < index.count; i += 9 ) 
+        {
+            let v1:Vector3 = new Vector3(
+                geometry.attributes.position.getX(index.getX(i + 0)), 
+                geometry.attributes.position.getX(index.getX(i + 1)), 
+                geometry.attributes.position.getX(index.getX(i + 2)));
+
+            let v2:Vector3 = new Vector3(
+                geometry.attributes.position.getX(index.getX(i + 3)), 
+                geometry.attributes.position.getX(index.getX(i + 4)), 
+                geometry.attributes.position.getX(index.getX(i + 5)));
+
+            let v3:Vector3 = new Vector3(
+                geometry.attributes.position.getX(index.getX(i + 6)), 
+                geometry.attributes.position.getX(index.getX(i + 7)), 
+                geometry.attributes.position.getX(index.getX(i + 8)));
+
+            let f:Face = new Face(v1, v2, v3);
+            this._meshfaces.push(f);
+
+            if(HelperCollision.checkIfInAttributeArray(this._meshvertices, v1) == false)
+                this._meshvertices.push(v1);
+            if(HelperCollision.checkIfInAttributeArray(this._meshvertices, v2) == false)
+                this._meshvertices.push(v2);
+            if(HelperCollision.checkIfInAttributeArray(this._meshvertices, v3) == false)
+                this._meshvertices.push(v3);
+        }
+        console.log(1);
+        console.log(this._meshvertices);
+
+        // Finde einzigartige Normals:
+        for ( let i = 0; i < this._meshfaces.length; i++ ) 
+        {
+            
+            let n:Vector3 = this._meshfaces[i]._normal.clone();
+            if(HelperCollision.checkIfInAttributeArray(this._meshnormals, n) == false)
+            {
+                this._meshnormals.push(n);
+            }
+        }
+        console.log(this._meshnormals);
+        console.log(this._meshfaces);
+
+        /*
         if(this.meshData != null)
         {
             this.staticvertices = this.meshData.vertices;
@@ -97,10 +152,18 @@ class Hitbox {
 
         
         this.update();
+        */
     }
 
-    update()
+    public setGameObject(g:GameObject):void
     {
+        this._gameObject = g;
+    }
+
+    /*
+    private update()
+    {
+        
         let left = 99999999.0;
         let right = -99999999.0;
         let bottom = 99999999.0;
@@ -163,6 +226,7 @@ class Hitbox {
         this._center = tmpPosition;
 
         return [left,right,bottom,top,back,front,this._center.clone()];
+        
     }
 
     static overlaps(min1, max1, min2, max2)
@@ -367,6 +431,7 @@ class Hitbox {
     {
         //TODO
     }
+    */
 }
 
 export default Hitbox;

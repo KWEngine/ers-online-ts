@@ -8,6 +8,8 @@ import HelperGeneral from "../globals/HelperGeneral";
 import RenderObject from "./RenderObject";
 import InteractiveObject from "./InteractiveObject";
 import ERSPlayer from "./ERSPlayer";
+import HelperCollision from "../globals/HelperCollision";
+import Hitbox from "./Hitbox";
 
 class GameScene
 {
@@ -93,19 +95,23 @@ class GameScene
         this._renderer.render(this._scene, this._camera);
     }
 
-    public async load(sceneName:string) 
+    public async load(sceneName:string)
     {
         let s:ERSScene = HelperScene.parseSceneSettings(sceneName);
 
         for(let i:number = 0; i < s.loads.models.length; i++)
         {
             let model = await ModelLoader.instance.loadAsync("/models/" + s.loads.models[i]);
+            let hitboxes:Hitbox[] = [];
+            HelperCollision.generateHitboxesFor(model.scene, hitboxes);
+            model.scene.userData = { "hitboxes": hitboxes };
+            console.log(model.scene);
             this._modelDatabase.set(s.loads.models[i], model.scene);
         }
         this.init(s.inits);
     }
 
-    private init(inits:ERSSceneInits)
+    private init(inits:ERSSceneInits):void
     {
         const ambientlight = new AmbientLight(parseInt(inits.ambientLight));
         this._scene.add(ambientlight);
