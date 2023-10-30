@@ -3,16 +3,22 @@ import  GameObject from "../scene/GameObject";
 import HelperCollision from "../globals/HelperCollision";
 import Face from "./Face";
 
-class Hitbox {
-
-    private _gameObject:GameObject|null;
-    private _boundsMin:Vector3;
-    private _boundsMax:Vector3;
-    private _matrixFromNode:Matrix4;
+class Hitbox 
+{
     private _name:string;
-    private _meshvertices:Vector3[];
-    private _meshnormals:Vector3[];
-    private _meshfaces:Face[];
+    private _gameObject:GameObject|null;
+
+    public _boundsMin:Vector3;
+    public _boundsMax:Vector3;
+    public _center:Vector3 = new Vector3(0, 0, 0);
+    private _vertices:Vector3[];
+    private _normals:Vector3[];
+    private _matrix:Matrix4;
+    
+    private _meshMatrix:Matrix4;
+    private _meshVertices:Vector3[];
+    private _meshNormals:Vector3[];
+    private _meshFaces:Face[];
 
     constructor(
         matrixFromNode:Matrix4,
@@ -22,142 +28,132 @@ class Hitbox {
         this._gameObject = null;
         this._boundsMax = geometry.boundingBox!.max.clone();
         this._boundsMin = geometry.boundingBox!.min.clone();
-        this._matrixFromNode = matrixFromNode.clone();
+        this._matrix = new Matrix4();
         this._name = name;
-        this._meshnormals = [];
-        this._meshvertices = [];
-        this._meshfaces = [];
-        //this.box3 = null;
-        /*
-        this._meshCenter = meshCenter;
-        this._minX = minX;
-        this._minY = minY;
-        this._minZ = minZ;
-        this._maxX = maxX;
-        this._maxY = maxY;
-        this._maxZ = maxZ;
-        this.nodePosition = nodePosition;
-        this.nodeRotation = nodeRotation;
-        this.nodeScale = nodeScale;
-        this.staticvertices = [];
-        this.staticnormals = [];
-        this.baseTranslationMatrix = new Matrix4();
-        //this.isFloor = isFloor;
-        this.meshData = meshData;
-        this.nodeName = nodeName;
-        */
+        this._vertices = [];
+        this._normals = [];
+        this._meshMatrix = matrixFromNode.clone();
+        this._meshNormals = [];
+        this._meshVertices = [];
+        this._meshFaces = [];
+        //this._meshCenter = new Vector3(0, 0, 0);
         this.init(geometry);
-
     }
 
     private init(geometry:BufferGeometry):void
     {
         // Finde einzigartige Vertices:
         const index:BufferAttribute = geometry.getIndex()!;
-        for ( let i = 0; i < index.count; i += 9 ) 
+        for (let i:number = 0; i < index.count; i += 3) 
         {
             let v1:Vector3 = new Vector3(
-                geometry.attributes.position.getX(index.getX(i + 0)), 
-                geometry.attributes.position.getX(index.getX(i + 1)), 
-                geometry.attributes.position.getX(index.getX(i + 2)));
-
+                geometry.attributes.position.getX(index.getX(i)), 
+                geometry.attributes.position.getY(index.getX(i)), 
+                geometry.attributes.position.getZ(index.getX(i))
+                );
             let v2:Vector3 = new Vector3(
-                geometry.attributes.position.getX(index.getX(i + 3)), 
-                geometry.attributes.position.getX(index.getX(i + 4)), 
-                geometry.attributes.position.getX(index.getX(i + 5)));
-
+                geometry.attributes.position.getX(index.getX(i+1)), 
+                geometry.attributes.position.getY(index.getX(i+1)), 
+                geometry.attributes.position.getZ(index.getX(i+1))
+                );
             let v3:Vector3 = new Vector3(
-                geometry.attributes.position.getX(index.getX(i + 6)), 
-                geometry.attributes.position.getX(index.getX(i + 7)), 
-                geometry.attributes.position.getX(index.getX(i + 8)));
-
+                geometry.attributes.position.getX(index.getX(i+2)), 
+                geometry.attributes.position.getY(index.getX(i+2)), 
+                geometry.attributes.position.getZ(index.getX(i+2))
+                );
+            
+            // Generiere aus drei Vertices ein Dreieck (Face):
             let f:Face = new Face(v1, v2, v3);
-            this._meshfaces.push(f);
+            this._meshFaces.push(f);
 
-            if(HelperCollision.checkIfInAttributeArray(this._meshvertices, v1) == false)
-                this._meshvertices.push(v1);
-            if(HelperCollision.checkIfInAttributeArray(this._meshvertices, v2) == false)
-                this._meshvertices.push(v2);
-            if(HelperCollision.checkIfInAttributeArray(this._meshvertices, v3) == false)
-                this._meshvertices.push(v3);
+            // Für die Kollisionsberechnung via SAT benötigen wir nur
+            // einzigartige Vertices:
+            if(HelperCollision.checkIfInAttributeArray(this._meshVertices, v1) == false)
+                this._meshVertices.push(v1);
+            if(HelperCollision.checkIfInAttributeArray(this._meshVertices, v2) == false)
+                this._meshVertices.push(v2);
+            if(HelperCollision.checkIfInAttributeArray(this._meshVertices, v3) == false)
+                this._meshVertices.push(v3);
         }
-        console.log(1);
-        console.log(this._meshvertices);
 
         // Finde einzigartige Normals:
-        for ( let i = 0; i < this._meshfaces.length; i++ ) 
+        for ( let i = 0; i < this._meshFaces.length; i++ ) 
         {
-            
-            let n:Vector3 = this._meshfaces[i]._normal.clone();
-            if(HelperCollision.checkIfInAttributeArray(this._meshnormals, n) == false)
+            let n:Vector3 = this._meshFaces[i]._normal.clone();
+            if(HelperCollision.checkIfInAttributeArray(this._meshNormals, n) == false)
             {
-                this._meshnormals.push(n);
+                this._meshNormals.push(n);
             }
         }
-        console.log(this._meshnormals);
-        console.log(this._meshfaces);
+    }
 
-        /*
-        if(this.meshData != null)
-        {
-            this.staticvertices = this.meshData.vertices;
-            this.staticnormals = this.meshData.normals;
-        }
-        else
-        {
-            this.staticvertices.push(new Vector3(this.minX,this.minY,this.maxZ)); // links unten vorn
-            this.staticvertices.push(new Vector3(this.maxX, this.minY, this.maxZ)); // rechts unten vorn
-            this.staticvertices.push(new Vector3(this.maxX, this.minY, this.minZ)); // rechts unten hinten
-            this.staticvertices.push(new Vector3(this.minX, this.minY, this.minZ)); // links unten hinten
-            this.staticvertices.push(new Vector3(this.maxX, this.maxY, this.maxZ)); // rechts oben vorn
-            this.staticvertices.push(new Vector3(this.minX, this.maxY, this.maxZ)); // links oben vorn
-            this.staticvertices.push(new Vector3(this.minX, this.maxY, this.minZ)); // links oben hinten
-            this.staticvertices.push(new Vector3(this.maxX, this.maxY, this.minZ)); // rechts oben hinten
+    public update(scale:Vector3, rotation:Quaternion, translation:Vector3):void
+    {
+        let left:number = 99999999.0;
+        let right:number = -99999999.0;
+        let bottom:number = 99999999.0;
+        let top:number = -99999999.0;
+        let back:number = 99999999.0;
+        let front:number = -99999999.0;
 
-            this.staticnormals.push(new Vector3(1,0,0));
-            this.staticnormals.push(new Vector3(0,1,0));
-            this.staticnormals.push(new Vector3(0,0,1));
-        }
+        this.createModelMatrix(translation, rotation, scale);
+        this._matrix.premultiply(this._meshMatrix);
+
+        this._center.x = 0;
+        this._center.y = 0;
+        this._center.z = 0;
+        for(let i:number = 0; i < this._meshVertices.length; i++)
+        {
+            if(i < this._meshNormals.length)
+            {
+                let tmpNormal:Vector3 = this._meshNormals[i].clone();
+                tmpNormal.applyMatrix4(this._matrix);
+                this._normals[i] = tmpNormal;
+            }
+
+            var tmpVertex = this._meshVertices[i].clone();
+            tmpVertex.applyMatrix4(this._matrix);
+            this._center.x += tmpVertex.x;
+            this._center.y += tmpVertex.y;
+            this._center.z += tmpVertex.z;
+            this._vertices[i] = tmpVertex;
+
+            if(tmpVertex.x < left)
+                left = tmpVertex.x;
+            if(tmpVertex.x > right)
+                right = tmpVertex.x;
+
+            if(tmpVertex.y < bottom)
+                bottom = tmpVertex.y;
+            if(tmpVertex.y > top)
+                top = tmpVertex.y;
+
+            if(tmpVertex.z < back)
+                back = tmpVertex.z;
+            if(tmpVertex.z > front)
+                front = tmpVertex.z;
+        }       
+
+        this._boundsMax.x = right;
+        this._boundsMax.y = top;
+        this._boundsMax.z = front;
+        this._boundsMin.x = left;
+        this._boundsMin.y = bottom;
+        this._boundsMin.z = back;
         
-        this.staticcenter = this.meshCenter.clone();
-
-        this._vertices = [];
-        for(let i = 0; i < this.staticvertices.length; i++)
-        {
-            this._vertices.push(new Vector3(0,0,0));
-        }
-
-        this._normals = [];
-        for(let i = 0; i < this.staticnormals.length; i++)
-        {
-            this._normals.push(new Vector3(0,0,0));
-        }
-
-        this._center = new Vector3(0,0,0);
-
-        let q = new THREE.Quaternion(0,0,0,1);
-        if(this.nodeRotation.isEuler)
-        {
-            q.setFromEuler(this.nodeRotation);
-            this.nodeRotation = q.clone();
-        }
-
-        //this.baseRotationMatrix = new THREE.Matrix4().makeRotationFromQuaternion(this.nodeRotation);
-        
-        this.baseTranslationMatrix = this.createModelMatrix(
-            this.nodePosition,
-            this.nodeRotation,
-            this.nodeScale
-        );
-
-        
-        this.update();
-        */
+        this._center.x /= this._meshVertices.length;
+        this._center.y /= this._meshVertices.length;
+        this._center.z /= this._meshVertices.length;
     }
 
     public setGameObject(g:GameObject):void
     {
         this._gameObject = g;
+    }
+
+    private createModelMatrix(translation:Vector3, rotation:Quaternion, scale:Vector3)
+    {
+        return this._matrix.compose(translation, rotation, scale);
     }
 
     /*
@@ -239,11 +235,7 @@ class Hitbox {
         return lowerBound <= val && val <= upperBound;
     }
 
-    createModelMatrix(position, rotation, scale)
-    {
-        let modelMatrix = new THREE.Matrix4().compose(position, rotation, scale);
-        return modelMatrix;
-    }
+    
 
     static doCollisionTest(a, b)
     {
