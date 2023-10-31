@@ -45,7 +45,10 @@ abstract class GameObject
         {
             for(let i:number = 0; i < this._object3d.userData.hitboxes; i++)
             {
-                this._hitboxes.push(this._object3d.userData.hitboxes[i].clone());
+                let hbClone:Hitbox = this._object3d.userData.hitboxes[i].clone();
+                hbClone.setNewId();
+                hbClone.setGameObject(this);
+                this._hitboxes.push(hbClone);
             }
         }
     }
@@ -165,6 +168,11 @@ abstract class GameObject
         this._centerOfAllHitboxes.x = center.x;
         this._centerOfAllHitboxes.y = center.y;
         this._centerOfAllHitboxes.z = center.z;
+    }
+
+    public getHitboxes():Hitbox[]
+    {
+        return this._hitboxes;
     }
 
     // Collision testing:

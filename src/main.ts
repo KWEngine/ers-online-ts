@@ -9,7 +9,7 @@ function onWindowResize()
 window.addEventListener('resize', onWindowResize, false );
 window.addEventListener('orientationchange', onWindowResize, false);
 
-GameScene.instance.load("simple_gltftest")
+GameScene.instance.load("school_outside_front")
     .then(result => {
         GameScene.instance.render();
     })

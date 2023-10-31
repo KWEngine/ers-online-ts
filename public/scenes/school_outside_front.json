@@ -1,13 +1,18 @@
 {
     "loads":
     {
-        "models": ["school_outside_front.glb"]
+        "models": ["school_outside_front.glb", "school_outside_front.hitboxes.glb"]
     },
     
     "inits":
     {
         "ambientLight": "0xaaaaaa",
-        "playerStart": [0, 0, 0],
+        "player":
+        {
+            "position": [0, 1.7, 0],
+            "rotation": [0, 180, 0],
+            "scale":[1, 1.8, 1]
+        },
         "renderObjects":
         [
             {
@@ -15,7 +20,17 @@
                 "position": [0, 0, 0],
                 "rotation": [0, 0, 0],
                 "scale":[1, 1, 1],
-                "model": "Arrow_Up.gltf"
+                "model": "school_outside_front.glb"
+            }
+        ],
+        "hitboxes":
+        [
+            {
+                "name": "school_outside_front_hitboxes",
+                "position": [0, 0, 0],
+                "rotation": [0, 0, 0],
+                "scale":[1, 1, 1],
+                "model":"school_outside_front.hitboxes.glb"
             }
         ]
     }

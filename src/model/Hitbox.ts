@@ -1,11 +1,13 @@
 import { Vector3, Matrix4, Quaternion, Box3, BufferGeometry, BufferAttribute } from "three";
-import  GameObject from "../game/GameObject";
+import GameObject from "../game/GameObject";
 import HelperCollision from "../helpers/HelperCollision";
 import Face from "./Face";
 import Collision from "../game/Collision";
 
 class Hitbox 
 {
+    private static _idCounter:number = 0;
+    private _id:number;
     private _name:string;
     private _gameObject:GameObject|null;
 
@@ -28,6 +30,7 @@ class Hitbox
         geometry:BufferGeometry,
         name:string)
     {
+        this._id = -1;
         this._gameObject = null;
         this._boundsMax = geometry.boundingBox!.max.clone();
         this._boundsMin = geometry.boundingBox!.min.clone();
@@ -41,6 +44,21 @@ class Hitbox
         this._meshFaces = [];
         this._collisionCandidates = [];
         this.init(geometry);
+    }
+
+    public getId():number
+    {
+        return this._id;
+    }
+
+    public setNewId():void
+    {
+        this._id = Hitbox._idCounter++;
+    }
+
+    public getName():string
+    {
+        return this._name;
     }
 
     public getGameObject():GameObject|null

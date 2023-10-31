@@ -10,6 +10,9 @@ import ERSPlayer from "../game/ERSPlayer";
 import HelperCollision from "../helpers/HelperCollision";
 import Hitbox from "../model/Hitbox";
 import GameObject from "../game/GameObject";
+import ERSHitboxStatic from "../game/ERSHitboxStatic";
+import RenderObject from "../game/RenderObject";
+import ERSRenderObject from "../game/ERSRenderObject";
 
 class GameScene
 {
@@ -24,9 +27,11 @@ class GameScene
     private _height:number;
     private _renderer:WebGLRenderer;
     private _camera:PerspectiveCamera;
+    private _player:ERSPlayer|null;
     private readonly _scene = new Scene();
     private readonly _gameObjects:GameObject[] = [];
     private readonly _infoObjects:InfoObject[] = []; 
+    private readonly _hitboxes:Hitbox[] = [];
     private readonly _clock:Clock;
     private readonly _modelDatabase:Map<string, Group>;
     private _dtAccumulator:number;
@@ -59,6 +64,7 @@ class GameScene
         this._camera.lookAt(new Vector3(0,0,0));
 
         this._clock = new Clock();
+        this._player = null;
     }
 
     public updateViewport()
@@ -120,8 +126,15 @@ class GameScene
         for(let i:number = 0; i < inits.renderObjects.length; i++)
         {
             let model:Group = this._modelDatabase.get(inits.renderObjects[i].model)!;
-            let player:ERSPlayer = new ERSPlayer(model, inits.renderObjects[i].name);
-            this.addObject(player);
+            let ro:ERSRenderObject = new ERSRenderObject(model, inits.renderObjects[i].name);
+            this.addObject(ro);
+        }
+
+        for(let i:number = 0; i < inits.hitboxes.length; i++)
+        {
+            let model:Group = this._modelDatabase.get(inits.hitboxes[i].model)!;
+            let o:ERSHitboxStatic = new ERSHitboxStatic(model, inits.hitboxes[i].name);
+            this.addObject(o);
         }
     }
 
@@ -130,13 +143,20 @@ class GameScene
         if(o instanceof InfoObject)
         {
             this._infoObjects.push(o as InfoObject);
-            
+            this.addHitboxesForObject(o);
+            this._scene.add(o.get3DObject());
         }
-        else 
+        else if(o instanceof RenderObject)
         {
             this._gameObjects.push(o);
+            this._scene.add(o.get3DObject());
         }
-        this._scene.add(o.get3DObject());
+        else if(o instanceof ERSHitboxStatic)
+        {
+            this._gameObjects.push(o);
+            this.addHitboxesForObject(o);
+        }
+        
     }
 
     public removeObject(o: GameObject):void
@@ -148,10 +168,11 @@ class GameScene
             if(index >= 0)
             {
                 this._infoObjects.splice(index, 1);
+                this.removeHitboxesForObject(o);
                 this._scene.remove(o.get3DObject());
             }
         }
-        else 
+        else if(o instanceof RenderObject) 
         {
             const predicate = (element:GameObject) => element.getId() == o.getId();
             let index:number = this._gameObjects.findIndex(predicate);
@@ -161,9 +182,43 @@ class GameScene
                 this._scene.remove(o.get3DObject());
             }
         }
+        else if(o instanceof InteractiveObject)
+        {
+            const predicate = (element:GameObject) => element.getId() == o.getId();
+            let index:number = this._gameObjects.findIndex(predicate);
+            if(index >= 0)
+            {
+                this._gameObjects.splice(index, 1);
+                this.removeHitboxesForObject(o);
+                this._scene.remove(o.get3DObject());
+            }
+        }
     }
 
-    
+    private removeHitboxesForObject(o : GameObject):void
+    {
+        for(let hbIndex:number = 0; hbIndex < o.getHitboxes().length; hbIndex++)
+        {
+            for(let i:number = 0; i < this._hitboxes.length; i++)
+            {
+                const predicate = (element:Hitbox) => element.getId() == o.getHitboxes()[hbIndex].getId();
+                let index:number = this._hitboxes.findIndex(predicate);
+                if(index >= 0)
+                {
+                    this._hitboxes.splice(index, 1);
+                    break;
+                }
+            }
+        }
+    }
+
+    private addHitboxesForObject(o: GameObject):void
+    {
+        for(let i:number = 0; i < o.getHitboxes().length; i++)
+        {
+            this._hitboxes.push(o.getHitboxes()[i]);
+        }
+    }
 }
 
 export default GameScene;

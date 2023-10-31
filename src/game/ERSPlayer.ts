@@ -21,8 +21,7 @@ class ERSPlayer extends InteractiveObject
                 this._moveRight = true;
             }
         }
-        
     }
-    
 }
+
 export default ERSPlayer;
