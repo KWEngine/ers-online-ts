@@ -5,11 +5,11 @@ import HelperScene from "../helpers/HelperScene";
 import ERSScene from "./ERSScene";
 import ERSSceneInits from "./ERSSceneInits";
 import HelperGeneral from "../helpers/HelperGeneral";
-import RenderObject from "../game/RenderObject";
 import InteractiveObject from "../game/InteractiveObject";
 import ERSPlayer from "../game/ERSPlayer";
 import HelperCollision from "../helpers/HelperCollision";
 import Hitbox from "../model/Hitbox";
+import GameObject from "../game/GameObject";
 
 class GameScene
 {
@@ -25,9 +25,8 @@ class GameScene
     private _renderer:WebGLRenderer;
     private _camera:PerspectiveCamera;
     private readonly _scene = new Scene();
-    private readonly _movingObjects:InteractiveObject[] = [];
+    private readonly _gameObjects:GameObject[] = [];
     private readonly _infoObjects:InfoObject[] = []; 
-    private readonly _renderObjects:RenderObject[] = []; 
     private readonly _clock:Clock;
     private readonly _modelDatabase:Map<string, Group>;
     private _dtAccumulator:number;
@@ -76,19 +75,22 @@ class GameScene
         this._dtAccumulator += frametime;
         while (this._dtAccumulator >= HelperGeneral.DTFrameSize)
         {
-            for(let i:number = 0; i < this._movingObjects.length; i++)
+            for(let i:number = 0; i < this._gameObjects.length; i++)
             {
-                this._movingObjects[i].stateBackup();
-                this._movingObjects[i].act();
+                if(this._gameObjects[i] instanceof InteractiveObject)
+                {
+                    this._gameObjects[i].stateBackup();
+                    (this._gameObjects[i] as InteractiveObject).act();
+                }
             }
             this._dtAccumulator -= HelperGeneral.DTFrameSize;
         }
         //todo:
         //blend objects' states based on the remaining accumulator value...
         let alpha:number = HelperGeneral.clamp(this._dtAccumulator / HelperGeneral.DTFrameSize, 0.0, 1.0);
-        for(let i:number = 0; i < this._movingObjects.length; i++)
+        for(let i:number = 0; i < this._gameObjects.length; i++)
         {
-            this._movingObjects[i].stateBlendToRender(alpha);
+            this._gameObjects[i].stateBlendToRender(alpha);
         }
 
         requestAnimationFrame(this.render);
@@ -105,7 +107,6 @@ class GameScene
             let hitboxes:Hitbox[] = [];
             HelperCollision.generateHitboxesFor(model.scene, hitboxes);
             model.scene.userData = { "hitboxes": hitboxes };
-            console.log(model.scene);
             this._modelDatabase.set(s.loads.models[i], model.scene);
         }
         this.init(s.inits);
@@ -124,11 +125,45 @@ class GameScene
         }
     }
 
-    private addObject(o : InteractiveObject):void
+    public addObject(o : GameObject):void
     {
-        this._movingObjects.push(o);
+        if(o instanceof InfoObject)
+        {
+            this._infoObjects.push(o as InfoObject);
+            
+        }
+        else 
+        {
+            this._gameObjects.push(o);
+        }
         this._scene.add(o.get3DObject());
     }
+
+    public removeObject(o: GameObject):void
+    {
+        if(o instanceof InfoObject)
+        {
+            const predicate = (element:InfoObject) => element.getId() == o.getId();
+            let index:number = this._infoObjects.findIndex(predicate);
+            if(index >= 0)
+            {
+                this._infoObjects.splice(index, 1);
+                this._scene.remove(o.get3DObject());
+            }
+        }
+        else 
+        {
+            const predicate = (element:GameObject) => element.getId() == o.getId();
+            let index:number = this._gameObjects.findIndex(predicate);
+            if(index >= 0)
+            {
+                this._gameObjects.splice(index, 1);
+                this._scene.remove(o.get3DObject());
+            }
+        }
+    }
+
+    
 }
 
 export default GameScene;

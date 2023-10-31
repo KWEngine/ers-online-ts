@@ -169,14 +169,12 @@ class Hitbox
         return Hitbox.isBetweenOrdered(min2, min1, max1) || Hitbox.isBetweenOrdered(min1, min2, max2);
     }
 
-    static isBetweenOrdered(val:number, lowerBound:number, upperBound:number):boolean
+    private static isBetweenOrdered(val:number, lowerBound:number, upperBound:number):boolean
     {
         return lowerBound <= val && val <= upperBound;
     }
 
-    
-
-    static doCollisionTest(a:Hitbox, b:Hitbox):Collision|null
+    private static doCollisionTest(a:Hitbox, b:Hitbox):Collision|null
     {
         let mtv = [new Vector3(0,0,0), new Vector3(0,0,0)];
         let mtvDirectionArray = [1.0];
@@ -247,7 +245,7 @@ class Hitbox
         }
     }
 
-    static satTest(axisToTest:Vector3, points:Vector3[]):number[]
+    private static satTest(axisToTest:Vector3, points:Vector3[]):number[]
     {
         let minAlong = Number.POSITIVE_INFINITY;
         let maxAlong = Number.NEGATIVE_INFINITY;
@@ -269,7 +267,7 @@ class Hitbox
         return [minAlong, maxAlong];
     }
 
-    static calculateOverlap(
+    private static calculateOverlap(
         axis:Vector3, 
         shape1Min:number, shape1Max:number, 
         shape2Min:number, shape2Max:number, 
@@ -365,6 +363,11 @@ class Hitbox
     public clearCollisionCandidates()
     {
         this._collisionCandidates = [];
+    }
+
+    public addCollisionCandidate(h:Hitbox):void
+    {
+        this._collisionCandidates.push(h);
     }
 }
 

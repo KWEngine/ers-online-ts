@@ -1,4 +1,4 @@
-import { Object3D, Vector3, Group, QuadraticBezierCurve, Quaternion, Mesh } from "three";
+import { Object3D, Vector3, Group, Quaternion } from "three";
 import Hitbox from "../model/Hitbox";
 import HelperGeneral from "../helpers/HelperGeneral";
 import State from "./State";
@@ -6,6 +6,9 @@ import HelperCollision from "../helpers/HelperCollision";
 
 abstract class GameObject
 {
+    private static _idCounter:number = 0;
+
+    private _id:number;
     private _object3d:Group;
     private _name:string;
     private _hitboxes:Hitbox[];
@@ -19,6 +22,7 @@ abstract class GameObject
 
     constructor(object3d:Group, name:string)
     {
+        this._id = GameObject._idCounter++;
         this._object3d = object3d.clone(true);
         this._name = name;
         this._hitboxes = [];
@@ -31,7 +35,24 @@ abstract class GameObject
         this._stateCurrent = new State();
         this._statePrevious = new State();
         this._stateRender = new State();
-        this.updateHitbox();
+        this.copyHitboxesFromModel();
+        this.updateHitboxes();
+    }
+
+    private copyHitboxesFromModel()
+    {
+        if(this._object3d.userData.hitboxes)
+        {
+            for(let i:number = 0; i < this._object3d.userData.hitboxes; i++)
+            {
+                this._hitboxes.push(this._object3d.userData.hitboxes[i].clone());
+            }
+        }
+    }
+
+    public getId():number
+    {
+        return this._id;
     }
 
     public getName():string
@@ -57,7 +78,7 @@ abstract class GameObject
         this._stateCurrent._position.x = x;
         this._stateCurrent._position.y = y;
         this._stateCurrent._position.z = z;
-        this.updateHitbox();
+        this.updateHitboxes();
     }
 
     public moveOffset(x:number, y:number, z:number):void
@@ -65,7 +86,7 @@ abstract class GameObject
         this._stateCurrent._position.x += x;
         this._stateCurrent._position.y += y;
         this._stateCurrent._position.z += z;
-        this.updateHitbox();
+        this.updateHitboxes();
     }
 
     public moveOffsetByVector(vec:Vector3):void
@@ -73,31 +94,31 @@ abstract class GameObject
         this._stateCurrent._position.x += vec.x;
         this._stateCurrent._position.y += vec.y;
         this._stateCurrent._position.z += vec.z;
-        this.updateHitbox();
+        this.updateHitboxes();
     }
 
     public addRotationX(degrees:number):void
     {
         let addedRotation:Quaternion = HelperGeneral.quaternionFromAxisAngle("x", degrees);
         this._stateCurrent._rotation.multiply(addedRotation);
-        this.updateHitbox();
+        this.updateHitboxes();
     }
 
     public addRotationY(degrees:number):void
     {
         let addedRotation:Quaternion = HelperGeneral.quaternionFromAxisAngle("y", degrees);
         this._stateCurrent._rotation.multiply(addedRotation);
-        this.updateHitbox();
+        this.updateHitboxes();
     }
 
     public addRotationZ(degrees:number):void
     {
         let addedRotation:Quaternion = HelperGeneral.quaternionFromAxisAngle("z", degrees);
         this._stateCurrent._rotation.multiply(addedRotation);
-        this.updateHitbox();
+        this.updateHitboxes();
     }
 
-    private updateHitbox():void
+    private updateHitboxes():void
     {
         let left = 99999999.0;
         let right = -99999999.0;
@@ -146,16 +167,6 @@ abstract class GameObject
         this._centerOfAllHitboxes.z = center.z;
     }
 
-    public getExtentsForAxis(a:number):number[]
-    {
-        if (a == 1)
-            return this._bottomtopmost;
-        else if (a == 2)
-            return this._backfrontmost;
-        else
-            return this._leftrightmost;
-    }
-
     // Collision testing:
     public getIntersections()
     {
@@ -187,6 +198,11 @@ abstract class GameObject
             this._stateRender._position.x, 
             this._stateRender._position.y, 
             this._stateRender._position.z);
+        this._object3d.rotation.setFromQuaternion(this._stateRender._rotation);
+        this._object3d.scale.set(
+            this._stateRender._scale.x, 
+            this._stateRender._scale.y, 
+            this._stateRender._scale.z);
     }
 }
 
