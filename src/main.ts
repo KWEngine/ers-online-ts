@@ -6,8 +6,15 @@ function onWindowResize()
     GameScene.instance.updateViewport();
 }
 
-window.addEventListener( 'resize', onWindowResize, false );
-window.addEventListener( 'orientationchange', onWindowResize, false);
+window.addEventListener('resize', onWindowResize, false );
+window.addEventListener('orientationchange', onWindowResize, false);
 
-await GameScene.instance.load("simple_gltftest");
-GameScene.instance.render();
+GameScene.instance.load("simple_gltftest")
+    .then(result => {
+        GameScene.instance.render();
+    })
+    .catch(err =>
+    {
+        alert("Virtueller Rundgang ist auf diesem Gerät nicht möglich.");
+    });
+

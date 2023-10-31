@@ -1,4 +1,4 @@
-import State from "../scene/State";
+import State from "../game/State";
 import { Vector3, Quaternion } from "three";
 
 class HelperGeneral

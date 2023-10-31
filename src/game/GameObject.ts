@@ -1,8 +1,8 @@
 import { Object3D, Vector3, Group, QuadraticBezierCurve, Quaternion, Mesh } from "three";
-import Hitbox from "./Hitbox";
-import HelperGeneral from "../globals/HelperGeneral";
+import Hitbox from "../model/Hitbox";
+import HelperGeneral from "../helpers/HelperGeneral";
 import State from "./State";
-import HelperCollision from "../globals/HelperCollision";
+import HelperCollision from "../helpers/HelperCollision";
 
 abstract class GameObject
 {

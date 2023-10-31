@@ -1,6 +1,6 @@
 import { Object3D, Mesh, Group, Vector3 } from "three";
-import GameObject from "../scene/GameObject";
-import Hitbox from "../scene/Hitbox";
+import GameObject from "../game/GameObject";
+import Hitbox from "../model/Hitbox";
 
 class HelperCollision
 {
@@ -14,18 +14,13 @@ class HelperCollision
         if(o instanceof Mesh)
         {
             let m:Mesh = o;
-            // Generiere Hitbox für Mesh:
             
             o.updateMatrix();
-            console.log("mesh found");
-            console.log(o);
-            
             let hb = new Hitbox(m.matrix, m.geometry, m.name);
             hbs.push(hb);
         }
         else
         {
-
             for(let i:number = 0; i < o.children.length; i++)
             {
                 this.generateHitboxesFor(o.children[i], hbs);

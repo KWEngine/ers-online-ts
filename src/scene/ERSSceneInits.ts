@@ -1,5 +1,5 @@
 import { Vector3 } from "three";
-import RenderObject from "./RenderObject";
+import RenderObject from "../game/RenderObject";
 
 class ERSSceneInits
 {

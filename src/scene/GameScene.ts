@@ -1,15 +1,15 @@
 import { AmbientLight, PerspectiveCamera, Scene, WebGLRenderer, Vector3, Clock, Object3D, Group, Object3DEventMap } from "three";
-import ModelLoader from "./ModelLoader";
-import InfoObject from "./InfoObject";
-import HelperScene from "../globals/HelperScene";
+import ModelLoader from "../model/ModelLoader";
+import InfoObject from "../game/InfoObject";
+import HelperScene from "../helpers/HelperScene";
 import ERSScene from "./ERSScene";
 import ERSSceneInits from "./ERSSceneInits";
-import HelperGeneral from "../globals/HelperGeneral";
-import RenderObject from "./RenderObject";
-import InteractiveObject from "./InteractiveObject";
-import ERSPlayer from "./ERSPlayer";
-import HelperCollision from "../globals/HelperCollision";
-import Hitbox from "./Hitbox";
+import HelperGeneral from "../helpers/HelperGeneral";
+import RenderObject from "../game/RenderObject";
+import InteractiveObject from "../game/InteractiveObject";
+import ERSPlayer from "../game/ERSPlayer";
+import HelperCollision from "../helpers/HelperCollision";
+import Hitbox from "../model/Hitbox";
 
 class GameScene
 {

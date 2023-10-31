@@ -1,7 +1,8 @@
 import { Vector3, Matrix4, Quaternion, Box3, BufferGeometry, BufferAttribute } from "three";
-import  GameObject from "../scene/GameObject";
-import HelperCollision from "../globals/HelperCollision";
+import  GameObject from "../game/GameObject";
+import HelperCollision from "../helpers/HelperCollision";
 import Face from "./Face";
+import Collision from "../game/Collision";
 
 class Hitbox 
 {
@@ -20,6 +21,8 @@ class Hitbox
     private _meshNormals:Vector3[];
     private _meshFaces:Face[];
 
+    private _collisionCandidates:Hitbox[];
+
     constructor(
         matrixFromNode:Matrix4,
         geometry:BufferGeometry,
@@ -36,8 +39,13 @@ class Hitbox
         this._meshNormals = [];
         this._meshVertices = [];
         this._meshFaces = [];
-        //this._meshCenter = new Vector3(0, 0, 0);
+        this._collisionCandidates = [];
         this.init(geometry);
+    }
+
+    public getGameObject():GameObject|null
+    {
+        return this._gameObject;
     }
 
     private init(geometry:BufferGeometry):void
@@ -156,88 +164,19 @@ class Hitbox
         return this._matrix.compose(translation, rotation, scale);
     }
 
-    /*
-    private update()
-    {
-        
-        let left = 99999999.0;
-        let right = -99999999.0;
-        let bottom = 99999999.0;
-        let top = -99999999.0;
-        let back = 99999999.0;
-        let front = -99999999.0;
-
-        let q = new THREE.Quaternion(0,0,0,1);
-        if(this.gameObject.object3d.rotation.isEuler)
-        {
-            q.setFromEuler(this.gameObject.object3d.rotation);
-        }
-        else
-        {
-            q.x = this.gameObject.object3d.rotation.x;
-            q.y = this.gameObject.object3d.rotation.y;
-            q.z = this.gameObject.object3d.rotation.z;
-            q.w = this.gameObject.object3d.rotation.w;
-        }
-
-        let modelMatrix = this.createModelMatrix(
-            this.gameObject.object3d.position, 
-            q, 
-            this.gameObject.object3d.scale
-        );
-        
-        q = this.nodeRotation.clone().multiply(q);
-        modelMatrix.premultiply(this.baseTranslationMatrix);
-        
-        for(let i = 0; i < this._vertices.length; i++)
-        {
-            if(i < this._normals.length)
-            {
-                var tmpNormal = this.staticnormals[i].clone();
-                tmpNormal.applyQuaternion(q);
-                this._normals[i] = tmpNormal;
-            }
-
-            var tmpVertex = this.staticvertices[i].clone();
-            tmpVertex.applyMatrix4(modelMatrix);
-            this._vertices[i] = tmpVertex;
-            if(tmpVertex.x < left)
-                left = tmpVertex.x;
-            if(tmpVertex.x > right)
-                right = tmpVertex.x;
-
-            if(tmpVertex.y < bottom)
-                bottom = tmpVertex.y;
-            if(tmpVertex.y > top)
-                top = tmpVertex.y;
-
-            if(tmpVertex.z < back)
-                back = tmpVertex.z;
-            if(tmpVertex.z > front)
-                front = tmpVertex.z;
-        }       
-        
-        var tmpPosition = this.staticcenter.clone();
-        tmpPosition.applyMatrix4(modelMatrix);
-        this._center = tmpPosition;
-
-        return [left,right,bottom,top,back,front,this._center.clone()];
-        
-    }
-
-    static overlaps(min1, max1, min2, max2)
+    private static overlaps(min1:number, max1:number, min2:number, max2:number):boolean
     {
         return Hitbox.isBetweenOrdered(min2, min1, max1) || Hitbox.isBetweenOrdered(min1, min2, max2);
     }
 
-    static isBetweenOrdered(val, lowerBound, upperBound)
+    static isBetweenOrdered(val:number, lowerBound:number, upperBound:number):boolean
     {
         return lowerBound <= val && val <= upperBound;
     }
 
     
 
-    static doCollisionTest(a, b)
+    static doCollisionTest(a:Hitbox, b:Hitbox):Collision|null
     {
         let mtv = [new Vector3(0,0,0), new Vector3(0,0,0)];
         let mtvDirectionArray = [1.0];
@@ -300,7 +239,7 @@ class Hitbox
 
         if(mtv[0].lengthSq() > 0)
         {
-            return new Collision(b.gameObject, mtv, b.isFloor, b.nodeName);
+            return new Collision(b, b.getGameObject()!, mtv);
         }
         else
         {
@@ -308,7 +247,7 @@ class Hitbox
         }
     }
 
-    static satTest(axisToTest, points)
+    static satTest(axisToTest:Vector3, points:Vector3[]):number[]
     {
         let minAlong = Number.POSITIVE_INFINITY;
         let maxAlong = Number.NEGATIVE_INFINITY;
@@ -330,15 +269,17 @@ class Hitbox
         return [minAlong, maxAlong];
     }
 
-    static calculateOverlap(axis, shape1Min, shape1Max, 
-        shape2Min, shape2Max, 
-        mtvDistance, // array
-        mtv, // array with 2 elements (shortest and up)
-        mtvDirection, //array
-        posA,
-        posB,
-        mtvUpDistance, // array
-        mtvUpDirection // array
+    static calculateOverlap(
+        axis:Vector3, 
+        shape1Min:number, shape1Max:number, 
+        shape2Min:number, shape2Max:number, 
+        mtvDistance:number[], // array
+        mtv:Vector3[], // array with 2 elements (shortest and up)
+        mtvDirection:number[], //array
+        posA:Vector3,
+        posB:Vector3,
+        mtvUpDistance:number[], // array
+        mtvUpDirection:number[] // array
         )
     {
         let intersectionDepthScaled = 1;
@@ -394,10 +335,10 @@ class Hitbox
             tmpMtv.multiplyScalar(intersectionDepthScaled / axisLengthSquared);
             let notSameDirection = new Vector3(0,0,0).subVectors(posA, posB).dot(tmpMtv);
             mtvDirection[0] = notSameDirection < 0 ? -1.0 : 1.0;
-            if(this.meshData == null)
+            /*if(this.meshData == null)
             {
                 tmpMtv.multiplyScalar(mtvDirection[0]);
-            }
+            }*/
             mtv[0] = tmpMtv.clone();
         }
         // find up-vector (for stairs)
@@ -409,10 +350,12 @@ class Hitbox
             let tmpMtvUpDistance = intersectionDepthSquared;
             let notSameDirection = new Vector3(0,0,0).subVectors(posA, posB).dot(tmpMtv);
             let tmpMtvUpDirection = notSameDirection < 0 ? -1.0 : 1.0;
+            /*
             if(this.meshData == null)
             {
                 tmpMtv.multiplyScalar(tmpMtvUpDirection);
             }
+            */
             mtvUpDistance[0] = tmpMtvUpDistance;
             mtvUpDirection[0] = tmpMtvUpDirection;
             mtv[1] = tmpMtv.clone();
@@ -421,9 +364,8 @@ class Hitbox
 
     public clearCollisionCandidates()
     {
-        //TODO
+        this._collisionCandidates = [];
     }
-    */
 }
 
 export default Hitbox;
