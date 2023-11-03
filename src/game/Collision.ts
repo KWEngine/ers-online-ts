@@ -17,5 +17,4 @@ class Collision
         this._mtvUp = mtv[1].clone();
     }
 }
-
 export default Collision;
