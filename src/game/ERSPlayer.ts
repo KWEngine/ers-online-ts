@@ -1,26 +1,31 @@
+import HelperControls from "../helpers/HelperControls";
+import GameScene from "../scene/GameScene";
 import InteractiveObject from "./InteractiveObject";
 
 class ERSPlayer extends InteractiveObject
 {
-    private _moveRight:boolean = true;
+    private _yOffset:number = 0;
 
-    public act(): void {
-        if(this._moveRight)
+    public act(): void 
+    {
+        if(HelperControls._keys.get("w"))
         {
-            this.moveOffset(0.01, 0, 0);
-            if(this.getPosition().x > 5)
-            {
-                this._moveRight = false;
-            }
+            this.moveOffset(0, 0, -0.1);
         }
-        else
+        if(HelperControls._keys.get("s"))
         {
-            this.moveOffset(-0.01, 0, 0);
-            if(this.getPosition().x < -5)
-            {
-                this._moveRight = true;
-            }
+            this.moveOffset(0, 0, +0.1);
         }
+    }
+
+    public setYOffset(y:number):void
+    {
+        this._yOffset = y;
+    }
+
+    public getYOffset():number
+    {
+        return this._yOffset;
     }
 }
 

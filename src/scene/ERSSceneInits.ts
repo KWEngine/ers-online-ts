@@ -1,11 +1,9 @@
 import { Vector3 } from "three";
-import RenderObject from "../game/RenderObject";
 
 class ERSSceneInits
 {
     public ambientLight:string = "0x000000";
-    public playerStart:Vector3 = new Vector3(0,0,0);
-    public playerOrientation:Vector3 = new Vector3(0, 180, 0);
+    public player:any = { "position": [0, 1.7, 0], "rotation": [0, 180, 0], "scale":[1, 1.8, 1] }
     public renderObjects:any[] = [];
     public hitboxes:any[] = [];
 }

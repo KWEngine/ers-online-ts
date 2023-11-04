@@ -1,4 +1,4 @@
-import { AmbientLight, PerspectiveCamera, Scene, WebGLRenderer, Vector3, Clock, Object3D, Group, Object3DEventMap } from "three";
+import { AmbientLight, PerspectiveCamera, Scene, WebGLRenderer, Vector3, Clock, Object3D, Group, Object3DEventMap, Euler } from "three";
 import ModelLoader from "../model/ModelLoader";
 import InfoObject from "../game/InfoObject";
 import HelperScene from "../helpers/HelperScene";
@@ -13,6 +13,7 @@ import GameObject from "../game/GameObject";
 import ERSHitboxStatic from "../game/ERSHitboxStatic";
 import RenderObject from "../game/RenderObject";
 import ERSRenderObject from "../game/ERSRenderObject";
+import HelperControls from "../helpers/HelperControls";
 
 class GameScene
 {
@@ -27,6 +28,7 @@ class GameScene
     private _height:number;
     private _renderer:WebGLRenderer;
     private _camera:PerspectiveCamera;
+    private _cameraEuler:Euler;
     private _player:ERSPlayer|null;
     private readonly _scene = new Scene();
     private readonly _gameObjects:GameObject[] = [];
@@ -65,6 +67,32 @@ class GameScene
 
         this._clock = new Clock();
         this._player = null;
+        this._cameraEuler = new Euler(0, 0, 0, 'YXZ');
+    }
+
+    public addCameraRotation(x:number, y:number):void
+    {
+        HelperControls._motionRotation[0] += -x * Math.PI / 180;
+        HelperControls._motionRotation[1] += -y * Math.PI / 180;
+
+        if(HelperControls._motionRotation[1] > 1.5)
+            HelperControls._motionRotation[1] = 1.5;
+        else if(HelperControls._motionRotation[1] < -1.5)
+            HelperControls._motionRotation[1] = -1.5;
+
+        this._cameraEuler.x = HelperControls._motionRotation[0];
+        this._cameraEuler.y = HelperControls._motionRotation[1];
+        this._camera.quaternion.setFromEuler(this._cameraEuler);
+    }
+    
+    public getCamera():PerspectiveCamera
+    {
+        return this._camera;
+    }
+
+    public getPlayer():ERSPlayer
+    {
+        return this._player!;
     }
 
     public updateViewport()
@@ -78,7 +106,12 @@ class GameScene
     public render = () => 
     {
         let frametime:number = this._clock.getDelta(); // In Sekunden (z.B. 0.0166667s für 60fps)
+
+        // Addiere die neue Frame-Zeit auf den Akkumulator:
         this._dtAccumulator += frametime;
+
+        // Solange der Akkumulator größer ist als ein Simulationsschritt, 
+        // werden einzelne Simulationsschritte ausgeführt:
         while (this._dtAccumulator >= HelperGeneral.DTFrameSize)
         {
             for(let i:number = 0; i < this._gameObjects.length; i++)
@@ -91,13 +124,22 @@ class GameScene
             }
             this._dtAccumulator -= HelperGeneral.DTFrameSize;
         }
-        //todo:
-        //blend objects' states based on the remaining accumulator value...
+        
+        
+        // Nachdem die Simulationsschritte erledigt sind, ermittle den 
+        // Überblendungsfaktor und wende ihn auf alle Objekte an:
         let alpha:number = HelperGeneral.clamp(this._dtAccumulator / HelperGeneral.DTFrameSize, 0.0, 1.0);
         for(let i:number = 0; i < this._gameObjects.length; i++)
         {
             this._gameObjects[i].stateBlendToRender(alpha);
         }
+
+        // Aktualisiere Kameraposition:
+        this._camera.position.set(
+            this._player!.get3DObject().position.x,
+            this._player!.get3DObject().position.y + this._player!.getYOffset(),
+            this._player!.get3DObject().position.z
+            );
 
         requestAnimationFrame(this.render);
         this._renderer.render(this._scene, this._camera);
@@ -107,6 +149,15 @@ class GameScene
     {
         let s:ERSScene = HelperScene.parseSceneSettings(sceneName);
 
+        // Lade 3D-Modell des Player-Objekts:
+        let playerModel = await ModelLoader.instance.loadAsync("/models/ers-player.glb");
+        let playerHitbox:Hitbox[] = [];
+        HelperCollision.generateHitboxesFor(playerModel.scene, playerHitbox);
+        playerModel.scene.userData = { "hitboxes": playerHitbox };
+        this._modelDatabase.set("ers-player.glb", playerModel.scene);
+
+        // Lade die 3D-Modelle die für die aktuelle Szene in der 
+        // entsprechenden JSON-Datei stehen:
         for(let i:number = 0; i < s.loads.models.length; i++)
         {
             let model = await ModelLoader.instance.loadAsync("/models/" + s.loads.models[i]);
@@ -115,6 +166,8 @@ class GameScene
             model.scene.userData = { "hitboxes": hitboxes };
             this._modelDatabase.set(s.loads.models[i], model.scene);
         }
+
+        // Initialisiere Instanzen und Lichtgebung:
         this.init(s.inits);
     }
 
@@ -122,6 +175,8 @@ class GameScene
     {
         const ambientlight = new AmbientLight(parseInt(inits.ambientLight));
         this._scene.add(ambientlight);
+
+        this.generatePlayer(inits);
 
         for(let i:number = 0; i < inits.renderObjects.length; i++)
         {
@@ -136,6 +191,21 @@ class GameScene
             let o:ERSHitboxStatic = new ERSHitboxStatic(model, inits.hitboxes[i].name);
             this.addObject(o);
         }
+    }
+
+    private generatePlayer(inits:ERSSceneInits):void
+    {
+        let scale:number[] = inits.player.scale;
+        let position:number[] = inits.player.position;
+        let rotation:number[] = inits.player.rotation;
+        let yOffset:number = inits.player.yOffset;
+        let model:Group = this._modelDatabase.get("ers-player.glb")!;
+        this._player = new ERSPlayer(model, "Player");
+        this._player.setPosition(position[0], position[1], position[2]);
+        this._player.addRotationY(rotation[1]);
+        this._player.setScale(scale[0], scale[1], scale[2]);
+        this._player.setYOffset(yOffset);
+        this.addObject(this._player);
     }
 
     public addObject(o : GameObject):void
@@ -155,6 +225,12 @@ class GameScene
         {
             this._gameObjects.push(o);
             this.addHitboxesForObject(o);
+        }
+        else if(o instanceof ERSPlayer)
+        {
+            this._gameObjects.push(o);
+            this.addHitboxesForObject(o);
+            //this._scene.add(o.get3DObject());
         }
         
     }

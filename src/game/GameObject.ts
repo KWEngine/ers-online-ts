@@ -71,6 +71,13 @@ abstract class GameObject
         });
     }
 
+    public setScale(x:number, y:number, z:number):void
+    {
+        this._stateCurrent._scale.x = x;
+        this._stateCurrent._scale.y = y;
+        this._stateCurrent._scale.z = z;
+    }
+
     public getPosition():Vector3
     {
         return this._stateCurrent._position.clone();
