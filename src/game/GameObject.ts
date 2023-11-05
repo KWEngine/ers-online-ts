@@ -3,6 +3,7 @@ import Hitbox from "../model/Hitbox";
 import HelperGeneral from "../helpers/HelperGeneral";
 import State from "./State";
 import HelperCollision from "../helpers/HelperCollision";
+import GameScene from "../scene/GameScene";
 
 abstract class GameObject
 {
@@ -99,14 +100,21 @@ abstract class GameObject
         this.updateHitboxes();
     }
 
-    public moveOffsetByVector(vec:Vector3):void
+    public moveOffsetByVector(vec:Vector3, speedFactor:number):void
     {
-        this._stateCurrent._position.x += vec.x;
-        this._stateCurrent._position.y += vec.y;
-        this._stateCurrent._position.z += vec.z;
+        this._stateCurrent._position.x += vec.x * speedFactor;
+        this._stateCurrent._position.y += vec.y * speedFactor;
+        this._stateCurrent._position.z += vec.z * speedFactor;
         this.updateHitboxes();
     }
 
+    public strafeOffsetByVector(vec:Vector3, speedFactor:number):void
+    {
+        let v:Vector3 = HelperGeneral.getStrafeVector(vec, GameScene.instance.getCamera().up);
+        this.moveOffsetByVector(v, speedFactor);
+    }
+
+    
     public addRotationX(degrees:number):void
     {
         let addedRotation:Quaternion = HelperGeneral.quaternionFromAxisAngle("x", degrees);

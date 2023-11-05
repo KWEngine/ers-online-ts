@@ -7,6 +7,7 @@ class HelperGeneral
     private static readonly _unitX:Vector3 = new Vector3(1,0,0);
     private static readonly _unitY:Vector3 = new Vector3(0,1,0);
     private static readonly _unitZ:Vector3 = new Vector3(0,0,1);
+    private static readonly _strafeVector:Vector3 = new Vector3(1, 0, 0);
     private static readonly _identityQuaternion = new Quaternion(0,0,0,1);
 
     public static rad2deg(radians:number):number
@@ -67,6 +68,25 @@ class HelperGeneral
         result.normalize();
 
         return result;
+    }
+
+    public static getStrafeVector(lav:Vector3, up:Vector3):Vector3
+    {
+        this._strafeVector.crossVectors(lav, up);
+        this._strafeVector.normalize();
+        return this._strafeVector;
+    }
+
+    public static multiplyVectorByScalar(v:Vector3, s:number, out:Vector3):void
+    {
+        out.x = v.x * s;
+        out.y = v.y * s;
+        out.z = v.z * s;
+    }
+
+    public static isMobileDevice():boolean
+    {
+        return window.matchMedia("(any-pointer:coarse)").matches;
     }
 }
 

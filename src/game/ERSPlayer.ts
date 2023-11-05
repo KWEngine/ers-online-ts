@@ -1,21 +1,38 @@
+import { Vector3 } from "three";
 import HelperControls from "../helpers/HelperControls";
 import GameScene from "../scene/GameScene";
 import InteractiveObject from "./InteractiveObject";
+import HelperGeneral from "../helpers/HelperGeneral";
 
 class ERSPlayer extends InteractiveObject
 {
     private _yOffset:number = 0;
+    private _speed:number = 0.1;
+    private _direction:Vector3 = new Vector3(0, 0, 0);
+    private _forward:number = 0;
+    private _strafe:number = 0;
 
     public act(): void 
     {
-        if(HelperControls._keys.get("w"))
-        {
-            this.moveOffset(0, 0, -0.1);
-        }
-        if(HelperControls._keys.get("s"))
-        {
-            this.moveOffset(0, 0, +0.1);
-        }
+        this.updateDirectionVector();
+        this.moveOffsetByVector(this._direction, this._speed);
+        
+    }
+
+    private updateDirectionVector():void
+    {
+        let lav = GameScene.instance.getCameraLookAtVectorXZ();
+        let lavStrafe = GameScene.instance.getCameraLookAtStrafeVectorXZ();
+        this._direction.set(0, 0, 0);
+        this._direction.x += HelperControls._motionMove[0] * lav.x;
+        this._direction.y += HelperControls._motionMove[0] * lav.y;
+        this._direction.z += HelperControls._motionMove[0] * lav.z;
+
+        this._direction.x += HelperControls._motionMove[1] * lavStrafe.x;
+        this._direction.y += HelperControls._motionMove[1] * lavStrafe.y;
+        this._direction.z += HelperControls._motionMove[1] * lavStrafe.z;
+
+        this._direction.normalize();
     }
 
     public setYOffset(y:number):void

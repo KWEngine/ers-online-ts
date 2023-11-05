@@ -37,6 +37,8 @@ class GameScene
     private readonly _clock:Clock;
     private readonly _modelDatabase:Map<string, Group>;
     private _dtAccumulator:number;
+    private _camLookAtVector:Vector3;
+    private _camLookAtVectorXZ:Vector3;
 
     private constructor()
     {
@@ -44,7 +46,8 @@ class GameScene
         this._width = window.innerWidth;
         this._height = window.innerHeight;
         this._modelDatabase = new Map();
-
+        this._camLookAtVector = new Vector3(0, 0, -1);
+        this._camLookAtVectorXZ = new Vector3(0, 0, -1);
         this._renderer = new WebGLRenderer(
             {
                 alpha:true,
@@ -70,15 +73,20 @@ class GameScene
         this._cameraEuler = new Euler(0, 0, 0, 'YXZ');
     }
 
+    public getRenderDomElement():HTMLElement
+    {
+        return this._targetElement;
+    }
+
     public addCameraRotation(x:number, y:number):void
     {
         HelperControls._motionRotation[0] += -x * Math.PI / 180;
         HelperControls._motionRotation[1] += -y * Math.PI / 180;
 
-        if(HelperControls._motionRotation[1] > 1.5)
-            HelperControls._motionRotation[1] = 1.5;
-        else if(HelperControls._motionRotation[1] < -1.5)
-            HelperControls._motionRotation[1] = -1.5;
+        if(HelperControls._motionRotation[0] > 1.5)
+            HelperControls._motionRotation[0] = 1.5;
+        else if(HelperControls._motionRotation[0] < -1.5)
+            HelperControls._motionRotation[0] = -1.5;
 
         this._cameraEuler.x = HelperControls._motionRotation[0];
         this._cameraEuler.y = HelperControls._motionRotation[1];
@@ -103,6 +111,8 @@ class GameScene
         this._renderer.setViewport(0, 0, window.innerWidth, window.innerHeight);
     }
 
+    
+
     public render = () => 
     {
         let frametime:number = this._clock.getDelta(); // In Sekunden (z.B. 0.0166667s für 60fps)
@@ -114,6 +124,7 @@ class GameScene
         // werden einzelne Simulationsschritte ausgeführt:
         while (this._dtAccumulator >= HelperGeneral.DTFrameSize)
         {
+            HelperControls.updatePlayerControls();
             for(let i:number = 0; i < this._gameObjects.length; i++)
             {
                 if(this._gameObjects[i] instanceof InteractiveObject)
@@ -295,6 +306,47 @@ class GameScene
             this._hitboxes.push(o.getHitboxes()[i]);
         }
     }
+
+    public isInfoObjectActive():boolean
+    {
+        return false; // todo
+    }
+
+    public showStartInfo():void
+    {
+        HelperControls._pointerLocked = false;
+        this._targetElement.style.cursor = 'default';
+        document.getElementById('pointerlock-inner')!.innerHTML = "<span>Klicke mit der linken Maustaste, <br /> um deine Tour zu beginnen!</span>";
+        document.getElementById("pointerlock")!.style.opacity = '1.0';
+        document.getElementById('pointerlock-inner')!.style.opacity = '1.0';
+    }
+
+    public makeSceneActive():void
+    {
+        this._targetElement.style.cursor = 'none';
+        HelperControls._pointerLocked = true;
+        document.getElementById("pointerlock")!.style.opacity = '0.0';
+    }
+
+    public getCameraLookAtVector():Vector3
+    {
+        this._camera.getWorldDirection(this._camLookAtVector);
+        return this._camLookAtVector;
+    }
+
+    public getCameraLookAtVectorXZ():Vector3
+    {
+        this._camera.getWorldDirection(this._camLookAtVectorXZ);
+        this._camLookAtVectorXZ.y = 0;
+        this._camLookAtVectorXZ.normalize();
+        return this._camLookAtVectorXZ;
+    }
+
+    public getCameraLookAtStrafeVectorXZ():Vector3
+    {
+        return HelperGeneral.getStrafeVector(this.getCameraLookAtVector(), this._camera.up).normalize();
+    }
+
 }
 
 export default GameScene;
