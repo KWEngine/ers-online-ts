@@ -243,8 +243,8 @@ else
 
 window.addEventListener('resize', onWindowResize, false );
 window.addEventListener('orientationchange', onWindowResize, false);
-window.addEventListener('focus', onFocusGained);
-window.addEventListener('focus', onFocusLost);
+document.addEventListener('focus', onFocusGained);
+document.addEventListener('focus', onFocusLost);
 
 // Finde anhand der URL heraus, welche Szene angezeigt werden soll
 // und lade die entsprechende Szene:
