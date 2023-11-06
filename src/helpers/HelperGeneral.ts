@@ -1,5 +1,5 @@
 import State from "../game/State";
-import { Vector3, Quaternion } from "three";
+import { Vector3, Quaternion, Matrix4 } from "three";
 
 class HelperGeneral
 {
@@ -9,6 +9,7 @@ class HelperGeneral
     private static readonly _unitZ:Vector3 = new Vector3(0,0,1);
     private static readonly _strafeVector:Vector3 = new Vector3(1, 0, 0);
     private static readonly _identityQuaternion = new Quaternion(0,0,0,1);
+    public static readonly _mat4Identity = new Matrix4();
 
     public static rad2deg(radians:number):number
     {
@@ -86,8 +87,11 @@ class HelperGeneral
 
     public static isMobileDevice():boolean
     {
-        return window.matchMedia("(any-pointer:coarse)").matches;
+        return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+        //return window.matchMedia("(any-pointer:coarse)").matches;
     }
+
+    public static readonly MAXNUM:number = 9999999.9;
 }
 
 export default HelperGeneral;

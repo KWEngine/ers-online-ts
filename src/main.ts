@@ -24,12 +24,17 @@ function onMouseMove(e:any)
 
 function onFocusGained(e:any)
 {
+    console.log("[ers] Fokus erhalten");
+    console.log(e);
     HelperControls._hasFocus = true;
     GameScene.instance.render;
 }
 
 function onFocusLost(e:any)
 {
+    
+    console.log("[ers] Fokus verloren");
+    console.log(e);
     HelperControls._hasFocus = false;
 }
 
@@ -60,8 +65,9 @@ function lockChange()
 
 function pointerLock(e:any)
 {
+    console.log("pointerlock(e:any)");
     GameScene.instance.getRenderDomElement().requestPointerLock = 
-        GameScene.instance.getRenderDomElement().requestPointerLock;
+        GameScene.instance.getRenderDomElement().requestPointerLock;// || GameScene.instance.getRenderDomElement().mozRequestPointerLock;
     GameScene.instance.getRenderDomElement().requestPointerLock();
 
     HelperControls._pointerLocked = true;
@@ -234,7 +240,7 @@ else
     document.body.addEventListener('keydown', onKeyDown);
     document.body.addEventListener('keyup', onKeyUp);
     document.getElementById('pointerlock')!.addEventListener('click', pointerLock);
-
+    
     if ("onpointerlockchange" in document)
     {
         document.addEventListener('pointerlockchange', lockChange, false);
@@ -243,8 +249,8 @@ else
 
 window.addEventListener('resize', onWindowResize, false );
 window.addEventListener('orientationchange', onWindowResize, false);
-document.addEventListener('focus', onFocusGained);
-document.addEventListener('focus', onFocusLost);
+document.addEventListener('focusin', onFocusGained); //?
+document.addEventListener('focusout', onFocusLost);  //?
 
 // Finde anhand der URL heraus, welche Szene angezeigt werden soll
 // und lade die entsprechende Szene:
@@ -254,6 +260,7 @@ GameScene.instance.load("school_outside_front")
     })
     .catch(err =>
     {
+        console.log(err);
         alert("Virtueller Rundgang ist auf diesem Gerät nicht möglich.");
     });
 

@@ -1,6 +1,8 @@
 import { Object3D, Mesh, Group, Vector3 } from "three";
 import GameObject from "../game/GameObject";
 import Hitbox from "../model/Hitbox";
+import HelperGeneral from "./HelperGeneral";
+import HitboxG from "../model/HitboxG";
 
 class HelperCollision
 {
@@ -46,7 +48,7 @@ class HelperCollision
     private static _centerSumSq:Vector3 = new Vector3(0,0,0);
     private static _centerVariance:Vector3 = new Vector3(0,0,0);
 
-    private static getLowExtendForAxis(hb:Hitbox, axisIndex:number):number
+    private static getLowExtendForAxis(hb:HitboxG, axisIndex:number):number
     {
         if(axisIndex == 0)
         {
@@ -62,7 +64,7 @@ class HelperCollision
         }
     }
 
-    private static getHighExtendForAxis(hb:Hitbox, axisIndex:number):number
+    private static getHighExtendForAxis(hb:HitboxG, axisIndex:number):number
     {
         if(axisIndex == 0)
         {
@@ -78,7 +80,7 @@ class HelperCollision
         }
     }
 
-    public static collisionBroadphaseTest(hbs:Hitbox[], axisIndex:number):number
+    public static collisionBroadphaseTest(hbs:HitboxG[], axisIndex:number):number
     {
         let returnAxis:number = 0;
 
@@ -101,7 +103,7 @@ class HelperCollision
 
         for(let i = 0; i < hbs.length; i++)
         {
-            let fromI:Hitbox = hbs[i];
+            let fromI:HitboxG = hbs[i];
             this._centerSum.x += fromI._center.x;
             this._centerSum.y += fromI._center.y;
             this._centerSum.z += fromI._center.z;
@@ -111,7 +113,7 @@ class HelperCollision
 
             for(let j = i + 1; j < hbs.length; j++)
             {
-                let fromJ:Hitbox = hbs[j];
+                let fromJ:HitboxG = hbs[j];
                 if(this.getLowExtendForAxis(fromJ, axisIndex) > this.getHighExtendForAxis(fromI, axisIndex))
                 {
                     break;
@@ -145,11 +147,17 @@ class HelperCollision
         }
         return returnAxis;
     }
+
+    public static copyHitbox(source:Hitbox, g:GameObject):HitboxG
+    {
+        let target:HitboxG = new HitboxG(source, g);
+        return target;
+    }
 }
 
 export default HelperCollision;
 
-function compareGameObjectsX(a:Hitbox, b:Hitbox)
+function compareGameObjectsX(a:HitboxG, b:HitboxG)
 {
     if (a._boundsMin.x < b._boundsMin.x) {
       return -1;
@@ -160,7 +168,7 @@ function compareGameObjectsX(a:Hitbox, b:Hitbox)
     return 0;
 }
 
-function compareGameObjectsY(a:Hitbox, b:Hitbox)
+function compareGameObjectsY(a:HitboxG, b:HitboxG)
 {
     if (a._boundsMin.y < b._boundsMin.y) {
       return -1;
@@ -171,7 +179,7 @@ function compareGameObjectsY(a:Hitbox, b:Hitbox)
     return 0;
 }
 
-function compareGameObjectsZ(a:Hitbox, b:Hitbox)
+function compareGameObjectsZ(a:HitboxG, b:HitboxG)
 {
     if (a._boundsMin.z < b._boundsMin.z) {
       return -1;

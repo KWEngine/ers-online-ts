@@ -4,6 +4,7 @@ import HelperGeneral from "../helpers/HelperGeneral";
 import State from "./State";
 import HelperCollision from "../helpers/HelperCollision";
 import GameScene from "../scene/GameScene";
+import HitboxG from "../model/HitboxG";
 
 abstract class GameObject
 {
@@ -12,7 +13,7 @@ abstract class GameObject
     private _id:number;
     private _object3d:Group;
     private _name:string;
-    private _hitboxes:Hitbox[];
+    private _hitboxes:HitboxG[];
     private _leftrightmost:number[];
     private _backfrontmost:number[];
     private _bottomtopmost:number[];
@@ -42,16 +43,19 @@ abstract class GameObject
 
     private copyHitboxesFromModel()
     {
+        console.log("copying " + this._name);
+        
         if(this._object3d.userData.hitboxes)
         {
-            for(let i:number = 0; i < this._object3d.userData.hitboxes; i++)
+            for(let i:number = 0; i < this._object3d.userData.hitboxes.length; i++)
             {
-                let hbClone:Hitbox = this._object3d.userData.hitboxes[i].clone();
-                hbClone.setNewId();
-                hbClone.setGameObject(this);
+                let hbOg:Hitbox = (this._object3d.userData.hitboxes[i] as Hitbox);
+                let hbClone:HitboxG = HelperCollision.copyHitbox(hbOg, this);
                 this._hitboxes.push(hbClone);
             }
         }
+        console.log(this._hitboxes);
+        
     }
 
     public getId():number
@@ -185,7 +189,7 @@ abstract class GameObject
         this._centerOfAllHitboxes.z = center.z;
     }
 
-    public getHitboxes():Hitbox[]
+    public getHitboxes():HitboxG[]
     {
         return this._hitboxes;
     }

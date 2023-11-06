@@ -14,6 +14,7 @@ import ERSHitboxStatic from "../game/ERSHitboxStatic";
 import RenderObject from "../game/RenderObject";
 import ERSRenderObject from "../game/ERSRenderObject";
 import HelperControls from "../helpers/HelperControls";
+import HitboxG from "../model/HitboxG";
 
 class GameScene
 {
@@ -33,9 +34,10 @@ class GameScene
     private readonly _scene = new Scene();
     private readonly _gameObjects:GameObject[] = [];
     private readonly _infoObjects:InfoObject[] = []; 
-    private readonly _hitboxes:Hitbox[] = [];
+    private readonly _hitboxes:HitboxG[] = [];
     private readonly _clock:Clock;
     private readonly _modelDatabase:Map<string, Group>;
+    private _broadphaseAxisIndex:number = 0;
     private _dtAccumulator:number;
     private _camLookAtVector:Vector3;
     private _camLookAtVectorXZ:Vector3;
@@ -116,7 +118,9 @@ class GameScene
     public render = () => 
     {
         if(!HelperControls._hasFocus)
+        {
             return;
+        }
 
         let frametime:number = this._clock.getDelta(); // In Sekunden (z.B. 0.0166667s für 60fps)
 
@@ -128,6 +132,7 @@ class GameScene
         while (this._dtAccumulator >= HelperGeneral.DTFrameSize)
         {
             HelperControls.updatePlayerControls();
+            this._broadphaseAxisIndex = HelperCollision.collisionBroadphaseTest(this._hitboxes, this._broadphaseAxisIndex);
             for(let i:number = 0; i < this._gameObjects.length; i++)
             {
                 if(this._gameObjects[i] instanceof InteractiveObject)
@@ -177,6 +182,7 @@ class GameScene
             let model = await ModelLoader.instance.loadAsync("/models/" + s.loads.models[i]);
             let hitboxes:Hitbox[] = [];
             HelperCollision.generateHitboxesFor(model.scene, hitboxes);
+
             model.scene.userData = { "hitboxes": hitboxes };
             this._modelDatabase.set(s.loads.models[i], model.scene);
         }
@@ -215,6 +221,8 @@ class GameScene
         let yOffset:number = inits.player.yOffset;
         let model:Group = this._modelDatabase.get("ers-player.glb")!;
         this._player = new ERSPlayer(model, "Player");
+        this._player.copyHitboxesFromModel();
+        this._player.updateHitboxes();
         this._player.setPosition(position[0], position[1], position[2]);
         this._player.addRotationY(rotation[1]);
         this._player.setScale(scale[0], scale[1], scale[2]);
@@ -291,7 +299,7 @@ class GameScene
         {
             for(let i:number = 0; i < this._hitboxes.length; i++)
             {
-                const predicate = (element:Hitbox) => element.getId() == o.getHitboxes()[hbIndex].getId();
+                const predicate = (element:HitboxG) => element.getId() == o.getHitboxes()[hbIndex].getId();
                 let index:number = this._hitboxes.findIndex(predicate);
                 if(index >= 0)
                 {
@@ -304,10 +312,12 @@ class GameScene
 
     private addHitboxesForObject(o: GameObject):void
     {
+        console.log("adding hitboxes for: " + o.getName());
         for(let i:number = 0; i < o.getHitboxes().length; i++)
         {
             this._hitboxes.push(o.getHitboxes()[i]);
         }
+        console.log(this._hitboxes);
     }
 
     public isInfoObjectActive():boolean
@@ -328,6 +338,7 @@ class GameScene
     {
         this._targetElement.style.cursor = 'none';
         HelperControls._pointerLocked = true;
+        
         document.getElementById("pointerlock")!.style.opacity = '0.0';
     }
 
