@@ -6,6 +6,9 @@ class HelperControls
     public static _motionRotation:number[] = [0, 0];
     public static _motionMove:number[] = [0, 0];
     public static _pointerLocked:boolean = false;
+    public static _hasFocus:boolean = true;
+    public static _camMoveStrafeId = -1;
+    public static _camPitchYawId = -1;
  
     public static updatePlayerControls():void
     {

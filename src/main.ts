@@ -22,6 +22,16 @@ function onMouseMove(e:any)
     }
 }
 
+function onFocusGained(e:any)
+{
+    HelperControls._hasFocus = true;
+    GameScene.instance.render;
+}
+
+function onFocusLost(e:any)
+{
+    HelperControls._hasFocus = false;
+}
 
 
 function onKeyDown(e:any)
@@ -58,6 +68,162 @@ function pointerLock(e:any)
     e.preventDefault();
 }
 
+function onTouchDivLeftStart(e:any)
+{
+    /*if(!checkForInfoOverlay())
+    {
+        e.preventDefault();
+        return;
+    }*/
+        
+
+    for(let i = 0; i < e.changedTouches.length; i++)
+    {
+        if(e.target.id == "navigation-mobile-left" && HelperControls._camMoveStrafeId < 0)
+        {
+            var rect = e.target.getBoundingClientRect();
+            var x = (e.changedTouches[i].clientX - rect.left) / rect.width - 0.5; 
+            var y = (e.changedTouches[i].clientY - rect.top) / rect.height - 0.5;
+
+            HelperControls._motionMove[0] = y > 0.5 ? -0.5 : y < -0.5 ? 0.5 : -y;
+            HelperControls._motionMove[1] = x;
+
+            HelperControls._camMoveStrafeId = e.changedTouches[i].identifier;
+            break;
+        }
+    }
+    e.preventDefault();
+}
+
+function onTouchDivRightStart(e:any)
+{
+    /*
+    if(!checkForInfoOverlay())
+    {
+        e.preventDefault();
+        return;
+    }
+    */
+
+    for(let i = 0; i < e.changedTouches.length; i++)
+    {
+        if(e.target.id == "navigation-mobile-right" && HelperControls._camPitchYawId < 0)
+        {
+            let rect = e.target.getBoundingClientRect();
+            let x = (e.changedTouches[i].clientX - rect.left) / rect.width - 0.5; 
+            let y = (e.changedTouches[i].clientY - rect.top) / rect.height - 0.5;
+
+            HelperControls._motionRotation[0] = x;
+            HelperControls._motionRotation[1] = y > 0.5 ? 0.5 : y < -0.5 ? -0.5 : y;
+            HelperControls._camPitchYawId = e.changedTouches[i].identifier;
+            break;
+        }
+
+    }
+    e.preventDefault();
+}
+
+function onTouchDivLeftReset(e:any)
+{
+    /*
+    if(!checkForInfoOverlay())
+    {
+        e.preventDefault();
+        return;
+    }
+    */
+
+    for(let i = 0; i < e.changedTouches.length; i++)
+    {
+        if(e.target.id == "navigation-mobile-left")
+        {
+            HelperControls._camMoveStrafeId = -1;
+            HelperControls._motionMove[0]  = 0;
+            HelperControls._motionMove[1]  = 0;
+            break;
+        }
+    }
+    e.preventDefault();
+}
+
+function onTouchDivRightReset(e:any)
+{
+    /*
+    if(!checkForInfoOverlay())
+    {
+        e.preventDefault();
+        return;
+    }
+    */
+
+    for(let i = 0; i < e.changedTouches.length; i++)
+    {
+        if(e.target.id == "navigation-mobile-right")
+        {
+            HelperControls._camPitchYawId = -1;
+            HelperControls._motionRotation[0]  = 0;
+            HelperControls._motionRotation[1] = 0;
+            break;
+        }
+    }
+    e.preventDefault();
+}
+
+function onTouchDivLeft(e:any)
+{
+    /*
+    if(!checkForInfoOverlay())
+    {
+        e.preventDefault();
+        return;
+    }
+    */
+
+    for(var i = 0; i < e.changedTouches.length; i++)
+    {
+        if(e.target.id == "navigation-mobile-left" && e.changedTouches[i].identifier == HelperControls._camMoveStrafeId)
+        {
+            var rect = e.target.getBoundingClientRect();
+            var x = (e.changedTouches[i].clientX - rect.left) / rect.width - 0.5; 
+            var y = (e.changedTouches[i].clientY - rect.top) / rect.height - 0.5;
+
+            HelperControls._motionMove[0] = y > 0.5 ? -0.5 : y < -0.5 ? 0.5 : -y;
+            HelperControls._motionMove[1] = x;
+            break;
+        }
+    }
+    e.preventDefault();
+}
+
+function onTouchDivRight(e:any)
+{
+    /*
+    if(!checkForInfoOverlay())
+    {
+        e.preventDefault();
+        return;
+    }
+    */
+
+    for(var i = 0; i < e.changedTouches.length; i++)
+    {
+        if(e.target.id == "navigation-mobile-right" && e.changedTouches[i].identifier == HelperControls._camPitchYawId)
+        {
+            var rect = e.target.getBoundingClientRect();
+            var x = (e.changedTouches[i].clientX - rect.left) / rect.width - 0.5; 
+            var y = (e.changedTouches[i].clientY - rect.top) / rect.height - 0.5;
+
+            HelperControls._motionRotation[0]  = x;
+            HelperControls._motionRotation[1]  = y > 0.5 ? 0.5 : y < -0.5 ? -0.5 : y;
+            break;
+        }
+
+    }
+    e.preventDefault();
+}
+
+// ============= BEGINNE PROGRAMM ============== //
+
 if(HelperGeneral.isMobileDevice())
 {
     console.log("todo...");
@@ -77,6 +243,8 @@ else
 
 window.addEventListener('resize', onWindowResize, false );
 window.addEventListener('orientationchange', onWindowResize, false);
+window.addEventListener('focus', onFocusGained);
+window.addEventListener('focus', onFocusLost);
 
 // Finde anhand der URL heraus, welche Szene angezeigt werden soll
 // und lade die entsprechende Szene:

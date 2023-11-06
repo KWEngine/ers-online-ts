@@ -115,6 +115,9 @@ class GameScene
 
     public render = () => 
     {
+        if(!HelperControls._hasFocus)
+            return;
+
         let frametime:number = this._clock.getDelta(); // In Sekunden (z.B. 0.0166667s für 60fps)
 
         // Addiere die neue Frame-Zeit auf den Akkumulator:
