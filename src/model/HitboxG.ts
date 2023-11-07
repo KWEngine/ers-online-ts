@@ -17,6 +17,7 @@ class HitboxG
     private _vertices:Vector3[];
     private _normals:Vector3[];
     private _matrix:Matrix4;
+    private _matrixInverse:Matrix4;
     private _meshMatrix:Matrix4;
     private _meshVertices:Vector3[] = [];
     private _meshNormals:Vector3[] =  [];
@@ -31,6 +32,8 @@ class HitboxG
         this._gameObject = g;
         this._collisionCandidates = [];
         this._matrix = new Matrix4();
+        this._matrixInverse = this._matrix.clone();
+        this._matrixInverse.invert();
         this._normals = [];
         this._vertices = [];
         this._boundsMax = new Vector3(-HelperGeneral.MAXNUM, -HelperGeneral.MAXNUM, -HelperGeneral.MAXNUM);
@@ -44,10 +47,12 @@ class HitboxG
         for(let i:number = 0; i < og.getMeshVertices().length; i++)
         {
             this._meshVertices.push(og.getMeshVertices()[i].clone());
+            this._vertices.push(new Vector3(0,0,0));
         }
         for(let i:number = 0; i < og.getMeshNormals().length; i++)
         {
             this._meshNormals.push(og.getMeshNormals()[i].clone());
+            this._normals.push(new Vector3(0,0,0));
         }
         this._meshMatrix = og.getMeshMatrix().clone();
     }
@@ -93,6 +98,8 @@ class HitboxG
 
         this.createModelMatrix(translation, rotation, scale);
         this._matrix.premultiply(this._meshMatrix);
+        this._matrixInverse.copy(this._matrix);
+        this._matrixInverse.invert();
 
         this._center.x = 0;
         this._center.y = 0;
@@ -102,31 +109,31 @@ class HitboxG
             if(i < this._meshNormals.length)
             {
                 let tmpNormal:Vector3 = this._meshNormals[i].clone();
-                tmpNormal.applyMatrix4(this._matrix);
-                this._normals[i] = tmpNormal;
+                HelperGeneral.transformNormalInverse(this._meshNormals[i], this._matrixInverse, this._normals[i]);
             }
 
-            var tmpVertex = this._meshVertices[i].clone();
-            tmpVertex.applyMatrix4(this._matrix);
-            this._center.x += tmpVertex.x;
-            this._center.y += tmpVertex.y;
-            this._center.z += tmpVertex.z;
-            this._vertices[i] = tmpVertex;
+            //var tmpVertex = this._meshVertices[i].clone();
+            //tmpVertex.applyMatrix4(this._matrix);
+            HelperGeneral.transformPosition(this._meshVertices[i], this._matrix, this._vertices[i]);
 
-            if(tmpVertex.x < left)
-                left = tmpVertex.x;
-            if(tmpVertex.x > right)
-                right = tmpVertex.x;
+            this._center.x += this._vertices[i].x;
+            this._center.y += this._vertices[i].y;
+            this._center.z += this._vertices[i].z;
 
-            if(tmpVertex.y < bottom)
-                bottom = tmpVertex.y;
-            if(tmpVertex.y > top)
-                top = tmpVertex.y;
+            if(this._vertices[i].x < left)
+                left = this._vertices[i].x;
+            if(this._vertices[i].x > right)
+                right = this._vertices[i].x;
 
-            if(tmpVertex.z < back)
-                back = tmpVertex.z;
-            if(tmpVertex.z > front)
-                front = tmpVertex.z;
+            if(this._vertices[i].y < bottom)
+                bottom = this._vertices[i].y;
+            if(this._vertices[i].y > top)
+                top = this._vertices[i].y;
+
+            if(this._vertices[i].z < back)
+                back = this._vertices[i].z;
+            if(this._vertices[i].z > front)
+                front = this._vertices[i].z;
         }       
 
         this._boundsMax.x = right;
@@ -157,7 +164,7 @@ class HitboxG
         return lowerBound <= val && val <= upperBound;
     }
 
-    private static doCollisionTest(a:HitboxG, b:HitboxG):Collision|null
+    public static doCollisionTest(a:HitboxG, b:HitboxG):Collision|null
     {
         let mtv = [new Vector3(0,0,0), new Vector3(0,0,0)];
         let mtvDirectionArray = [1.0];
@@ -361,6 +368,11 @@ class HitboxG
             s += this._collisionCandidates[i].getName() + ", ";
         }
         console.log(s);
+    }
+
+    public getCollisionCandidates():HitboxG[]
+    {
+        return this._collisionCandidates;
     }
 }
 export default HitboxG;

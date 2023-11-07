@@ -91,6 +91,23 @@ class HelperGeneral
         //return window.matchMedia("(any-pointer:coarse)").matches;
     }
 
+    public static transformNormalInverse(norm:Vector3, invMat:Matrix4, result:Vector3):void
+    {
+        result.set(
+            norm.x * invMat.elements[0] + norm.y * invMat.elements[4] + norm.z * invMat.elements[8], 
+            norm.x * invMat.elements[1] + norm.y * invMat.elements[5] + norm.z * invMat.elements[9],
+            norm.x * invMat.elements[2] + norm.y * invMat.elements[6] + norm.z * invMat.elements[10]
+        );
+    }
+
+    public static transformPosition(pos:Vector3, mat:Matrix4, result:Vector3):void
+    {
+        result.x = pos.x * mat.elements[0] + pos.y * mat.elements[1] + pos.z * mat.elements[2] + mat.elements[3];
+        result.y = pos.x * mat.elements[4] + pos.y * mat.elements[5] + pos.z * mat.elements[6] + mat.elements[7];
+        result.z = pos.x * mat.elements[8] + pos.y * mat.elements[9] + pos.z * mat.elements[10] + mat.elements[11];
+
+    }
+
     public static readonly MAXNUM:number = 9999999.9;
 }
 

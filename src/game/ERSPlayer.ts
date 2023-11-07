@@ -2,7 +2,6 @@ import { Vector3 } from "three";
 import HelperControls from "../helpers/HelperControls";
 import GameScene from "../scene/GameScene";
 import InteractiveObject from "./InteractiveObject";
-import HelperGeneral from "../helpers/HelperGeneral";
 import Collision from "./Collision";
 
 class ERSPlayer extends InteractiveObject
@@ -19,10 +18,14 @@ class ERSPlayer extends InteractiveObject
         this.moveOffsetByVectorAndSpeed(this._direction, this._speed);
         
         let collisionList:Collision[] = this.getIntersections();
+        console.log("---------------------");
         for(let i:number = 0; i < collisionList.length; i++)
         {
-            this.moveOffsetByVector(collisionList[i].getMTV());
+            let c:Collision = collisionList[i];
+            console.log(c);
+            //this.moveOffsetByVector(collisionList[i].getMTV());
         }
+        throw new Error("force quit");
     }
 
     private updateDirectionVector():void

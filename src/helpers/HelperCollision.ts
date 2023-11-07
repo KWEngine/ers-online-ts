@@ -10,7 +10,19 @@ class HelperCollision
 
     public static getIntersectionsFor(g:GameObject):Collision[]
     {
-        return [];
+        let collisionlist:Collision[] = [];
+        for(let i:number = 0; i < g.getHitboxes().length; i++)
+        {
+            for(let j:number = 0; j < g.getHitboxes()[i].getCollisionCandidates().length; j++)
+            {
+                let c:Collision|null = HitboxG.doCollisionTest(g.getHitboxes()[i], g.getHitboxes()[i].getCollisionCandidates()[j]);
+                if(c != null)
+                {
+                    collisionlist.push(c);
+                }
+            }
+        }
+        return collisionlist;
     }
 
     public static generateHitboxesFor(o:Object3D, hbs:Hitbox[]):void
