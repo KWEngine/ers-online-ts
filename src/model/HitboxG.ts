@@ -7,19 +7,16 @@ import Face from "./Face";
 
 class HitboxG
 {
-    private _name:string;
     private static _idCounter:number = 0;
+    private _name:string;
     private _id:number;
-
     private _gameObject:GameObject;
-
-    public _boundsMin:Vector3;
-    public _boundsMax:Vector3;
-    public _center:Vector3 = new Vector3(0, 0, 0);
+    private _boundsMin:Vector3;
+    private _boundsMax:Vector3;
+    private _center:Vector3 = new Vector3(0, 0, 0);
     private _vertices:Vector3[];
     private _normals:Vector3[];
     private _matrix:Matrix4;
-    
     private _meshMatrix:Matrix4;
     private _meshVertices:Vector3[] = [];
     private _meshNormals:Vector3[] =  [];
@@ -29,10 +26,8 @@ class HitboxG
 
     constructor(og:Hitbox, g:GameObject)
     {
-        console.log(og);
         this._name = og.getName();
         this._id = HitboxG._idCounter++;
-        
         this._gameObject = g;
         this._collisionCandidates = [];
         this._matrix = new Matrix4();
@@ -41,26 +36,35 @@ class HitboxG
         this._boundsMax = new Vector3(-HelperGeneral.MAXNUM, -HelperGeneral.MAXNUM, -HelperGeneral.MAXNUM);
         this._boundsMin = new Vector3(+HelperGeneral.MAXNUM, +HelperGeneral.MAXNUM, +HelperGeneral.MAXNUM);
         
-        console.log("X");
-
         for(let i:number = 0; i < og.getMeshFaces().length; i++)
         {
-            console.log("face: ");
             let f:Face = new Face(og.getMeshFaces()[i]._triangle.a, og.getMeshFaces()[i]._triangle.b, og.getMeshFaces()[i]._triangle.c);
-            console.log(f);
             this._meshFaces.push(f);
         }
-        console.log("XX");
         for(let i:number = 0; i < og.getMeshVertices().length; i++)
         {
             this._meshVertices.push(og.getMeshVertices()[i].clone());
         }
-        console.log("XXX");
         for(let i:number = 0; i < og.getMeshNormals().length; i++)
         {
             this._meshNormals.push(og.getMeshNormals()[i].clone());
         }
         this._meshMatrix = og.getMeshMatrix().clone();
+    }
+
+    public getBoundsMin():Vector3
+    {
+        return this._boundsMin;
+    }
+
+    public getBoundsMax():Vector3
+    {
+        return this._boundsMax;
+    }
+
+    public getCenter():Vector3
+    {
+        return this._center;
     }
 
     public getName():string
@@ -347,6 +351,16 @@ class HitboxG
     public addCollisionCandidate(h:HitboxG):void
     {
         this._collisionCandidates.push(h);
+    }
+
+    public printCollisionCandidatesNames():void
+    {
+        let s:string = "";
+        for(let i:number = 0; i < this._collisionCandidates.length; i++)
+        {
+            s += this._collisionCandidates[i].getName() + ", ";
+        }
+        console.log(s);
     }
 }
 export default HitboxG;

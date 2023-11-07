@@ -21,9 +21,11 @@ abstract class GameObject
     private _stateCurrent:State;
     private _statePrevious:State;
     private _stateRender:State;
+    private _modelFileName:string;
 
-    constructor(object3d:Group, name:string)
+    constructor(object3d:Group, name:string, modelFileName:string)
     {
+        this._modelFileName = modelFileName;
         this._id = GameObject._idCounter++;
         this._object3d = object3d.clone(true);
         this._name = name;
@@ -43,19 +45,12 @@ abstract class GameObject
 
     private copyHitboxesFromModel()
     {
-        console.log("copying " + this._name);
-        
-        if(this._object3d.userData.hitboxes)
+        let hbs:Hitbox[] = GameScene.instance.getHitboxesForModel(this._modelFileName);
+        for(let i:number = 0; i < hbs.length; i++)
         {
-            for(let i:number = 0; i < this._object3d.userData.hitboxes.length; i++)
-            {
-                let hbOg:Hitbox = (this._object3d.userData.hitboxes[i] as Hitbox);
-                let hbClone:HitboxG = HelperCollision.copyHitbox(hbOg, this);
-                this._hitboxes.push(hbClone);
-            }
-        }
-        console.log(this._hitboxes);
-        
+            let hbClone:HitboxG = HelperCollision.copyHitbox(hbs[i], this);
+            this._hitboxes.push(hbClone);
+        }        
     }
 
     public getId():number
@@ -152,27 +147,27 @@ abstract class GameObject
         for(let i = 0; i < this._hitboxes.length; i++)
         {
             this._hitboxes[i].update(this._stateCurrent._scale, this._stateCurrent._rotation, this._stateCurrent._position);
-            if(this._hitboxes[i]._boundsMin.x < left)
-                left = this._hitboxes[i]._boundsMin.x;
+            if(this._hitboxes[i].getBoundsMin().x < left)
+                left = this._hitboxes[i].getBoundsMin().x;
 
-            if(this._hitboxes[i]._boundsMax.x > right)
-                right = this._hitboxes[i]._boundsMax.x;
+            if(this._hitboxes[i].getBoundsMax().x > right)
+                right = this._hitboxes[i].getBoundsMax().x;
 
-            if(this._hitboxes[i]._boundsMin.y < bottom)
-                bottom = this._hitboxes[i]._boundsMin.y;
+            if(this._hitboxes[i].getBoundsMin().y < bottom)
+                bottom = this._hitboxes[i].getBoundsMin().y;
 
-            if(this._hitboxes[i]._boundsMax.y > top)
-                top = this._hitboxes[i]._boundsMax.y;
+            if(this._hitboxes[i].getBoundsMax().y > top)
+                top = this._hitboxes[i].getBoundsMax().y;
 
-            if(this._hitboxes[i]._boundsMin.z < back)
-                back = this._hitboxes[i]._boundsMin.z;
+            if(this._hitboxes[i].getBoundsMin().z < back)
+                back = this._hitboxes[i].getBoundsMin().z;
 
-            if(this._hitboxes[i]._boundsMax.z > front)
-                front = this._hitboxes[i]._boundsMax.z;
+            if(this._hitboxes[i].getBoundsMax().z > front)
+                front = this._hitboxes[i].getBoundsMax().z;
 
-            center.x += this._hitboxes[i]._center.x; 
-            center.y += this._hitboxes[i]._center.y; 
-            center.z += this._hitboxes[i]._center.z; 
+            center.x += this._hitboxes[i].getCenter().x; 
+            center.y += this._hitboxes[i].getCenter().y; 
+            center.z += this._hitboxes[i].getCenter().z; 
         }
         this._leftrightmost[0] = left;
         this._leftrightmost[1] = right;

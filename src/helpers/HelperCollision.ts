@@ -1,11 +1,12 @@
-import { Object3D, Mesh, Group, Vector3 } from "three";
+import { Object3D, Mesh, Vector3 } from "three";
 import GameObject from "../game/GameObject";
 import Hitbox from "../model/Hitbox";
-import HelperGeneral from "./HelperGeneral";
 import HitboxG from "../model/HitboxG";
 
 class HelperCollision
 {
+    private static readonly BROADPHASETOLERANCE:number = 1.0;
+
     public static getIntersectionsFor(g:GameObject)
     {
         return [];
@@ -52,15 +53,15 @@ class HelperCollision
     {
         if(axisIndex == 0)
         {
-            return hb._boundsMin.x;
+            return hb.getBoundsMin().x;
         }
         else if(axisIndex == 1)
         {
-            return hb._boundsMin.y;
+            return hb.getBoundsMin().y;
         }
         else
         {
-            return hb._boundsMin.z;
+            return hb.getBoundsMin().z;
         }
     }
 
@@ -68,15 +69,15 @@ class HelperCollision
     {
         if(axisIndex == 0)
         {
-            return hb._boundsMax.x;
+            return hb.getBoundsMax().x;
         }
         else if(axisIndex == 1)
         {
-            return hb._boundsMax.y;
+            return hb.getBoundsMax().y;
         }
         else
         {
-            return hb._boundsMax.z;
+            return hb.getBoundsMax().z;
         }
     }
 
@@ -104,17 +105,17 @@ class HelperCollision
         for(let i = 0; i < hbs.length; i++)
         {
             let fromI:HitboxG = hbs[i];
-            this._centerSum.x += fromI._center.x;
-            this._centerSum.y += fromI._center.y;
-            this._centerSum.z += fromI._center.z;
-            this._centerSumSq.x += fromI._center.x * fromI._center.x;
-            this._centerSumSq.y += fromI._center.y * fromI._center.y;
-            this._centerSumSq.z += fromI._center.z * fromI._center.z;
+            this._centerSum.x += fromI.getCenter().x;
+            this._centerSum.y += fromI.getCenter().y;
+            this._centerSum.z += fromI.getCenter().z;
+            this._centerSumSq.x += fromI.getCenter().x * fromI.getCenter().x;
+            this._centerSumSq.y += fromI.getCenter().y * fromI.getCenter().y;
+            this._centerSumSq.z += fromI.getCenter().z * fromI.getCenter().z;
 
             for(let j = i + 1; j < hbs.length; j++)
             {
                 let fromJ:HitboxG = hbs[j];
-                if(this.getLowExtendForAxis(fromJ, axisIndex) > this.getHighExtendForAxis(fromI, axisIndex))
+                if(this.getLowExtendForAxis(fromJ, axisIndex) - this.BROADPHASETOLERANCE > this.getHighExtendForAxis(fromI, axisIndex) + this.BROADPHASETOLERANCE)
                 {
                     break;
                 }
@@ -159,10 +160,10 @@ export default HelperCollision;
 
 function compareGameObjectsX(a:HitboxG, b:HitboxG)
 {
-    if (a._boundsMin.x < b._boundsMin.x) {
+    if (a.getBoundsMin().x < b.getBoundsMin().x) {
       return -1;
     }
-    if (a._boundsMin.x > b._boundsMin.x) {
+    if (a.getBoundsMin().x > b.getBoundsMin().x) {
       return 1;
     }
     return 0;
@@ -170,10 +171,10 @@ function compareGameObjectsX(a:HitboxG, b:HitboxG)
 
 function compareGameObjectsY(a:HitboxG, b:HitboxG)
 {
-    if (a._boundsMin.y < b._boundsMin.y) {
+    if (a.getBoundsMin().y < b.getBoundsMin().y) {
       return -1;
     }
-    if (a._boundsMin.y > b._boundsMin.y) {
+    if (a.getBoundsMin().y > b.getBoundsMin().y) {
       return 1;
     }
     return 0;
@@ -181,10 +182,10 @@ function compareGameObjectsY(a:HitboxG, b:HitboxG)
 
 function compareGameObjectsZ(a:HitboxG, b:HitboxG)
 {
-    if (a._boundsMin.z < b._boundsMin.z) {
+    if (a.getBoundsMin().z < b.getBoundsMin().z) {
       return -1;
     }
-    if (a._boundsMin.z > b._boundsMin.z) {
+    if (a.getBoundsMin().z > b.getBoundsMin().z) {
       return 1;
     }
     return 0;

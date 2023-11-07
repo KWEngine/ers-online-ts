@@ -37,6 +37,7 @@ class GameScene
     private readonly _hitboxes:HitboxG[] = [];
     private readonly _clock:Clock;
     private readonly _modelDatabase:Map<string, Group>;
+    private readonly _hitboxDatabase:Map<string, Hitbox[]>;
     private _broadphaseAxisIndex:number = 0;
     private _dtAccumulator:number;
     private _camLookAtVector:Vector3;
@@ -48,6 +49,7 @@ class GameScene
         this._width = window.innerWidth;
         this._height = window.innerHeight;
         this._modelDatabase = new Map();
+        this._hitboxDatabase = new Map();
         this._camLookAtVector = new Vector3(0, 0, -1);
         this._camLookAtVectorXZ = new Vector3(0, 0, -1);
         this._renderer = new WebGLRenderer(
@@ -126,7 +128,7 @@ class GameScene
 
         // Addiere die neue Frame-Zeit auf den Akkumulator:
         this._dtAccumulator += frametime;
-
+        //console.log("-----------");
         // Solange der Akkumulator größer ist als ein Simulationsschritt, 
         // werden einzelne Simulationsschritte ausgeführt:
         while (this._dtAccumulator >= HelperGeneral.DTFrameSize)
@@ -137,8 +139,17 @@ class GameScene
             {
                 if(this._gameObjects[i] instanceof InteractiveObject)
                 {
+                    /*
+                    for(let j:number = 0; j < this._gameObjects[i].getHitboxes().length; j++)
+                    {
+                        console.log(this._gameObjects[i].getHitboxes()[j].getName());
+                        this._gameObjects[i].getHitboxes()[j].printCollisionCandidatesNames();
+                    }
+                    */
                     this._gameObjects[i].stateBackup();
                     (this._gameObjects[i] as InteractiveObject).act();
+                    this._gameObjects[i].clearCollisionCandidates();
+
                 }
             }
             this._dtAccumulator -= HelperGeneral.DTFrameSize;
@@ -172,8 +183,8 @@ class GameScene
         let playerModel = await ModelLoader.instance.loadAsync("/models/ers-player.glb");
         let playerHitbox:Hitbox[] = [];
         HelperCollision.generateHitboxesFor(playerModel.scene, playerHitbox);
-        playerModel.scene.userData = { "hitboxes": playerHitbox };
         this._modelDatabase.set("ers-player.glb", playerModel.scene);
+        this._hitboxDatabase.set("ers-player.glb", playerHitbox);
 
         // Lade die 3D-Modelle die für die aktuelle Szene in der 
         // entsprechenden JSON-Datei stehen:
@@ -182,15 +193,14 @@ class GameScene
             let model = await ModelLoader.instance.loadAsync("/models/" + s.loads.models[i]);
             let hitboxes:Hitbox[] = [];
             HelperCollision.generateHitboxesFor(model.scene, hitboxes);
-
-            model.scene.userData = { "hitboxes": hitboxes };
             this._modelDatabase.set(s.loads.models[i], model.scene);
+            this._hitboxDatabase.set(s.loads.models[i], hitboxes);
         }
 
         // Initialisiere Instanzen und Lichtgebung:
         this.init(s.inits);
     }
-
+   
     private init(inits:ERSSceneInits):void
     {
         const ambientlight = new AmbientLight(parseInt(inits.ambientLight));
@@ -201,14 +211,14 @@ class GameScene
         for(let i:number = 0; i < inits.renderObjects.length; i++)
         {
             let model:Group = this._modelDatabase.get(inits.renderObjects[i].model)!;
-            let ro:ERSRenderObject = new ERSRenderObject(model, inits.renderObjects[i].name);
+            let ro:ERSRenderObject = new ERSRenderObject(model, inits.renderObjects[i].name, inits.renderObjects[i].model);
             this.addObject(ro);
         }
 
         for(let i:number = 0; i < inits.hitboxes.length; i++)
         {
             let model:Group = this._modelDatabase.get(inits.hitboxes[i].model)!;
-            let o:ERSHitboxStatic = new ERSHitboxStatic(model, inits.hitboxes[i].name);
+            let o:ERSHitboxStatic = new ERSHitboxStatic(model, inits.hitboxes[i].name, inits.hitboxes[i].model);
             this.addObject(o);
         }
     }
@@ -220,14 +230,21 @@ class GameScene
         let rotation:number[] = inits.player.rotation;
         let yOffset:number = inits.player.yOffset;
         let model:Group = this._modelDatabase.get("ers-player.glb")!;
-        this._player = new ERSPlayer(model, "Player");
-        this._player.copyHitboxesFromModel();
-        this._player.updateHitboxes();
+        this._player = new ERSPlayer(model, "Player", "ers-player.glb");
         this._player.setPosition(position[0], position[1], position[2]);
         this._player.addRotationY(rotation[1]);
         this._player.setScale(scale[0], scale[1], scale[2]);
         this._player.setYOffset(yOffset);
         this.addObject(this._player);
+    }
+
+    public getHitboxesForModel(m:string):Hitbox[]
+    {
+        if(this._hitboxDatabase.has(m))
+        {
+            return this._hitboxDatabase.get(m)!;
+        }
+        return [];
     }
 
     public addObject(o : GameObject):void
@@ -252,9 +269,7 @@ class GameScene
         {
             this._gameObjects.push(o);
             this.addHitboxesForObject(o);
-            //this._scene.add(o.get3DObject());
-        }
-        
+        } 
     }
 
     public removeObject(o: GameObject):void
@@ -312,12 +327,10 @@ class GameScene
 
     private addHitboxesForObject(o: GameObject):void
     {
-        console.log("adding hitboxes for: " + o.getName());
         for(let i:number = 0; i < o.getHitboxes().length; i++)
         {
             this._hitboxes.push(o.getHitboxes()[i]);
         }
-        console.log(this._hitboxes);
     }
 
     public isInfoObjectActive():boolean

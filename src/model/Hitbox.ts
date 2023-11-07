@@ -52,7 +52,7 @@ class Hitbox
 
     public getName():string
     {
-        return "" + this._name;
+        return this._name;
     }
 
     private init(geometry:BufferGeometry):void
@@ -101,7 +101,5 @@ class Hitbox
             }
         }
     }
-
-    
 }
 export default Hitbox;

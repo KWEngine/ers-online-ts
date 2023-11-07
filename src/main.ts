@@ -24,17 +24,12 @@ function onMouseMove(e:any)
 
 function onFocusGained(e:any)
 {
-    console.log("[ers] Fokus erhalten");
-    console.log(e);
     HelperControls._hasFocus = true;
     GameScene.instance.render;
 }
 
 function onFocusLost(e:any)
 {
-    
-    console.log("[ers] Fokus verloren");
-    console.log(e);
     HelperControls._hasFocus = false;
 }
 
@@ -65,7 +60,6 @@ function lockChange()
 
 function pointerLock(e:any)
 {
-    console.log("pointerlock(e:any)");
     GameScene.instance.getRenderDomElement().requestPointerLock = 
         GameScene.instance.getRenderDomElement().requestPointerLock;// || GameScene.instance.getRenderDomElement().mozRequestPointerLock;
     GameScene.instance.getRenderDomElement().requestPointerLock();
