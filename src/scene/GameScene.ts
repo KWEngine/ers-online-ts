@@ -119,16 +119,10 @@ class GameScene
 
     public render = () => 
     {
-        if(!HelperControls._hasFocus)
-        {
-            return;
-        }
-
         let frametime:number = this._clock.getDelta(); // In Sekunden (z.B. 0.0166667s für 60fps)
 
         // Addiere die neue Frame-Zeit auf den Akkumulator:
         this._dtAccumulator += frametime;
-        //console.log("-----------");
         // Solange der Akkumulator größer ist als ein Simulationsschritt, 
         // werden einzelne Simulationsschritte ausgeführt:
         while (this._dtAccumulator >= HelperGeneral.DTFrameSize)
@@ -142,7 +136,7 @@ class GameScene
                     /*
                     for(let j:number = 0; j < this._gameObjects[i].getHitboxes().length; j++)
                     {
-                        console.log(this._gameObjects[i].getHitboxes()[j].getName());
+                        //console.log(this._gameObjects[i].getHitboxes()[j].getName());
                         this._gameObjects[i].getHitboxes()[j].printCollisionCandidatesNames();
                     }
                     */

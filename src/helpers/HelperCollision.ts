@@ -2,12 +2,13 @@ import { Object3D, Mesh, Vector3 } from "three";
 import GameObject from "../game/GameObject";
 import Hitbox from "../model/Hitbox";
 import HitboxG from "../model/HitboxG";
+import Collision from "../game/Collision";
 
 class HelperCollision
 {
     private static readonly BROADPHASETOLERANCE:number = 1.0;
 
-    public static getIntersectionsFor(g:GameObject)
+    public static getIntersectionsFor(g:GameObject):Collision[]
     {
         return [];
     }

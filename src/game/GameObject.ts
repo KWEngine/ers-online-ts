@@ -5,6 +5,7 @@ import State from "./State";
 import HelperCollision from "../helpers/HelperCollision";
 import GameScene from "../scene/GameScene";
 import HitboxG from "../model/HitboxG";
+import Collision from "./Collision";
 
 abstract class GameObject
 {
@@ -99,7 +100,12 @@ abstract class GameObject
         this.updateHitboxes();
     }
 
-    public moveOffsetByVector(vec:Vector3, speedFactor:number):void
+    public moveOffsetByVector(v:Vector3):void
+    {
+        this.moveOffset(v.x, v.y, v.z);
+    }
+
+    public moveOffsetByVectorAndSpeed(vec:Vector3, speedFactor:number):void
     {
         this._stateCurrent._position.x += vec.x * speedFactor;
         this._stateCurrent._position.y += vec.y * speedFactor;
@@ -107,10 +113,10 @@ abstract class GameObject
         this.updateHitboxes();
     }
 
-    public strafeOffsetByVector(vec:Vector3, speedFactor:number):void
+    public strafeOffsetByVectorAndSpeed(vec:Vector3, speedFactor:number):void
     {
         let v:Vector3 = HelperGeneral.getStrafeVector(vec, GameScene.instance.getCamera().up);
-        this.moveOffsetByVector(v, speedFactor);
+        this.moveOffsetByVectorAndSpeed(v, speedFactor);
     }
 
     
@@ -190,12 +196,12 @@ abstract class GameObject
     }
 
     // Collision testing:
-    public getIntersections()
+    public getIntersections():Collision[]
     {
         return HelperCollision.getIntersectionsFor(this);
     }
 
-    public clearCollisionCandidates()
+    public clearCollisionCandidates():void
     {
         for(let i:number = 0; i < this._hitboxes.length; i++)
         {

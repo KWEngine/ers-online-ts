@@ -3,6 +3,7 @@ import HelperControls from "../helpers/HelperControls";
 import GameScene from "../scene/GameScene";
 import InteractiveObject from "./InteractiveObject";
 import HelperGeneral from "../helpers/HelperGeneral";
+import Collision from "./Collision";
 
 class ERSPlayer extends InteractiveObject
 {
@@ -15,8 +16,13 @@ class ERSPlayer extends InteractiveObject
     public act(): void 
     {
         this.updateDirectionVector();
-        this.moveOffsetByVector(this._direction, this._speed);
+        this.moveOffsetByVectorAndSpeed(this._direction, this._speed);
         
+        let collisionList:Collision[] = this.getIntersections();
+        for(let i:number = 0; i < collisionList.length; i++)
+        {
+            this.moveOffsetByVector(collisionList[i].getMTV());
+        }
     }
 
     private updateDirectionVector():void

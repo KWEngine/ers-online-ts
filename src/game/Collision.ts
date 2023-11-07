@@ -16,5 +16,10 @@ class Collision
         this._mtv = mtv[0].clone();
         this._mtvUp = mtv[1].clone();
     }
+
+    public getMTV():Vector3
+    {
+        return this._mtv;
+    }
 }
 export default Collision;
