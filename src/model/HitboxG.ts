@@ -4,6 +4,7 @@ import Collision from "../game/Collision";
 import Hitbox from "./Hitbox";
 import HelperGeneral from "../helpers/HelperGeneral";
 import Face from "./Face";
+import ERSPlayer from "../game/ERSPlayer";
 
 class HitboxG
 {
@@ -96,29 +97,18 @@ class HitboxG
         let back:number = 99999999.0;
         let front:number = -99999999.0;
 
-        this.createModelMatrix(translation, rotation, scale);
+        this.updateModelMatrixWith(translation, rotation, scale);
         this._matrix.premultiply(this._meshMatrix);
         this._matrixInverse.copy(this._matrix);
         this._matrixInverse.invert();
 
-        this._center.x = 0;
-        this._center.y = 0;
-        this._center.z = 0;
         for(let i:number = 0; i < this._meshVertices.length; i++)
         {
             if(i < this._meshNormals.length)
             {
-                let tmpNormal:Vector3 = this._meshNormals[i].clone();
                 HelperGeneral.transformNormalInverse(this._meshNormals[i], this._matrixInverse, this._normals[i]);
             }
-
-            //var tmpVertex = this._meshVertices[i].clone();
-            //tmpVertex.applyMatrix4(this._matrix);
             HelperGeneral.transformPosition(this._meshVertices[i], this._matrix, this._vertices[i]);
-
-            this._center.x += this._vertices[i].x;
-            this._center.y += this._vertices[i].y;
-            this._center.z += this._vertices[i].z;
 
             if(this._vertices[i].x < left)
                 left = this._vertices[i].x;
@@ -143,15 +133,15 @@ class HitboxG
         this._boundsMin.y = bottom;
         this._boundsMin.z = back;
         
-        this._center.x /= this._meshVertices.length;
-        this._center.y /= this._meshVertices.length;
-        this._center.z /= this._meshVertices.length;
+        this._center.x = (this._boundsMax.x + this._boundsMin.x) / 2.0;
+        this._center.y = (this._boundsMax.y + this._boundsMin.y) / 2.0;
+        this._center.z = (this._boundsMax.z + this._boundsMin.z) / 2.0;
     }
 
 
-    private createModelMatrix(translation:Vector3, rotation:Quaternion, scale:Vector3)
+    private updateModelMatrixWith(translation:Vector3, rotation:Quaternion, scale:Vector3):void
     {
-        return this._matrix.compose(translation, rotation, scale);
+        this._matrix.compose(translation, rotation, scale);
     }
 
     private static overlaps(min1:number, max1:number, min2:number, max2:number):boolean
@@ -164,14 +154,16 @@ class HitboxG
         return lowerBound <= val && val <= upperBound;
     }
 
+    public getNormals():Vector3[]
+    {
+        return this._normals;
+    }
+
     public static doCollisionTest(a:HitboxG, b:HitboxG):Collision|null
     {
-        let mtv = [new Vector3(0,0,0), new Vector3(0,0,0)];
-        let mtvDirectionArray = [1.0];
-        let mtvDistanceArray = [Number.POSITIVE_INFINITY];
-        let mtvUpDirectionArray = [1.0];
-        let mtvUpDistanceArray = [Number.POSITIVE_INFINITY];
-
+        let mtv:Vector3[] = [new Vector3(0,0,0), new Vector3(0,0,0)];
+        let mtvDistanceArray:number[] = [HelperGeneral.MAXNUM, HelperGeneral.MAXNUM];
+        
         for(let i = 0; i < a._normals.length; i++)
         {
             let shape1MinMax = HitboxG.satTest(a._normals[i], a._vertices);
@@ -190,11 +182,8 @@ class HitboxG
                     shape2MinMax[1],
                     mtvDistanceArray,
                     mtv,
-                    mtvDirectionArray,
                     a._center,
-                    b._center,
-                    mtvUpDistanceArray,
-                    mtvUpDirectionArray
+                    b._center
                 );
             }
         }
@@ -216,11 +205,8 @@ class HitboxG
                     shape2MinMax[1],
                     mtvDistanceArray,
                     mtv,
-                    mtvDirectionArray,
                     a._center,
-                    b._center,
-                    mtvUpDistanceArray,
-                    mtvUpDirectionArray
+                    b._center
                 );
             }
         }
@@ -242,8 +228,7 @@ class HitboxG
 
         for(var i = 0; i < points.length; i++)
         {
-            let tmp = points[i].clone();
-            let dotVal = tmp.dot(axisToTest);
+            let dotVal = points[i].dot(axisToTest);
             if(dotVal < minAlong)
             {
                 minAlong = dotVal;
@@ -261,13 +246,10 @@ class HitboxG
         axis:Vector3, 
         shape1Min:number, shape1Max:number, 
         shape2Min:number, shape2Max:number, 
-        mtvDistance:number[], // array
+        mtvDistance:number[], // array with 2 elements (shortest and up)
         mtv:Vector3[], // array with 2 elements (shortest and up)
-        mtvDirection:number[], //array
         posA:Vector3,
-        posB:Vector3,
-        mtvUpDistance:number[], // array
-        mtvUpDirection:number[] // array
+        posB:Vector3
         )
     {
         let intersectionDepthScaled = 1;
@@ -312,41 +294,26 @@ class HitboxG
             }
         }
         
-        let axisLengthSquared = axis.dot(axis);
-        let intersectionDepthSquared = (intersectionDepthScaled * intersectionDepthScaled) / axisLengthSquared;
+        //let axisLengthSquared:number = axis.dot(axis);
+        let intersectionDepthSquared:number = (intersectionDepthScaled * intersectionDepthScaled);// / axisLengthSquared;
         
         if(intersectionDepthSquared < mtvDistance[0])
         {
             mtvDistance[0] = intersectionDepthSquared;
-
-            let tmpMtv = axis.clone();
-            tmpMtv.multiplyScalar(intersectionDepthScaled / axisLengthSquared);
-            let notSameDirection = new Vector3(0,0,0).subVectors(posA, posB).dot(tmpMtv);
-            mtvDirection[0] = notSameDirection < 0 ? -1.0 : 1.0;
-            /*if(this.meshData == null)
-            {
-                tmpMtv.multiplyScalar(mtvDirection[0]);
-            }*/
-            mtv[0] = tmpMtv.clone();
+            let tmpMtv = axis.clone(); tmpMtv.multiplyScalar(intersectionDepthScaled); // / axisLengthSquared);
+            let notSameDirection = (posA.x - posB.x) * tmpMtv.x + (posA.y - posB.y) * tmpMtv.y + (posA.z - posB.z) * tmpMtv.z;
+            tmpMtv.multiplyScalar(notSameDirection < 0.0 ? -1.0 : 1.0);
+            mtv[0] = tmpMtv;
         }
-        // find up-vector (for stairs)
-        if(Math.abs(axis.y) > Math.abs(axis.x) && Math.abs(axis.y) > Math.abs(axis.z) && (intersectionDepthSquared < mtvUpDistance[0]))
-        {
-            let tmpMtv = axis.clone();
-            tmpMtv.multiplyScalar(intersectionDepthScaled / axisLengthSquared);
 
-            let tmpMtvUpDistance = intersectionDepthSquared;
-            let notSameDirection = new Vector3(0,0,0).subVectors(posA, posB).dot(tmpMtv);
-            let tmpMtvUpDirection = notSameDirection < 0 ? -1.0 : 1.0;
-            /*
-            if(this.meshData == null)
-            {
-                tmpMtv.multiplyScalar(tmpMtvUpDirection);
-            }
-            */
-            mtvUpDistance[0] = tmpMtvUpDistance;
-            mtvUpDirection[0] = tmpMtvUpDirection;
-            mtv[1] = tmpMtv.clone();
+        // find up-vector (for stairs)
+        if(Math.abs(axis.y) > Math.abs(axis.x) && Math.abs(axis.y) > Math.abs(axis.z) && (intersectionDepthSquared < mtvDistance[1]))
+        {
+            let tmpMtvUp = axis.clone(); tmpMtvUp.multiplyScalar(intersectionDepthScaled); // / axisLengthSquared);
+            mtvDistance[1] = intersectionDepthSquared;
+            let notSameDirection = (posA.x - posB.x) * tmpMtvUp.x + (posA.y - posB.y) * tmpMtvUp.y + (posA.z - posB.z) * tmpMtvUp.z;
+            tmpMtvUp.multiplyScalar(notSameDirection < 0.0 ? -1.0 : 1.0);
+            mtv[1] = tmpMtvUp;
         }
     }
 

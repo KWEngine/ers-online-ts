@@ -21,5 +21,20 @@ class Collision
     {
         return this._mtv;
     }
+
+    public getCollider():HitboxG
+    {
+        return this._collider;
+    }
+
+    public getGameObject():GameObject
+    {
+        return this._gameObject;
+    }
+
+    public getMTVUp():Vector3
+    {
+        return this._mtvUp;
+    }
 }
 export default Collision;

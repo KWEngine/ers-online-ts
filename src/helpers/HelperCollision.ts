@@ -48,9 +48,11 @@ class HelperCollision
     {
         for(let i:number = 0; i < haystack.length; i++)
         {
-            if(needle.x == haystack[i].x && 
-                needle.y == haystack[i].y && 
-                needle.z == haystack[i].z)
+            if(
+                Math.round(needle.x * 100.0) / 100.0 == Math.round(haystack[i].x * 100.0) / 100.0 && 
+                Math.round(needle.y * 100.0) / 100.0 == Math.round(haystack[i].y * 100.0) / 100.0 && 
+                Math.round(needle.z * 100.0) / 100.0 == Math.round(haystack[i].z * 100.0) / 100.0
+                )
                 {
                     return true;
                 }

@@ -9,6 +9,7 @@ class Face
     {
         this._triangle = new Triangle(v1.clone(), v2.clone(), v3.clone());
         this._triangle.getNormal(this._normal);
+        this._normal.normalize();
     }
 }
 export default Face;

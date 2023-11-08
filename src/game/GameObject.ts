@@ -15,10 +15,7 @@ abstract class GameObject
     private _object3d:Group;
     private _name:string;
     private _hitboxes:HitboxG[];
-    private _leftrightmost:number[];
-    private _backfrontmost:number[];
-    private _bottomtopmost:number[];
-    private _centerOfAllHitboxes:Vector3;
+    
     private _stateCurrent:State;
     private _statePrevious:State;
     private _stateRender:State;
@@ -31,10 +28,6 @@ abstract class GameObject
         this._object3d = object3d.clone(true);
         this._name = name;
         this._hitboxes = [];
-        this._leftrightmost = [0,0];
-        this._bottomtopmost = [0,0];
-        this._backfrontmost = [0,0];
-        this._centerOfAllHitboxes = new Vector3(0,0,0);
         this._object3d.receiveShadow = false;
         this._object3d.castShadow = false;
         this._stateCurrent = new State();
@@ -143,13 +136,13 @@ abstract class GameObject
 
     private updateHitboxes():void
     {
-        let left = 99999999.0;
-        let right = -99999999.0;
-        let bottom = 99999999.0;
-        let top = -99999999.0;
-        let back = 99999999.0;
-        let front = -99999999.0;
-        let center = new Vector3(0,0,0);
+        let left:number = 99999999.0;
+        let right:number = -99999999.0;
+        let bottom:number = 99999999.0;
+        let top:number = -99999999.0;
+        let back:number = 99999999.0;
+        let front:number = -99999999.0;
+
         for(let i = 0; i < this._hitboxes.length; i++)
         {
             this._hitboxes[i].update(this._stateCurrent._scale, this._stateCurrent._rotation, this._stateCurrent._position);
@@ -170,24 +163,14 @@ abstract class GameObject
 
             if(this._hitboxes[i].getBoundsMax().z > front)
                 front = this._hitboxes[i].getBoundsMax().z;
-
-            center.x += this._hitboxes[i].getCenter().x; 
-            center.y += this._hitboxes[i].getCenter().y; 
-            center.z += this._hitboxes[i].getCenter().z; 
         }
-        this._leftrightmost[0] = left;
-        this._leftrightmost[1] = right;
-        this._bottomtopmost[0] = bottom;
-        this._bottomtopmost[1] = top;
-        this._backfrontmost[0] = back;
-        this._backfrontmost[1] = front;
-        center.x /= this._hitboxes.length;
-        center.y /= this._hitboxes.length;
-        center.z /= this._hitboxes.length;
+        this._stateCurrent._boundsMin.set(left, bottom, back);
+        this._stateCurrent._boundsMax.set(right, top, front);
 
-        this._centerOfAllHitboxes.x = center.x;
-        this._centerOfAllHitboxes.y = center.y;
-        this._centerOfAllHitboxes.z = center.z;
+        this._stateCurrent._center.set(
+            (this._stateCurrent._boundsMax.x + this._stateCurrent._boundsMin.x) / 2.0, 
+            (this._stateCurrent._boundsMax.y + this._stateCurrent._boundsMin.y) / 2.0, 
+            (this._stateCurrent._boundsMax.z + this._stateCurrent._boundsMin.z) / 2.0); 
     }
 
     public getHitboxes():HitboxG[]
