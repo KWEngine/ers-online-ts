@@ -7,6 +7,7 @@
     "inits":
     {
         "ambientLight": "0xaaaaaa",
+        "background_image": "/img/panorama_street01.jpg",
         "player":
         {
             "position": [0, 0, 0],

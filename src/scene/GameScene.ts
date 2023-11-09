@@ -1,4 +1,4 @@
-import { AmbientLight, PerspectiveCamera, Scene, WebGLRenderer, Vector3, Clock, Object3D, Group, Object3DEventMap, Euler } from "three";
+import { AmbientLight, PerspectiveCamera, Scene, WebGLRenderer, Vector3, Clock, Object3D, Group, Object3DEventMap, Euler, SphereGeometry, TextureLoader, SRGBColorSpace, MeshBasicMaterial, Mesh } from "three";
 import ModelLoader from "../model/ModelLoader";
 import InfoObject from "../game/InfoObject";
 import HelperScene from "../helpers/HelperScene";
@@ -18,11 +18,20 @@ import HitboxG from "../model/HitboxG";
 
 class GameScene
 {
+    private static readonly MAXCAMDISTANCE = 1000;
     private static _instance = new GameScene();
     public static get instance() 
     {
         return this._instance;
     }
+
+    private readonly _scene = new Scene();
+    private readonly _gameObjects:GameObject[] = [];
+    private readonly _infoObjects:InfoObject[] = []; 
+    private readonly _hitboxes:HitboxG[] = [];
+    private readonly _clock:Clock;
+    private readonly _modelDatabase:Map<string, Group>;
+    private readonly _hitboxDatabase:Map<string, Hitbox[]>;
 
     private _targetElement:HTMLElement;
     private _width:number;
@@ -31,13 +40,8 @@ class GameScene
     private _camera:PerspectiveCamera;
     private _cameraEuler:Euler;
     private _player:ERSPlayer|null;
-    private readonly _scene = new Scene();
-    private readonly _gameObjects:GameObject[] = [];
-    private readonly _infoObjects:InfoObject[] = []; 
-    private readonly _hitboxes:HitboxG[] = [];
-    private readonly _clock:Clock;
-    private readonly _modelDatabase:Map<string, Group>;
-    private readonly _hitboxDatabase:Map<string, Hitbox[]>;
+    private _background:Mesh;
+    private _textureLoader:TextureLoader;
     private _broadphaseAxisIndex:number = 0;
     private _dtAccumulator:number;
     private _camLookAtVector:Vector3;
@@ -68,13 +72,16 @@ class GameScene
         }
         this._targetElement.appendChild(this._renderer.domElement);
         const aspectRatio = this._width / this._height;
-        this._camera = new PerspectiveCamera(45, aspectRatio, 0.1, 1000);
+        this._camera = new PerspectiveCamera(45, aspectRatio, 0.1, GameScene.MAXCAMDISTANCE);
         this._camera.position.set(0, 5, 25);
         this._camera.lookAt(new Vector3(0,0,0));
 
         this._clock = new Clock();
         this._player = null;
         this._cameraEuler = new Euler(0, 0, 0, 'YXZ');
+
+        this._textureLoader = new TextureLoader();
+        this._background = new Mesh();
     }
 
     public getRenderDomElement():HTMLElement
@@ -143,7 +150,6 @@ class GameScene
                     this._gameObjects[i].stateBackup();
                     (this._gameObjects[i] as InteractiveObject).act();
                     this._gameObjects[i].clearCollisionCandidates();
-
                 }
             }
             this._dtAccumulator -= HelperGeneral.DTFrameSize;
@@ -164,6 +170,9 @@ class GameScene
             this._player!.get3DObject().position.y + this._player!.getYOffset(),
             this._player!.get3DObject().position.z
             );
+
+        // Aktualisiere Hintergrund-Meshposition:
+        this._background.position.set(this._player!.get3DObject().position.x, 0, this._player!.get3DObject().position.z);
 
         requestAnimationFrame(this.render);
         this._renderer.render(this._scene, this._camera);
@@ -197,8 +206,12 @@ class GameScene
    
     private init(inits:ERSSceneInits):void
     {
+        let pointerlockMessage:HTMLElement|null = document.getElementById("pointerlock-inner"); 
+        pointerlockMessage!.innerHTML = "Drücke diese Schaltfläche<br />um fortzufahren.";
+
         const ambientlight = new AmbientLight(parseInt(inits.ambientLight));
         this._scene.add(ambientlight);
+        this.setBackgroundImage(inits.background_image);
 
         this.generatePlayer(inits);
 
@@ -215,6 +228,17 @@ class GameScene
             let o:ERSHitboxStatic = new ERSHitboxStatic(model, inits.hitboxes[i].name, inits.hitboxes[i].model);
             this.addObject(o);
         }
+    }
+
+    private setBackgroundImage(img:string):void
+    {
+        const geometry = new SphereGeometry(GameScene.MAXCAMDISTANCE - 1, 40, 30);
+        geometry.scale(-1, 1, 1);
+        const texture = this._textureLoader.load(img);
+        texture.colorSpace = SRGBColorSpace;
+        const material = new MeshBasicMaterial({ map: texture });
+        this._background = new Mesh(geometry, material);
+        this._scene.add(this._background);
     }
 
     private generatePlayer(inits:ERSSceneInits):void
