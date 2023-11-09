@@ -183,9 +183,9 @@ function onTouchDivLeft(e:any)
     {
         if(e.target.id == "navigation-mobile-left" && e.changedTouches[i].identifier == HelperControls._camMoveStrafeId)
         {
-            var rect = e.target.getBoundingClientRect();
-            var x = (e.changedTouches[i].clientX - rect.left) / rect.width - 0.5; 
-            var y = (e.changedTouches[i].clientY - rect.top) / rect.height - 0.5;
+            let rect:any = e.target.getBoundingClientRect();
+            let x:number = (e.changedTouches[i].clientX - rect.left) / rect.width - 0.5; 
+            let y:number = (e.changedTouches[i].clientY - rect.top) / rect.height - 0.5;
 
             HelperControls._motionMove[0] = y > 0.5 ? -0.5 : y < -0.5 ? 0.5 : -y;
             HelperControls._motionMove[1] = x;
@@ -209,9 +209,9 @@ function onTouchDivRight(e:any)
     {
         if(e.target.id == "navigation-mobile-right" && e.changedTouches[i].identifier == HelperControls._camPitchYawId)
         {
-            var rect = e.target.getBoundingClientRect();
-            var x = (e.changedTouches[i].clientX - rect.left) / rect.width - 0.5; 
-            var y = (e.changedTouches[i].clientY - rect.top) / rect.height - 0.5;
+            let rect:any = e.target.getBoundingClientRect();
+            let x:number = (e.changedTouches[i].clientX - rect.left) / rect.width - 0.5; 
+            let y:number = (e.changedTouches[i].clientY - rect.top) / rect.height - 0.5;
 
             HelperControls._motionRotation[0]  = x;
             HelperControls._motionRotation[1]  = y > 0.5 ? 0.5 : y < -0.5 ? -0.5 : y;
@@ -248,6 +248,7 @@ document.addEventListener('focusout', onFocusLost);  //?
 
 // Finde anhand der URL heraus, welche Szene angezeigt werden soll
 // und lade die entsprechende Szene:
+console.log(window.location);
 GameScene.instance.load("school_outside_front")
     .then(result => {
         GameScene.instance.render();
