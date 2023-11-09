@@ -166,8 +166,8 @@ class HitboxG
         
         for(let i = 0; i < a._normals.length; i++)
         {
-            let shape1MinMax = HitboxG.satTest(a._normals[i], a._vertices);
-            let shape2MinMax = HitboxG.satTest(a._normals[i], b._vertices);
+            let shape1MinMax:number[] = HitboxG.satTest(a._normals[i], a._vertices);
+            let shape2MinMax:number[] = HitboxG.satTest(a._normals[i], b._vertices);
             if(!HitboxG.overlaps(shape1MinMax[0], shape1MinMax[1], shape2MinMax[0], shape2MinMax[1]))
             {
                 return null;
@@ -189,8 +189,8 @@ class HitboxG
         }
         for(let i = 0; i < b._normals.length; i++)
         {
-            let shape1MinMax = HitboxG.satTest(b._normals[i], a._vertices);
-            let shape2MinMax = HitboxG.satTest(b._normals[i], b._vertices);
+            let shape1MinMax:number[] = HitboxG.satTest(b._normals[i], a._vertices);
+            let shape2MinMax:number[] = HitboxG.satTest(b._normals[i], b._vertices);
             if(!HitboxG.overlaps(shape1MinMax[0], shape1MinMax[1], shape2MinMax[0], shape2MinMax[1]))
             {
                 return null;
@@ -223,12 +223,12 @@ class HitboxG
 
     private static satTest(axisToTest:Vector3, points:Vector3[]):number[]
     {
-        let minAlong = Number.POSITIVE_INFINITY;
-        let maxAlong = Number.NEGATIVE_INFINITY;
+        let minAlong:number = Number.POSITIVE_INFINITY;
+        let maxAlong:number = Number.NEGATIVE_INFINITY;
 
-        for(var i = 0; i < points.length; i++)
+        for(let i:number = 0; i < points.length; i++)
         {
-            let dotVal = points[i].dot(axisToTest);
+            let dotVal:number = points[i].dot(axisToTest);
             if(dotVal < minAlong)
             {
                 minAlong = dotVal;
@@ -252,13 +252,13 @@ class HitboxG
         posB:Vector3
         )
     {
-        let intersectionDepthScaled = 1;
+        let intersectionDepthScaled:number = 1;
         if (shape1Min < shape2Min)
         {
             if (shape1Max > shape2Max)
             {
-                let diff1 = shape1Max - shape2Max;
-                let diff2 = shape2Min - shape1Min;
+                let diff1:number = shape1Max - shape2Max;
+                let diff2:number = shape2Min - shape1Min;
                 if(diff1 > diff2)
                 {
                     intersectionDepthScaled = shape2Max - shape1Min;
@@ -277,8 +277,8 @@ class HitboxG
         {
             if(shape1Max < shape2Max)
             {
-                let diff1 = shape2Max - shape1Max;
-                let diff2 = shape1Min - shape2Min;
+                let diff1:number = shape2Max - shape1Max;
+                let diff2:number = shape1Min - shape2Min;
                 if (diff1 > diff2)
                 {
                     intersectionDepthScaled = shape1Max - shape2Min;
@@ -294,14 +294,12 @@ class HitboxG
             }
         }
         
-        //let axisLengthSquared:number = axis.dot(axis);
-        let intersectionDepthSquared:number = (intersectionDepthScaled * intersectionDepthScaled);// / axisLengthSquared;
-        
+        let intersectionDepthSquared:number = (intersectionDepthScaled * intersectionDepthScaled);
         if(intersectionDepthSquared < mtvDistance[0])
         {
             mtvDistance[0] = intersectionDepthSquared;
-            let tmpMtv = axis.clone(); tmpMtv.multiplyScalar(intersectionDepthScaled); // / axisLengthSquared);
-            let notSameDirection = (posA.x - posB.x) * tmpMtv.x + (posA.y - posB.y) * tmpMtv.y + (posA.z - posB.z) * tmpMtv.z;
+            let tmpMtv:Vector3 = axis.clone(); tmpMtv.multiplyScalar(intersectionDepthScaled);
+            let notSameDirection:number = (posA.x - posB.x) * tmpMtv.x + (posA.y - posB.y) * tmpMtv.y + (posA.z - posB.z) * tmpMtv.z;
             tmpMtv.multiplyScalar(notSameDirection < 0.0 ? -1.0 : 1.0);
             mtv[0] = tmpMtv;
         }
@@ -309,9 +307,9 @@ class HitboxG
         // find up-vector (for stairs)
         if(Math.abs(axis.y) > Math.abs(axis.x) && Math.abs(axis.y) > Math.abs(axis.z) && (intersectionDepthSquared < mtvDistance[1]))
         {
-            let tmpMtvUp = axis.clone(); tmpMtvUp.multiplyScalar(intersectionDepthScaled); // / axisLengthSquared);
+            let tmpMtvUp:Vector3 = axis.clone(); tmpMtvUp.multiplyScalar(intersectionDepthScaled);
             mtvDistance[1] = intersectionDepthSquared;
-            let notSameDirection = (posA.x - posB.x) * tmpMtvUp.x + (posA.y - posB.y) * tmpMtvUp.y + (posA.z - posB.z) * tmpMtvUp.z;
+            let notSameDirection:number = (posA.x - posB.x) * tmpMtvUp.x + (posA.y - posB.y) * tmpMtvUp.y + (posA.z - posB.z) * tmpMtvUp.z;
             tmpMtvUp.multiplyScalar(notSameDirection < 0.0 ? -1.0 : 1.0);
             mtv[1] = tmpMtvUp;
         }

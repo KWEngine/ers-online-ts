@@ -10,6 +10,7 @@ class HelperGeneral
     private static readonly _strafeVector:Vector3 = new Vector3(1, 0, 0);
     private static readonly _identityQuaternion = new Quaternion(0,0,0,1);
     public static readonly _mat4Identity = new Matrix4();
+    public static readonly MAXNUM:number = 9999999.9;
 
     public static rad2deg(radians:number):number
     {
@@ -106,8 +107,6 @@ class HelperGeneral
         result.z = pos.x * mat.elements[2] + pos.y * mat.elements[6] + pos.z * mat.elements[10] + mat.elements[14];
 
     }
-
-    public static readonly MAXNUM:number = 9999999.9;
 }
 
 export default HelperGeneral;

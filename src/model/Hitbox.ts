@@ -92,7 +92,7 @@ class Hitbox
         }
 
         // Finde einzigartige Normals:
-        for ( let i = 0; i < this._meshFaces.length; i++ ) 
+        for (let i:number = 0; i < this._meshFaces.length; i++) 
         {
             let n:Vector3 = this._meshFaces[i]._normal.clone();
             if(HelperCollision.checkIfInAttributeArray(this._meshNormals, n) == false)
