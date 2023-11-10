@@ -76,13 +76,13 @@ function onTouchDivLeftStart(e:any)
     }*/
         
 
-    for(let i = 0; i < e.changedTouches.length; i++)
+    for(let i:number = 0; i < e.changedTouches.length; i++)
     {
         if(e.target.id == "navigation-mobile-left" && HelperControls._camMoveStrafeId < 0)
         {
-            var rect = e.target.getBoundingClientRect();
-            var x = (e.changedTouches[i].clientX - rect.left) / rect.width - 0.5; 
-            var y = (e.changedTouches[i].clientY - rect.top) / rect.height - 0.5;
+            let rect = e.target.getBoundingClientRect();
+            let x:number = (e.changedTouches[i].clientX - rect.left) / rect.width - 0.5; 
+            let y:number = (e.changedTouches[i].clientY - rect.top) / rect.height - 0.5;
 
             HelperControls._motionMove[0] = y > 0.5 ? -0.5 : y < -0.5 ? 0.5 : -y;
             HelperControls._motionMove[1] = x;
@@ -104,7 +104,7 @@ function onTouchDivRightStart(e:any)
     }
     */
 
-    for(let i = 0; i < e.changedTouches.length; i++)
+    for(let i:number = 0; i < e.changedTouches.length; i++)
     {
         if(e.target.id == "navigation-mobile-right" && HelperControls._camPitchYawId < 0)
         {
@@ -132,7 +132,7 @@ function onTouchDivLeftReset(e:any)
     }
     */
 
-    for(let i = 0; i < e.changedTouches.length; i++)
+    for(let i:number = 0; i < e.changedTouches.length; i++)
     {
         if(e.target.id == "navigation-mobile-left")
         {
@@ -155,7 +155,7 @@ function onTouchDivRightReset(e:any)
     }
     */
 
-    for(let i = 0; i < e.changedTouches.length; i++)
+    for(let i:number = 0; i < e.changedTouches.length; i++)
     {
         if(e.target.id == "navigation-mobile-right")
         {
@@ -178,7 +178,7 @@ function onTouchDivLeft(e:any)
     }
     */
 
-    for(var i = 0; i < e.changedTouches.length; i++)
+    for(let i:number = 0; i < e.changedTouches.length; i++)
     {
         if(e.target.id == "navigation-mobile-left" && e.changedTouches[i].identifier == HelperControls._camMoveStrafeId)
         {
@@ -204,7 +204,7 @@ function onTouchDivRight(e:any)
     }
     */
 
-    for(var i = 0; i < e.changedTouches.length; i++)
+    for(let i:number = 0; i < e.changedTouches.length; i++)
     {
         if(e.target.id == "navigation-mobile-right" && e.changedTouches[i].identifier == HelperControls._camPitchYawId)
         {
@@ -240,7 +240,28 @@ function getSceneFromLocation(loc:Location):string
 
 if(HelperGeneral.isMobileDevice())
 {
-    console.log("todo...");
+    document.getElementById("navigation-mobile")!.style.opacity = "1";
+
+    let divleft:HTMLElement = document.getElementById("navigation-mobile-left")!;
+    let divright:HTMLElement = document.getElementById("navigation-mobile-right")!;
+    divleft.addEventListener('touchstart', onTouchDivLeftStart);
+    divright.addEventListener('touchstart', onTouchDivRightStart);
+
+    divleft.addEventListener('touchmove', onTouchDivLeft);
+    divright.addEventListener('touchmove', onTouchDivRight);
+
+    divleft.addEventListener('touchend', onTouchDivLeftReset);
+    divright.addEventListener('touchend', onTouchDivRightReset);
+
+    divleft.addEventListener('touchcancel', onTouchDivLeftReset);
+    divright.addEventListener('touchcancel', onTouchDivRightReset);
+
+    document.getElementById("nav-container")!.classList.add('mobiletext');
+    document.getElementById("overlay-info")!.classList.add('mobileheight2');
+    document.getElementById("overlay-info-content")!.classList.add('mobile');
+    document.getElementById("overlay-info-close")!.classList.add('mobileheight');
+
+
     document.getElementById('navigation-mobile')!.style.display = "flex";
 }
 else
