@@ -204,8 +204,8 @@ function onTouchDivRightReset(e:any)
         if(e.target.id == "navigation-mobile-right")
         {
             HelperControls._camPitchYawId = -1;
-            //HelperControls._motionRotation[0] = 0;
-            //HelperControls._motionRotation[1] = 0;
+            HelperControls._motionRotation[0] = 0;
+            HelperControls._motionRotation[1] = 0;
             break;
         }
     }
