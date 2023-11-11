@@ -17,6 +17,7 @@ GameScene.instance.load(scene)
             document.getElementById("pointerlock")!.setAttribute("style", "backdrop-filter: blur(0.5rem) contrast(125%) brightness(0.8);");
             document.getElementById("pointerlock")!.style.opacity = "1";
         }
+        document.getElementById("loadingscreen")!.style.display = "none";
         GameScene.instance.render();
     })
     .catch(err =>

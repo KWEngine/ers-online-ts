@@ -245,7 +245,6 @@ if(HelperGeneral.isMobileDevice())
     let divleft:HTMLElement|null = document.getElementById("navigation-mobile-left");
     let divright:HTMLElement|null = document.getElementById("navigation-mobile-right");
 
-    alert(divright);
     divleft!.addEventListener('touchstart', onTouchDivLeftStart);
     divright!.addEventListener('touchstart', onTouchDivRightStart);
 
