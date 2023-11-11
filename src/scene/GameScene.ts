@@ -94,10 +94,12 @@ class GameScene
         HelperControls._motionRotation[0] += -x * Math.PI / 180;
         HelperControls._motionRotation[1] += -y * Math.PI / 180;
 
+        /*
         if(HelperControls._motionRotation[0] > 1.5)
             HelperControls._motionRotation[0] = 1.5;
         else if(HelperControls._motionRotation[0] < -1.5)
             HelperControls._motionRotation[0] = -1.5;
+        */
     }
     
     public getCamera():PerspectiveCamera
@@ -118,22 +120,19 @@ class GameScene
         this._renderer.setViewport(0, 0, window.innerWidth, window.innerHeight);
     }
 
-    
-
     public render = () => 
     {
-        /*
         if(HelperGeneral.isMobileDevice())
         {
-            this.addCameraRotation(
-                HelperControls._motionRotation[0],
-                HelperControls._motionRotation[1]
-            );
+            this._cameraEuler.x = HelperGeneral.clamp(this._cameraEuler.x + HelperControls._motionRotation[0], -1.5, 1.5);
+            this._cameraEuler.y += HelperControls._motionRotation[1];
         }
-        */
-
-        this._cameraEuler.x = HelperControls._motionRotation[0];
-        this._cameraEuler.y = HelperControls._motionRotation[1];
+        else
+        {
+            this._cameraEuler.x = HelperGeneral.clamp(HelperControls._motionRotation[0], -1.5, 1.5);
+            this._cameraEuler.y = HelperControls._motionRotation[1];
+        }
+        
         this._camera.quaternion.setFromEuler(this._cameraEuler);
 
         let frametime:number = this._clock.getDelta(); // In Sekunden (z.B. 0.0166667s für 60fps)
