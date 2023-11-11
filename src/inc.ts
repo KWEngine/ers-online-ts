@@ -260,8 +260,9 @@ if(HelperGeneral.isMobileDevice())
     document.getElementById("overlay-info-content")!.classList.add('mobile');
     document.getElementById("overlay-info-close")!.classList.add('mobileheight');
     */
-    document.getElementById("pointerlock")!.style.opacity = "0";
-    document.getElementById("pointerlock-inner")!.style.opacity = "0";
+
+    document.getElementById("pointerlock")!.style.display = "none";
+    document.getElementById("pointerlock-inner")!.style.display = "none";
     
     document.getElementById('navigation-mobile')!.style.display = "flex";
 }
