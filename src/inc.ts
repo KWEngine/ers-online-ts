@@ -111,7 +111,7 @@ function onTouchDivRightStart(e:any)
             let x = (e.changedTouches[i].clientX - rect.left) / rect.width - 0.5; 
             let y = (e.changedTouches[i].clientY - rect.top) / rect.height - 0.5;
 
-            GameScene.instance.addCameraRotation(x, y > 0.5 ? 0.5 : y < -0.5 ? -0.5 : y);
+            GameScene.instance.addCameraRotation(y > 0.5 ? 0.5 : y < -0.5 ? -0.5 : y, x);
             
             HelperControls._camPitchYawId = e.changedTouches[i].identifier;
             break;
@@ -213,7 +213,7 @@ function onTouchDivRight(e:any)
 
             //HelperControls._motionRotation[0]  = x;
             //HelperControls._motionRotation[1]  = y > 0.5 ? 0.5 : y < -0.5 ? -0.5 : y;
-            GameScene.instance.addCameraRotation(x, y > 0.5 ? 0.5 : y < -0.5 ? -0.5 : y);
+            GameScene.instance.addCameraRotation(y > 0.5 ? 0.5 : y < -0.5 ? -0.5 : y, x);
             break;
         }
 
