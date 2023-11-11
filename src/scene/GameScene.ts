@@ -126,6 +126,14 @@ class GameScene
 
     public render = () => 
     {
+        if(HelperGeneral.isMobileDevice())
+        {
+            this.addCameraRotation(
+                HelperControls._motionRotation[1],
+                HelperControls._motionRotation[0]
+            );
+        }
+
         let frametime:number = this._clock.getDelta(); // In Sekunden (z.B. 0.0166667s für 60fps)
 
         // Addiere die neue Frame-Zeit auf den Akkumulator:
