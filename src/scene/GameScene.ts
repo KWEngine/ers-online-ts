@@ -101,6 +101,12 @@ class GameScene
             HelperControls._motionRotation[0] = -1.5;
         */
     }
+
+    public setCameraRotationFromTouch(x:number, y:number):void
+    {
+        HelperControls._motionRotation[0] = -x * Math.PI / 180;
+        HelperControls._motionRotation[1] = -y * Math.PI / 180;
+    }
     
     public getCamera():PerspectiveCamera
     {
