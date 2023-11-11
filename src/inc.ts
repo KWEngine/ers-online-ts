@@ -242,19 +242,21 @@ if(HelperGeneral.isMobileDevice())
 {
     document.getElementById("navigation-mobile")!.style.opacity = "1";
 
-    let divleft:HTMLElement = document.getElementById("navigation-mobile-left")!;
-    let divright:HTMLElement = document.getElementById("navigation-mobile-right")!;
-    divleft.addEventListener('touchstart', onTouchDivLeftStart);
-    divright.addEventListener('touchstart', onTouchDivRightStart);
+    let divleft:HTMLElement|null = document.getElementById("navigation-mobile-left");
+    let divright:HTMLElement|null = document.getElementById("navigation-mobile-right");
 
-    divleft.addEventListener('touchmove', onTouchDivLeft);
-    divright.addEventListener('touchmove', onTouchDivRight);
+    alert(divright);
+    divleft!.addEventListener('touchstart', onTouchDivLeftStart);
+    divright!.addEventListener('touchstart', onTouchDivRightStart);
 
-    divleft.addEventListener('touchend', onTouchDivLeftReset);
-    divright.addEventListener('touchend', onTouchDivRightReset);
+    divleft!.addEventListener('touchmove', onTouchDivLeft);
+    divright!.addEventListener('touchmove', onTouchDivRight);
 
-    divleft.addEventListener('touchcancel', onTouchDivLeftReset);
-    divright.addEventListener('touchcancel', onTouchDivRightReset);
+    divleft!.addEventListener('touchend', onTouchDivLeftReset);
+    divright!.addEventListener('touchend', onTouchDivRightReset);
+
+    divleft!.addEventListener('touchcancel', onTouchDivLeftReset);
+    divright!.addEventListener('touchcancel', onTouchDivRightReset);
 
     /*
     document.getElementById("nav-container")!.classList.add('mobiletext');
