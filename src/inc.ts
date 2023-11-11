@@ -83,8 +83,8 @@ function onTouchDivLeftStart(e:any)
             let x:number = (e.changedTouches[i].clientX - rect.left) / rect.width - 0.5; 
             let y:number = (e.changedTouches[i].clientY - rect.top) / rect.height - 0.5;
 
-            HelperControls._motionMove[0] = HelperGeneral.clamp(y * y, -1, +1);
-            HelperControls._motionMove[1] = HelperGeneral.clamp(x * y, -1, +1);
+            HelperControls._motionMove[0] = HelperGeneral.clamp((y * y) * y < 0 ? -1 : 1, -1, +1);
+            HelperControls._motionMove[1] = HelperGeneral.clamp((x * x) * x < 0 ? -1 : 1, -1, +1);
 
             HelperControls._camMoveStrafeId = e.changedTouches[i].identifier;
             break;
@@ -110,8 +110,8 @@ function onTouchDivLeft(e:any)
             let x:number = (e.changedTouches[i].clientX - rect.left) / rect.width - 0.5; 
             let y:number = (e.changedTouches[i].clientY - rect.top) / rect.height - 0.5;
 
-            HelperControls._motionMove[0] = HelperGeneral.clamp(y * y, -1, +1);
-            HelperControls._motionMove[1] = HelperGeneral.clamp(x * y, -1, +1);
+            HelperControls._motionMove[0] = HelperGeneral.clamp((y * y) * y < 0 ? -1 : 1, -1, +1);
+            HelperControls._motionMove[1] = HelperGeneral.clamp((x * x) * x < 0 ? -1 : 1, -1, +1);
             break;
         }
     }
