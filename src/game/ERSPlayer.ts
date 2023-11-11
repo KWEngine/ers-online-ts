@@ -7,7 +7,7 @@ import Collision from "./Collision";
 class ERSPlayer extends InteractiveObject
 {
     private _yOffset:number = 0;
-    private _speed:number = 0.1;
+    private _speed:number = 0.05;
     private _direction:Vector3 = new Vector3(0, 0, 0);
 
     public act(): void 

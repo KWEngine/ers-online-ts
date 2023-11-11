@@ -129,8 +129,8 @@ class GameScene
         if(HelperGeneral.isMobileDevice())
         {
             this.addCameraRotation(
-                HelperControls._motionRotation[1],
-                HelperControls._motionRotation[0]
+                HelperControls._motionRotation[0],
+                HelperControls._motionRotation[1]
             );
         }
 
