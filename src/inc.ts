@@ -256,11 +256,12 @@ if(HelperGeneral.isMobileDevice())
     divleft.addEventListener('touchcancel', onTouchDivLeftReset);
     divright.addEventListener('touchcancel', onTouchDivRightReset);
 
+    /*
     document.getElementById("nav-container")!.classList.add('mobiletext');
     document.getElementById("overlay-info")!.classList.add('mobileheight2');
     document.getElementById("overlay-info-content")!.classList.add('mobile');
     document.getElementById("overlay-info-close")!.classList.add('mobileheight');
-
+*/
 
     document.getElementById('navigation-mobile')!.style.display = "flex";
 }
