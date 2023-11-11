@@ -9,6 +9,7 @@ html, body
   padding:0;
   box-sizing: border-box;
   font-family: 'Monaco';
+  user-select: none;
 }
 
 #pointerlock
@@ -50,6 +51,7 @@ html, body
     right:0;
     background-color:transparent;
     z-index:2;
+    user-select: none;
 }
 
 #navigation-mobile

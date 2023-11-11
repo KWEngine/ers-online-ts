@@ -371,8 +371,9 @@ class GameScene
         HelperControls._pointerLocked = false;
         this._targetElement.style.cursor = 'default';
         document.getElementById('pointerlock-inner')!.innerHTML = "<span>Klicke mit der linken Maustaste, <br /> um deine Tour zu beginnen!</span>";
-        document.getElementById("pointerlock")!.style.opacity = '1.0';
-        document.getElementById('pointerlock-inner')!.style.opacity = '1.0';
+        document.getElementById("pointerlock")!.style.display = "flex";
+        //document.getElementById("pointerlock")!.style.opacity = '1.0';
+        //document.getElementById('pointerlock-inner')!.style.opacity = '1.0';
     }
 
     public makeSceneActive():void
