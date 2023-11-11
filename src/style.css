@@ -78,6 +78,14 @@ html, body
   flex-shrink: 0;
 }
 
+@media screen and (orientation: landscape) 
+{
+  #navigation-mobile > #navigation-mobile-left, #navigation-mobile-right
+  {
+    flex-basis:20vw;
+  }
+}
+
 #navigation-mobile > #navigation-mobile-middle
 {
   flex-grow: 1;
