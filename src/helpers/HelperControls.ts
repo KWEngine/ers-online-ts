@@ -10,7 +10,7 @@ class HelperControls
     public static _camMoveStrafeId = -1;
     public static _camPitchYawId = -1;
  
-    public static updatePlayerControls():void
+    public static updatePlayerControlsForDesktop():void
     {
         if(HelperControls._pointerLocked)
         {
@@ -35,14 +35,6 @@ class HelperControls
                 {
                     HelperControls._motionMove[1] = HelperGeneral.clamp(HelperControls._motionMove[1] + 1, -1, +1);
                 }
-            }
-        }
-        else
-        {
-            // mobile devices
-            if(HelperGeneral.isMobileDevice() == true)
-            {
-
             }
         }
     }

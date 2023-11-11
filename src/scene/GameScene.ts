@@ -97,8 +97,8 @@ class GameScene
     
     public setCameraRotationMobile(x:number, y:number):void
     {
-        HelperControls._motionRotation[0] = (-x * Math.PI / 180) * 3.0;
-        HelperControls._motionRotation[1] = (-y * Math.PI / 180) * 3.0;
+        HelperControls._motionRotation[0] = (-x * Math.PI / 180) * 2.5;
+        HelperControls._motionRotation[1] = (-y * Math.PI / 180) * 2.5;
     }
 
     public getCamera():PerspectiveCamera
@@ -142,7 +142,7 @@ class GameScene
         // werden einzelne Simulationsschritte ausgeführt:
         while (this._dtAccumulator >= HelperGeneral.DTFrameSize)
         {
-            HelperControls.updatePlayerControls();
+            HelperControls.updatePlayerControlsForDesktop();
             this._broadphaseAxisIndex = HelperCollision.collisionBroadphaseTest(this._hitboxes, this._broadphaseAxisIndex);
             for(let i:number = 0; i < this._gameObjects.length; i++)
             {

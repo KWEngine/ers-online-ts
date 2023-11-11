@@ -84,6 +84,10 @@ html, body
   {
     flex-basis:20vw;
   }
+  #navigation-mobile
+  {
+    height:20vw;
+  }
 }
 
 #navigation-mobile > #navigation-mobile-middle
