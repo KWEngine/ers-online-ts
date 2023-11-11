@@ -97,8 +97,8 @@ class GameScene
     
     public setCameraRotationMobile(x:number, y:number):void
     {
-        HelperControls._motionRotation[0] = (-x * Math.PI / 180);// * 1.05;
-        HelperControls._motionRotation[1] = (-y * Math.PI / 180);// * 1.05;
+        HelperControls._motionRotation[0] = (-x * Math.PI / 180) * 1.5;
+        HelperControls._motionRotation[1] = (-y * Math.PI / 180) * 1.5;
     }
 
     public getCamera():PerspectiveCamera
