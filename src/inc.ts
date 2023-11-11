@@ -261,8 +261,10 @@ if(HelperGeneral.isMobileDevice())
     document.getElementById("overlay-info")!.classList.add('mobileheight2');
     document.getElementById("overlay-info-content")!.classList.add('mobile');
     document.getElementById("overlay-info-close")!.classList.add('mobileheight');
-*/
-
+    */
+    document.getElementById("pointerlock")!.style.opacity = "0";
+    document.getElementById("pointerlock-inner")!.style.opacity = "0";
+    
     document.getElementById('navigation-mobile')!.style.display = "flex";
 }
 else
