@@ -12,13 +12,15 @@ class HelperControls
  
     public static updatePlayerControls():void
     {
-        HelperControls._motionMove[0] = 0;
-        HelperControls._motionMove[1] = 0;
+        
         
         if(HelperControls._pointerLocked)
         {
             if(HelperGeneral.isMobileDevice() == false)
             {
+                HelperControls._motionMove[0] = 0;
+                HelperControls._motionMove[1] = 0;
+
                 if(HelperControls._keys.get("w"))
                 {
                     HelperControls._motionMove[0] = HelperGeneral.clamp(HelperControls._motionMove[0] + 1, -1, +1);
