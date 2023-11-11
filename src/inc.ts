@@ -242,20 +242,17 @@ if(HelperGeneral.isMobileDevice())
 {
     document.getElementById("navigation-mobile")!.style.opacity = "1";
 
-    let divleft:HTMLElement|null = document.getElementById("navigation-mobile-left");
-    let divright:HTMLElement|null = document.getElementById("navigation-mobile-right");
+    document.getElementById("navigation-mobile-left")!.addEventListener('touchstart', onTouchDivLeftStart);
+    document.getElementById("navigation-mobile-right")!.addEventListener('touchstart', onTouchDivRightStart);
 
-    divleft!.addEventListener('touchstart', onTouchDivLeftStart);
-    divright!.addEventListener('touchstart', onTouchDivRightStart);
+    document.getElementById("navigation-mobile-left")!.addEventListener('touchmove', onTouchDivLeft);
+    document.getElementById("navigation-mobile-right")!.addEventListener('touchmove', onTouchDivRight);
 
-    divleft!.addEventListener('touchmove', onTouchDivLeft);
-    divright!.addEventListener('touchmove', onTouchDivRight);
+    document.getElementById("navigation-mobile-left")!.addEventListener('touchend', onTouchDivLeftReset);
+    document.getElementById("navigation-mobile-right")!.addEventListener('touchend', onTouchDivLeftReset);
 
-    divleft!.addEventListener('touchend', onTouchDivLeftReset);
-    divright!.addEventListener('touchend', onTouchDivRightReset);
-
-    divleft!.addEventListener('touchcancel', onTouchDivLeftReset);
-    divright!.addEventListener('touchcancel', onTouchDivRightReset);
+    document.getElementById("navigation-mobile-left")!.addEventListener('touchcancel', onTouchDivLeftReset);
+    document.getElementById("navigation-mobile-right")!.addEventListener('touchcancel', onTouchDivLeftReset);
 
     /*
     document.getElementById("nav-container")!.classList.add('mobiletext');
