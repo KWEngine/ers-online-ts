@@ -74,7 +74,7 @@ function onTouchDivLeftStart(e:any)
         e.preventDefault();
         return;
     }*/
-        
+    alert("!");        
 
     for(let i:number = 0; i < e.changedTouches.length; i++)
     {

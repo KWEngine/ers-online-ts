@@ -12,8 +12,6 @@ class HelperControls
  
     public static updatePlayerControls():void
     {
-        
-        
         if(HelperControls._pointerLocked)
         {
             if(HelperGeneral.isMobileDevice() == false)
@@ -38,12 +36,15 @@ class HelperControls
                     HelperControls._motionMove[1] = HelperGeneral.clamp(HelperControls._motionMove[1] + 1, -1, +1);
                 }
             }
-            else
+        }
+        else
+        {
+            // mobile devices
+            if(HelperGeneral.isMobileDevice() == true)
             {
-                //todo
+
             }
         }
-        
     }
 }
 export default HelperControls;
