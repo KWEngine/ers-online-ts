@@ -370,7 +370,7 @@ class GameScene
         this._targetElement.style.cursor = 'none';
         HelperControls._pointerLocked = true;
         
-        document.getElementById("pointerlock")!.style.opacity = '0.0';
+        document.getElementById("pointerlock")!.style.display = "none";
     }
 
     public getCameraLookAtVector():Vector3
