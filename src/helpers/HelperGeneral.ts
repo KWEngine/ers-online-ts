@@ -11,6 +11,7 @@ class HelperGeneral
     private static readonly _identityQuaternion = new Quaternion(0,0,0,1);
     public static readonly _mat4Identity = new Matrix4();
     public static readonly MAXNUM:number = 9999999.9;
+    private static readonly ISMOBILE:boolean = HelperGeneral.checkIfMobileDevice();
 
     public static rad2deg(radians:number):number
     {
@@ -86,10 +87,16 @@ class HelperGeneral
 
     public static isMobileDevice():boolean
     {
+        return this.ISMOBILE;
+    }
+
+    private static checkIfMobileDevice():boolean
+    {
         //return true;
         return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
         //return window.matchMedia("(any-pointer:coarse)").matches;
     }
+
 
     public static transformNormalInverse(norm:Vector3, invMat:Matrix4, result:Vector3):void
     {

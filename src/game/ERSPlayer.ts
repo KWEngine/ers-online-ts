@@ -3,6 +3,7 @@ import HelperControls from "../helpers/HelperControls";
 import GameScene from "../scene/GameScene";
 import InteractiveObject from "./InteractiveObject";
 import Collision from "./Collision";
+import HelperGeneral from "../helpers/HelperGeneral";
 
 class ERSPlayer extends InteractiveObject
 {
@@ -36,7 +37,8 @@ class ERSPlayer extends InteractiveObject
         this._direction.y += HelperControls._motionMove[1] * lavStrafe.y;
         this._direction.z += HelperControls._motionMove[1] * lavStrafe.z;
 
-        this._direction.normalize();
+        if(this._direction.lengthSq() > 1)
+            this._direction.normalize();
     }
 
     public setYOffset(y:number):void
