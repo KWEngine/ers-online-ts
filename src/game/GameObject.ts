@@ -65,6 +65,18 @@ abstract class GameObject
         });
     }
 
+    public setRotation(x:number, y:number, z:number):void
+    {
+        let q:Quaternion = HelperGeneral.quaternionFrom3Axes(x, y, z);
+        this._stateCurrent._rotation.set(q.x, q.y, q.z, q.w);
+        this.updateHitboxes();
+    }
+
+    public getRotation():Quaternion
+    {
+        return this._stateCurrent._rotation;
+    }
+
     public setScale(x:number, y:number, z:number):void
     {
         this._stateCurrent._scale.x = x;

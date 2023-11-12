@@ -82,11 +82,11 @@ html, body
 {
   #navigation-mobile > #navigation-mobile-left, #navigation-mobile-right
   {
-    flex-basis:20vw;
+    flex-basis:15vw;
   }
   #navigation-mobile
   {
-    height:20vw;
+    height:15vw;
   }
 }
 

@@ -1,6 +1,6 @@
 import { AmbientLight, PerspectiveCamera, Scene, WebGLRenderer, Vector3, Clock, Object3D, Group, Object3DEventMap, Euler, SphereGeometry, TextureLoader, SRGBColorSpace, MeshBasicMaterial, Mesh } from "three";
 import ModelLoader from "../model/ModelLoader";
-import InfoObject from "../game/InfoObject";
+import ERSInfoSpot from "../game/ERSInfoSpot";
 import HelperScene from "../helpers/HelperScene";
 import ERSScene from "./ERSScene";
 import ERSSceneInits from "./ERSSceneInits";
@@ -15,6 +15,7 @@ import RenderObject from "../game/RenderObject";
 import ERSRenderObject from "../game/ERSRenderObject";
 import HelperControls from "../helpers/HelperControls";
 import HitboxG from "../model/HitboxG";
+import ERSPortal from "../game/ERSPortal";
 
 class GameScene
 {
@@ -27,7 +28,6 @@ class GameScene
 
     private readonly _scene = new Scene();
     private readonly _gameObjects:GameObject[] = [];
-    private readonly _infoObjects:InfoObject[] = []; 
     private readonly _hitboxes:HitboxG[] = [];
     private readonly _clock:Clock;
     private readonly _modelDatabase:Map<string, Group>;
@@ -46,6 +46,7 @@ class GameScene
     private _dtAccumulator:number;
     private _camLookAtVector:Vector3;
     private _camLookAtVectorXZ:Vector3;
+    private _cameraEulerInitial:Vector3;
 
     private constructor()
     {
@@ -73,12 +74,11 @@ class GameScene
         this._targetElement.appendChild(this._renderer.domElement);
         const aspectRatio = this._width / this._height;
         this._camera = new PerspectiveCamera(45, aspectRatio, 0.1, GameScene.MAXCAMDISTANCE);
-        this._camera.position.set(0, 5, 25);
-        this._camera.lookAt(new Vector3(0,0,0));
 
         this._clock = new Clock();
         this._player = null;
         this._cameraEuler = new Euler(0, 0, 0, 'YXZ');
+        this._cameraEulerInitial = new Vector3(0,0,0);
 
         this._textureLoader = new TextureLoader();
         this._background = new Mesh();
@@ -128,8 +128,8 @@ class GameScene
         }
         else
         {
-            this._cameraEuler.x = HelperGeneral.clamp(HelperControls._motionRotation[0], -1.5, 1.5);
-            this._cameraEuler.y = HelperControls._motionRotation[1];
+            this._cameraEuler.x = this._cameraEulerInitial.x + HelperGeneral.clamp(HelperControls._motionRotation[0], -1.5, 1.5);
+            this._cameraEuler.y = this._cameraEulerInitial.y + HelperControls._motionRotation[1];
         }
         
         this._camera.quaternion.setFromEuler(this._cameraEuler);
@@ -188,14 +188,11 @@ class GameScene
 
     public async load(sceneName:string)
     {
+        // Lies die Szeneninfos aus der entsprechenden JSON-Datei ein:
         let s:ERSScene = HelperScene.parseSceneSettings(sceneName);
 
-        // Lade 3D-Modell des Player-Objekts:
-        let playerModel = await ModelLoader.instance.loadAsync("/models/ers-player.glb");
-        let playerHitbox:Hitbox[] = [];
-        HelperCollision.generateHitboxesFor(playerModel.scene, playerHitbox);
-        this._modelDatabase.set("ers-player.glb", playerModel.scene);
-        this._hitboxDatabase.set("ers-player.glb", playerHitbox);
+        // Lade die 3D-Modelle, die eh in jeder Szene vorhanden sind, vorab:
+        await this.loadStaticModels();
 
         // Lade die 3D-Modelle die für die aktuelle Szene in der 
         // entsprechenden JSON-Datei stehen:
@@ -204,6 +201,7 @@ class GameScene
             let model = await ModelLoader.instance.loadAsync("/models/" + s.loads.models[i]);
             let hitboxes:Hitbox[] = [];
             HelperCollision.generateHitboxesFor(model.scene, hitboxes);
+            HelperGeneral.disableInvisibleMeshes(model.scene);
             this._modelDatabase.set(s.loads.models[i], model.scene);
             this._hitboxDatabase.set(s.loads.models[i], hitboxes);
         }
@@ -211,7 +209,12 @@ class GameScene
         // Initialisiere Instanzen und Lichtgebung:
         this.init(s.inits);
     }
-   
+
+    private initDefaultHitbox()
+    {
+
+    }
+
     private init(inits:ERSSceneInits):void
     {
         let pointerlockMessage:HTMLElement|null = document.getElementById("pointerlock-inner"); 
@@ -236,6 +239,53 @@ class GameScene
             let o:ERSHitboxStatic = new ERSHitboxStatic(model, inits.hitboxes[i].name, inits.hitboxes[i].model);
             this.addObject(o);
         }
+
+        for(let i: number = 0; i < inits.portals.length; i++)
+        {
+            let model:Group = this._modelDatabase.get(inits.portals[i].model)!;
+            let portal:ERSPortal = new ERSPortal(model, inits.portals[i].name, inits.portals[i].model);
+            portal.setPosition(inits.portals[i].position[0], inits.portals[i].position[1], inits.portals[i].position[2]);
+            portal.setRotation(inits.portals[i].rotation[0], inits.portals[i].rotation[1], inits.portals[i].rotation[2]);
+            portal.setScale(inits.portals[i].scale[0], inits.portals[i].scale[1], inits.portals[i].scale[2]);
+            this.addObject(portal);
+        }
+
+        for(let i: number = 0; i < inits.infospots.length; i++)
+        {
+            let model:Group = this._modelDatabase.get(inits.infospots[i].model)!;
+            let infospot:ERSInfoSpot = new ERSInfoSpot(model, inits.infospots[i].name, inits.infospots[i].model);
+            infospot.setPosition(inits.infospots[i].position[0], inits.infospots[i].position[1], inits.infospots[i].position[2]);
+            infospot.setRotation(inits.infospots[i].rotation[0], inits.infospots[i].rotation[1], inits.infospots[i].rotation[2]);
+            infospot.setScale(inits.infospots[i].scale[0], inits.infospots[i].scale[1], inits.infospots[i].scale[2]);
+            this.addObject(infospot);
+        }
+    }
+
+    private async loadStaticModels()
+    {
+        // Lade 3D-Modell für Info-Spots:
+        let infoModel = await ModelLoader.instance.loadAsync("/models/ers-info.glb");
+        let infoHitbox:Hitbox[] = [];
+        HelperGeneral.disableInvisibleMeshes(infoModel.scene);
+        HelperCollision.generateHitboxesFor(infoModel.scene, infoHitbox);
+        this._modelDatabase.set("ers-info.glb", infoModel.scene);
+        this._hitboxDatabase.set("ers-info.glb", infoHitbox);
+ 
+        // Lade 3D-Modell des Player-Objekts:
+        let playerModel = await ModelLoader.instance.loadAsync("/models/ers-player.glb");
+        let playerHitbox:Hitbox[] = [];
+        HelperGeneral.disableInvisibleMeshes(playerModel.scene);
+        HelperCollision.generateHitboxesFor(playerModel.scene, playerHitbox);
+        this._modelDatabase.set("ers-player.glb", playerModel.scene);
+        this._hitboxDatabase.set("ers-player.glb", playerHitbox);
+
+        // Lade 3D-Modell für Portal-Spots:
+        let portalModel = await ModelLoader.instance.loadAsync("/models/ers-arrow.glb");
+        let portalHitbox:Hitbox[] = [];
+        HelperGeneral.disableInvisibleMeshes(portalModel.scene);
+        HelperCollision.generateHitboxesFor(portalModel.scene, portalHitbox);
+        this._modelDatabase.set("ers-arrow.glb", portalModel.scene);
+        this._hitboxDatabase.set("ers-arrow.glb", portalHitbox);
     }
 
     private setBackgroundImage(img:string):void
@@ -261,6 +311,11 @@ class GameScene
         this._player.addRotationY(rotation[1]);
         this._player.setScale(scale[0], scale[1], scale[2]);
         this._player.setYOffset(yOffset);
+        this._camera.position.set(position[0], position[1] + yOffset, position[2]);
+        this._camera.lookAt(inits.player.lookAt[0], inits.player.lookAt[1] + yOffset, inits.player.lookAt[2]);
+        this._cameraEuler.set(this._camera.rotation.x, this._camera.rotation.y, this._camera.rotation.z, 'YXZ');
+        this._cameraEulerInitial.set(this._camera.rotation.x, this._camera.rotation.y, this._camera.rotation.z);
+        console.log(this._cameraEulerInitial);
         this.addObject(this._player);
     }
 
@@ -275,13 +330,7 @@ class GameScene
 
     public addObject(o : GameObject):void
     {
-        if(o instanceof InfoObject)
-        {
-            this._infoObjects.push(o as InfoObject);
-            this.addHitboxesForObject(o);
-            this._scene.add(o.get3DObject());
-        }
-        else if(o instanceof RenderObject)
+        if(o instanceof RenderObject)
         {
             this._gameObjects.push(o);
             this._scene.add(o.get3DObject());
@@ -296,22 +345,30 @@ class GameScene
             this._gameObjects.push(o);
             this.addHitboxesForObject(o);
         } 
+        else if(o instanceof ERSInfoSpot || o instanceof ERSPortal)
+        {
+            this._gameObjects.push(o);
+            this.addHitboxesForObject(o);
+            this._scene.add(o.get3DObject());
+        }
     }
 
     public removeObject(o: GameObject):void
     {
-        if(o instanceof InfoObject)
+        
+        if(o instanceof ERSInfoSpot || o instanceof ERSPortal)
         {
-            const predicate = (element:InfoObject) => element.getId() == o.getId();
-            let index:number = this._infoObjects.findIndex(predicate);
+            const predicate = (element:GameObject) => element.getId() == o.getId();
+            let index:number = this._gameObjects.findIndex(predicate);
             if(index >= 0)
             {
-                this._infoObjects.splice(index, 1);
+                this._gameObjects.splice(index, 1);
                 this.removeHitboxesForObject(o);
                 this._scene.remove(o.get3DObject());
             }
         }
-        else if(o instanceof RenderObject) 
+        
+        if(o instanceof RenderObject) 
         {
             const predicate = (element:GameObject) => element.getId() == o.getId();
             let index:number = this._gameObjects.findIndex(predicate);
@@ -370,8 +427,6 @@ class GameScene
         this._targetElement.style.cursor = 'default';
         document.getElementById('pointerlock-inner')!.innerHTML = "<span>Klicke mit der linken Maustaste, <br /> um deine Tour zu beginnen!</span>";
         document.getElementById("pointerlock")!.style.display = "flex";
-        //document.getElementById("pointerlock")!.style.opacity = '1.0';
-        //document.getElementById('pointerlock-inner')!.style.opacity = '1.0';
     }
 
     public makeSceneActive():void

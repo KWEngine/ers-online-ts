@@ -6,22 +6,20 @@
     
     "inits":
     {
-        "ambientLight": "0xaaaaaa",
+        "ambientLight": "0xffffff",
         "background_image": "/img/panorama_street01.jpg",
         "player":
         {
-            "position": [0, 0, 0],
-            "rotation": [0, 180, 0],
+            "position": [-7.5, 0, 15],
+            "rotation": [0, 0, 0],
             "scale":[1, 1.8, 1],
-            "yOffset": 1.7
+            "yOffset": 1.7,
+            "lookAt": [0, 0, 0]
         },
         "renderObjects":
         [
             {
                 "name": "school_outside_front",
-                "position": [0, 0, 0],
-                "rotation": [0, 0, 0],
-                "scale":[1, 1, 1],
                 "model": "school_outside_front.glb"
             }
         ],
@@ -29,10 +27,27 @@
         [
             {
                 "name": "school_outside_front_hitboxes",
-                "position": [0, 0, 0],
-                "rotation": [0, 0, 0],
-                "scale":[1, 1, 1],
                 "model":"school_outside_front.hitboxes.glb"
+            }
+        ],
+        "portals":
+        [
+            {
+                "name": "enter-forum",
+                "position": [0, 0.8, -10],
+                "rotation": [0, 180, 0],
+                "scale": [1, 1, 1],
+                "model": "ers-arrow.glb"
+            }
+        ],
+        "infospots":
+        [
+            {
+                "name": "test-info",
+                "position": [2, 1, 3],
+                "rotation": [0, 0, 0],
+                "scale": [1, 1, 1],
+                "model": "ers-info.glb"
             }
         ]
     }

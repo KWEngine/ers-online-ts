@@ -30,17 +30,23 @@ class HelperCollision
         if(o instanceof Mesh)
         {
             let m:Mesh = o;
-            
             o.updateMatrix();
-            let hb = new Hitbox(m.matrix, m.geometry, m.name);
-            hbs.push(hb);
+            if(o.name.includes("_nohitbox") == false)
+            {
+                let hb = new Hitbox(m.matrix, m.geometry, m.name);
+                hbs.push(hb);
+            }
         }
         else
         {
-            for(let i:number = 0; i < o.children.length; i++)
+            if(o.name.includes("_nohitbox") == false)
+            {
+                for(let i:number = 0; i < o.children.length; i++)
             {
                 this.generateHitboxesFor(o.children[i], hbs);
             }
+            }
+            
         }
     }
 

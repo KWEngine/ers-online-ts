@@ -1,5 +1,5 @@
 import State from "../game/State";
-import { Vector3, Quaternion, Matrix4 } from "three";
+import { Vector3, Quaternion, Matrix4, Euler, Object3D, Mesh } from "three";
 
 class HelperGeneral
 {
@@ -68,6 +68,32 @@ class HelperGeneral
         result.w = Math.cos(angle);
         result.normalize();
 
+        return result;
+    }
+
+    public static disableInvisibleMeshes(o:Object3D)
+    {
+        if(o instanceof Mesh)
+        {
+            if(o.name.includes("_fullhitbox") == true)
+            {
+                o.visible = false;
+            }
+        }
+        else
+        {
+            for(let i:number = 0; i < o.children.length; i++)
+            {
+                this.disableInvisibleMeshes(o.children[i]);
+            }
+        }
+    }
+
+    public static quaternionFrom3Axes(x:number, y:number, z:number):Quaternion
+    {
+        let e:Euler = new Euler(this.deg2rad(x), this.deg2rad(y), this.deg2rad(z), 'YXZ');
+        let result:Quaternion = new Quaternion(0, 0, 0, 1);
+        result.setFromEuler(e);
         return result;
     }
 
