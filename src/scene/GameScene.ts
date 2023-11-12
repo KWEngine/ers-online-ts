@@ -315,7 +315,6 @@ class GameScene
         this._camera.lookAt(inits.player.lookAt[0], inits.player.lookAt[1] + yOffset, inits.player.lookAt[2]);
         this._cameraEuler.set(this._camera.rotation.x, this._camera.rotation.y, this._camera.rotation.z, 'YXZ');
         this._cameraEulerInitial.set(this._camera.rotation.x, this._camera.rotation.y, this._camera.rotation.z);
-        console.log(this._cameraEulerInitial);
         this.addObject(this._player);
     }
 
