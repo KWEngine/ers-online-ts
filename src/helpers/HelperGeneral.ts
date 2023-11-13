@@ -1,3 +1,4 @@
+import CameraState from "../game/CameraState";
 import State from "../game/State";
 import { Vector3, Quaternion, Matrix4, Euler, Object3D, Mesh } from "three";
 
@@ -49,10 +50,30 @@ class HelperGeneral
 
     public static blendStates(a:State, b:State, alpha:number, renderState:State):void
     {
-        
         renderState._position = this._zeroVector.lerpVectors(a._position, b._position, alpha).clone();
         renderState._scale = this._zeroVector.lerpVectors(a._scale, b._scale, alpha).clone();
         renderState._rotation = this._identityQuaternion.slerpQuaternions(a._rotation, b._rotation, alpha).clone();
+    }
+
+    public static copyStatesCamera(src:CameraState, dest:CameraState)
+    {
+        dest._eulerInitial.x = src._eulerInitial.x;
+        dest._eulerInitial.y = src._eulerInitial.y;
+        dest._eulerInitial.z = src._eulerInitial.z;
+
+        dest._euler.x = src._euler.x;
+        dest._euler.y = src._euler.y;
+        dest._euler.z = src._euler.z;
+    }
+
+    
+    public static blendStatesCamera(a:CameraState, b:CameraState, alpha:number, renderState:CameraState)
+    {
+        renderState._euler.set(
+            a._euler.x * alpha + b._euler.x * (1.0 - alpha), 
+            a._euler.y * alpha + b._euler.y * (1.0 - alpha), 
+            a._euler.z * alpha + b._euler.z * (1.0 - alpha)
+        );
     }
 
     public static quaternionFromAxisAngle(axisInput:string, angleInDegrees:number):Quaternion

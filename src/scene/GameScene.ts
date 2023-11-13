@@ -16,6 +16,7 @@ import ERSRenderObject from "../game/ERSRenderObject";
 import HelperControls from "../helpers/HelperControls";
 import HitboxG from "../model/HitboxG";
 import ERSPortal from "../game/ERSPortal";
+import CameraState from "../game/CameraState";
 
 class GameScene
 {
@@ -38,7 +39,9 @@ class GameScene
     private _height:number;
     private _renderer:WebGLRenderer;
     private _camera:PerspectiveCamera;
-    private _cameraEuler:Euler;
+    private _cameraStateCurrent:CameraState;
+    private _cameraStatePrevious:CameraState;
+    private _cameraStateRender:CameraState;
     private _player:ERSPlayer|null;
     private _background:Mesh;
     private _textureLoader:TextureLoader;
@@ -46,7 +49,7 @@ class GameScene
     private _dtAccumulator:number;
     private _camLookAtVector:Vector3;
     private _camLookAtVectorXZ:Vector3;
-    private _cameraEulerInitial:Vector3;
+
 
     private constructor()
     {
@@ -77,8 +80,9 @@ class GameScene
 
         this._clock = new Clock();
         this._player = null;
-        this._cameraEuler = new Euler(0, 0, 0, 'YXZ');
-        this._cameraEulerInitial = new Vector3(0,0,0);
+        this._cameraStateCurrent = new CameraState(0, 0, 0);
+        this._cameraStatePrevious = new CameraState(0, 0, 0);
+        this._cameraStateRender = new CameraState(0, 0, 0);
 
         this._textureLoader = new TextureLoader();
         this._background = new Mesh();
@@ -111,6 +115,11 @@ class GameScene
         return this._player!;
     }
 
+    private stateBackupCamera():void
+    {
+        HelperGeneral.copyStatesCamera(this._cameraStateCurrent, this._cameraStatePrevious);
+    }
+
     public updateViewport()
     {
         this._camera.aspect = window.innerWidth / window.innerHeight;
@@ -121,45 +130,31 @@ class GameScene
 
     public render = () => 
     {
-        if(HelperGeneral.isMobileDevice())
-        {
-            this._cameraEuler.x = HelperGeneral.clamp(this._cameraEuler.x + HelperControls._motionRotation[0], -1.5, 1.5);
-            this._cameraEuler.y += HelperControls._motionRotation[1];
-        }
-        else
-        {
-            this._cameraEuler.x = this._cameraEulerInitial.x + HelperGeneral.clamp(HelperControls._motionRotation[0], -1.5, 1.5);
-            this._cameraEuler.y = this._cameraEulerInitial.y + HelperControls._motionRotation[1];
-        }
-        
-        this._camera.quaternion.setFromEuler(this._cameraEuler);
-
         let frametime:number = this._clock.getDelta(); // In Sekunden (z.B. 0.0166667s für 60fps)
 
         // Addiere die neue Frame-Zeit auf den Akkumulator:
         this._dtAccumulator += frametime;
+
         // Solange der Akkumulator größer ist als ein Simulationsschritt, 
         // werden einzelne Simulationsschritte ausgeführt:
         while (this._dtAccumulator >= HelperGeneral.DTFrameSize)
         {
             HelperControls.updatePlayerControlsForDesktop();
+            this.stateBackupCamera();
+            this._cameraStateCurrent.updateRotationAccordingToInput();
             this._broadphaseAxisIndex = HelperCollision.collisionBroadphaseTest(this._hitboxes, this._broadphaseAxisIndex);
+            
+            // Aktualisiere alle GameObject-Instanzen via instanzeigener act()-Methode:
             for(let i:number = 0; i < this._gameObjects.length; i++)
             {
                 if(this._gameObjects[i] instanceof InteractiveObject)
                 {
-                    /*
-                    for(let j:number = 0; j < this._gameObjects[i].getHitboxes().length; j++)
-                    {
-                        //console.log(this._gameObjects[i].getHitboxes()[j].getName());
-                        this._gameObjects[i].getHitboxes()[j].printCollisionCandidatesNames();
-                    }
-                    */
                     this._gameObjects[i].stateBackup();
                     (this._gameObjects[i] as InteractiveObject).act();
                     this._gameObjects[i].clearCollisionCandidates();
                 }
             }
+            // Verringere Akkumulator um die feste Dauer des Simulationsschritts:
             this._dtAccumulator -= HelperGeneral.DTFrameSize;
         }
         
@@ -173,17 +168,26 @@ class GameScene
         }
 
         // Aktualisiere Kameraposition:
-        this._camera.position.set(
-            this._player!.get3DObject().position.x,
-            this._player!.get3DObject().position.y + this._player!.getYOffset(),
-            this._player!.get3DObject().position.z
-            );
-
+        this.updateCameraPositionAndOrientation(alpha);
+       
         // Aktualisiere Hintergrund-Meshposition:
         this._background.position.set(this._player!.get3DObject().position.x, 0, this._player!.get3DObject().position.z);
 
         requestAnimationFrame(this.render);
         this._renderer.render(this._scene, this._camera);
+    }
+
+    private updateCameraPositionAndOrientation(alpha:number):void
+    {
+        HelperGeneral.blendStatesCamera(this._cameraStatePrevious, this._cameraStateCurrent, alpha, this._cameraStateRender);
+
+        this._camera.position.set(
+            this._player!.get3DObject().position.x,
+            this._player!.get3DObject().position.y + this._player!.getYOffset(),
+            this._player!.get3DObject().position.z
+        );
+
+        this._camera.quaternion.setFromEuler(this._cameraStateRender._euler);
     }
 
     public async load(sceneName:string)
@@ -313,8 +317,8 @@ class GameScene
         this._player.setYOffset(yOffset);
         this._camera.position.set(position[0], position[1] + yOffset, position[2]);
         this._camera.lookAt(inits.player.lookAt[0], inits.player.lookAt[1] + yOffset, inits.player.lookAt[2]);
-        this._cameraEuler.set(this._camera.rotation.x, this._camera.rotation.y, this._camera.rotation.z, 'YXZ');
-        this._cameraEulerInitial.set(this._camera.rotation.x, this._camera.rotation.y, this._camera.rotation.z);
+        //this._cameraEuler.set(this._camera.rotation.x, this._camera.rotation.y, this._camera.rotation.z, 'YXZ');
+        //this._cameraEulerInitial.set(this._camera.rotation.x, this._camera.rotation.y, this._camera.rotation.z);
         this.addObject(this._player);
     }
 
