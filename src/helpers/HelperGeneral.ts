@@ -69,10 +69,17 @@ class HelperGeneral
     
     public static blendStatesCamera(a:CameraState, b:CameraState, alpha:number, renderState:CameraState)
     {
+        /*
         renderState._euler.set(
             a._euler.x * alpha + b._euler.x * (1.0 - alpha), 
             a._euler.y * alpha + b._euler.y * (1.0 - alpha), 
             a._euler.z * alpha + b._euler.z * (1.0 - alpha)
+        );
+        */
+        renderState._euler.set(
+            a._euler.x * (1.0 - alpha) + b._euler.x * alpha, 
+            a._euler.y * (1.0 - alpha) + b._euler.y * alpha, 
+            a._euler.z * (1.0 - alpha) + b._euler.z * alpha
         );
     }
 

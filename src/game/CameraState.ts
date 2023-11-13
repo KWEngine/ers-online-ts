@@ -1,6 +1,7 @@
 import { Euler, Quaternion, Vector3 } from "three";
 import HelperGeneral from "../helpers/HelperGeneral";
 import HelperControls from "../helpers/HelperControls";
+import GameScene from "../scene/GameScene";
 
 class CameraState
 {
@@ -25,6 +26,8 @@ class CameraState
             this._euler.x = this._eulerInitial.x + HelperGeneral.clamp(HelperControls._motionRotation[0], -1.5, 1.5);
             this._euler.y = this._eulerInitial.y + HelperControls._motionRotation[1];
         }
+
+        GameScene.instance.getCamera().quaternion.setFromEuler(this._euler);
     }
 }
 export default CameraState;

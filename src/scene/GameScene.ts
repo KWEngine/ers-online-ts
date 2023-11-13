@@ -214,11 +214,6 @@ class GameScene
         this.init(s.inits);
     }
 
-    private initDefaultHitbox()
-    {
-
-    }
-
     private init(inits:ERSSceneInits):void
     {
         let pointerlockMessage:HTMLElement|null = document.getElementById("pointerlock-inner"); 
@@ -317,8 +312,6 @@ class GameScene
         this._player.setYOffset(yOffset);
         this._camera.position.set(position[0], position[1] + yOffset, position[2]);
         this._camera.lookAt(inits.player.lookAt[0], inits.player.lookAt[1] + yOffset, inits.player.lookAt[2]);
-        //this._cameraEuler.set(this._camera.rotation.x, this._camera.rotation.y, this._camera.rotation.z, 'YXZ');
-        //this._cameraEulerInitial.set(this._camera.rotation.x, this._camera.rotation.y, this._camera.rotation.z);
         this.addObject(this._player);
     }
 
