@@ -1,4 +1,4 @@
-import { Euler, Quaternion, Vector3 } from "three";
+import { Euler, Vector3 } from "three";
 import HelperGeneral from "../helpers/HelperGeneral";
 import HelperControls from "../helpers/HelperControls";
 import GameScene from "../scene/GameScene";

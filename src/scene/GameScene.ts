@@ -1,4 +1,4 @@
-import { AmbientLight, PerspectiveCamera, Scene, WebGLRenderer, Vector3, Clock, Object3D, Group, Object3DEventMap, Euler, SphereGeometry, TextureLoader, SRGBColorSpace, MeshBasicMaterial, Mesh } from "three";
+import { AmbientLight, PerspectiveCamera, Scene, WebGLRenderer, Vector3, Clock, Group, SphereGeometry, TextureLoader, SRGBColorSpace, MeshBasicMaterial, Mesh } from "three";
 import ModelLoader from "../model/ModelLoader";
 import ERSInfoSpot from "../game/ERSInfoSpot";
 import HelperScene from "../helpers/HelperScene";
@@ -91,18 +91,6 @@ class GameScene
     public getRenderDomElement():HTMLElement
     {
         return this._targetElement;
-    }
-
-    public addCameraRotation(x:number, y:number):void
-    {
-        HelperControls._motionRotation[0] += -x * Math.PI / 180;
-        HelperControls._motionRotation[1] += -y * Math.PI / 180;
-    }
-    
-    public setCameraRotationMobile(x:number, y:number):void
-    {
-        HelperControls._motionRotation[0] = (-x * Math.PI / 180) * 2.5;
-        HelperControls._motionRotation[1] = (-y * Math.PI / 180) * 2.5;
     }
 
     public getCamera():PerspectiveCamera
@@ -419,7 +407,7 @@ class GameScene
 
     public showStartInfo():void
     {
-        HelperControls._pointerLocked = false;
+        HelperControls.setPointerLock(false);
         this._targetElement.style.cursor = 'default';
         document.getElementById('pointerlock-inner')!.innerHTML = "<span>Klicke mit der linken Maustaste, <br /> um deine Tour zu beginnen!</span>";
         document.getElementById("pointerlock")!.style.display = "flex";
@@ -428,7 +416,7 @@ class GameScene
     public makeSceneActive():void
     {
         this._targetElement.style.cursor = 'none';
-        HelperControls._pointerLocked = true;
+        HelperControls.setPointerLock(true);
         
         document.getElementById("pointerlock")!.style.display = "none";
     }

@@ -3,7 +3,6 @@ import HelperControls from "../helpers/HelperControls";
 import GameScene from "../scene/GameScene";
 import InteractiveObject from "./InteractiveObject";
 import Collision from "./Collision";
-import HelperGeneral from "../helpers/HelperGeneral";
 
 class ERSPlayer extends InteractiveObject
 {

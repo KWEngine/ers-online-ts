@@ -11,9 +11,9 @@ function onMouseMove(e:any)
 {
     if(!HelperGeneral.isMobileDevice())
     {
-        if(HelperControls._pointerLocked)
+        if(HelperControls.isPointerLocked())
         {
-            GameScene.instance.addCameraRotation(
+            HelperControls.addCameraRotation(
                 (e.movementY || 0) / 20.0,
                 (e.movementX || 0) / 20.0
             );
@@ -63,7 +63,7 @@ function pointerLock(e:any)
         GameScene.instance.getRenderDomElement().requestPointerLock;// || GameScene.instance.getRenderDomElement().mozRequestPointerLock;
     GameScene.instance.getRenderDomElement().requestPointerLock();
 
-    HelperControls._pointerLocked = true;
+    HelperControls.setPointerLock(true);
     e.preventDefault();
 }
 
@@ -156,7 +156,7 @@ function onTouchDivRightStart(e:any)
             let rect = e.target.getBoundingClientRect();
             let x = (e.changedTouches[i].clientX - rect.left) / rect.width - 0.5; 
             let y = (e.changedTouches[i].clientY - rect.top) / rect.height - 0.5;
-            GameScene.instance.setCameraRotationMobile(y > 0.5 ? 0.5 : y < -0.5 ? -0.5 : y, x);
+            HelperControls.setCameraRotationMobile(y > 0.5 ? 0.5 : y < -0.5 ? -0.5 : y, x);
             HelperControls._camPitchYawId = e.changedTouches[i].identifier;
             break;
         }
@@ -181,7 +181,7 @@ function onTouchDivRight(e:any)
             let rect:any = e.target.getBoundingClientRect();
             let x:number = (e.changedTouches[i].clientX - rect.left) / rect.width - 0.5; 
             let y:number = (e.changedTouches[i].clientY - rect.top) / rect.height - 0.5;
-            GameScene.instance.setCameraRotationMobile(y > 0.5 ? 0.5 : y < -0.5 ? -0.5 : y, x);
+            HelperControls.setCameraRotationMobile(y > 0.5 ? 0.5 : y < -0.5 ? -0.5 : y, x);
             break;
         }
 
