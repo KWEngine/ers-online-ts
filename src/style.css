@@ -12,7 +12,7 @@ html, body
   user-select: none;
 }
 
-#pointerlock
+#infoscreen, #pointerlock
 {
     position:fixed;
     top:0;
@@ -22,16 +22,52 @@ html, body
     background-color:rgba(255, 255, 255, 0.5);
     z-index:100;
     opacity: 0;
-    display:flex;
     justify-content: center;
     align-items: center;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
 }
 
+#pointerlock
+{
+  display:flex;
+}
+
+#infoscreen
+{
+  display:none;
+}
+
+#infoscreen-inner
+{
+  width:90%;
+  height:90%;
+  background-color:yellow;
+  position:fixed;
+  border-radius:1%;
+  box-shadow:0px 0px 2em black;
+}
+
+#infoscreen-close
+{
+  font-size:2em;
+  text-align: center;
+  border-radius: 50%;
+  position:relative;
+  height:2em;
+  left:calc(100% - 1.5em);
+  width:2em;
+  top:-0.5em;
+  line-height: 2em;
+  
+  background-color:red;
+}
+
 #pointerlock-inner
 {
-    max-width:75%;
+    max-width:50%;
+    height:25%;
+    min-width:33%;
     background-color:rgba(255, 255, 255, 0.5);
     padding: 1em;
     border-radius: 1em;
@@ -40,6 +76,9 @@ html, body
     border-color: rgba(0, 0, 0, 0.8);
     text-align: center;
     user-select: none;
+    display:flex;
+    align-items: center;
+    justify-content:center;
 }
 
 #app

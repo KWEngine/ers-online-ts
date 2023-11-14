@@ -13,6 +13,36 @@ class HelperGeneral
     public static readonly _mat4Identity = new Matrix4();
     public static readonly MAXNUM:number = 9999999.9;
     private static readonly ISMOBILE:boolean = HelperGeneral.checkIfMobileDevice();
+    private static _infoScreenState:number = 0; // 0 = disabled, 1 = info, 2 = portal
+
+    public static setMobileControlsVisible(v:boolean):void
+    {
+        if(v)
+        {
+            document.getElementById('navigation-mobile')!.style.opacity = "1";
+            document.getElementById('navigation-mobile')!.style.display = "flex";
+        }
+        else
+        {
+            document.getElementById('navigation-mobile')!.style.opacity = "0";
+            document.getElementById('navigation-mobile')!.style.display = "none";
+        }
+    }
+
+    public static setInfoSreenActive(state:number):void
+    {
+        this._infoScreenState = state;
+    }
+
+    public static isInfoScreenActive():boolean
+    {
+        return this._infoScreenState == 1;
+    }
+
+    public static isPortalScreenActive():boolean
+    {
+        return this._infoScreenState == 2;
+    }
 
     public static rad2deg(radians:number):number
     {

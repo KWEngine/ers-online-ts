@@ -53,7 +53,19 @@ function lockChange()
     } 
     else 
     {
-        GameScene.instance.showStartInfo();
+        if(HelperGeneral.isInfoScreenActive())
+        {
+            //console.log("info active");
+        }
+        else if(HelperGeneral.isPortalScreenActive())
+        {
+            //console.log("portal active");
+        }
+        else
+        {
+            //console.log("showStartInfo()");
+            GameScene.instance.showStartInfo();
+        }
     }
 }
 
@@ -62,9 +74,25 @@ function pointerLock(e:any)
     GameScene.instance.getRenderDomElement().requestPointerLock = 
         GameScene.instance.getRenderDomElement().requestPointerLock;// || GameScene.instance.getRenderDomElement().mozRequestPointerLock;
     GameScene.instance.getRenderDomElement().requestPointerLock();
-
-    HelperControls.setPointerLock(true);
     e.preventDefault();
+}
+
+function closeInfoScreen(e:any)
+{
+    if(HelperGeneral.isInfoScreenActive())
+    {
+        //console.log("info active");
+    }
+    else if(HelperGeneral.isPortalScreenActive())
+    {
+        GameScene.instance.closePortalInfo();
+    }
+    else
+    {
+        //console.log("showStartInfo()");
+        //GameScene.instance.showStartInfo();
+    }
+    
 }
 
 function onTouchDivLeftStart(e:any)
@@ -256,8 +284,6 @@ if(HelperGeneral.isMobileDevice())
 
     document.getElementById("pointerlock")!.style.display = "none";
     document.getElementById("pointerlock-inner")!.style.display = "none";
-    
-    document.getElementById('navigation-mobile')!.style.display = "flex";
 }
 else
 {
@@ -276,5 +302,8 @@ window.addEventListener('resize', onWindowResize, false );
 window.addEventListener('orientationchange', onWindowResize, false);
 document.addEventListener('focusin', onFocusGained); //?
 document.addEventListener('focusout', onFocusLost);  //?
+document.getElementById('infoscreen-close')?.addEventListener('click', closeInfoScreen);
+
+document.getElementById("pointerlock-inner")!.innerHTML = '<img src="/img/loading.svg" alt="loading animation" />';
 
 export {getSceneFromLocation};

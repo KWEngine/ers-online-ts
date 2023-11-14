@@ -1,3 +1,4 @@
+import GameScene from "../scene/GameScene";
 import HelperGeneral from "./HelperGeneral";
 
 class HelperControls
@@ -5,24 +6,31 @@ class HelperControls
     public static _keys:Map<string, boolean> = new Map<string, boolean>();
     public static _motionRotation:number[] = [0, 0];
     public static _motionMove:number[] = [0, 0];
-    private static _pointerLocked:boolean = false;
     public static _hasFocus:boolean = true;
-    public static _camMoveStrafeId = -1;
-    public static _camPitchYawId = -1;
+    public static _camMoveStrafeId:number = -1;
+    public static _camPitchYawId:number = -1;
  
     public static isPointerLocked():boolean
     {
-        return this._pointerLocked;
+        return document.pointerLockElement === GameScene.instance.getRenderDomElement();
     }
 
-    public static setPointerLock(state:boolean)
+    public static exitPointerLockForInfoScreen():void
     {
-        this._pointerLocked = state;
+        if(this.isPointerLocked())
+        {
+            document.exitPointerLock();
+        }
+    }
+
+    public static enterPointerLockAfterInfoScreen():void
+    {
+        GameScene.instance.getRenderDomElement().requestPointerLock();
     }
 
     public static updatePlayerControlsForDesktop():void
     {
-        if(HelperControls._pointerLocked)
+        if(HelperControls.isPointerLocked())
         {
             if(HelperGeneral.isMobileDevice() == false)
             {
@@ -57,8 +65,8 @@ class HelperControls
     
     public static setCameraRotationMobile(x:number, y:number):void
     {
-        HelperControls._motionRotation[0] = (-x * Math.PI / 180) * 2.5;
-        HelperControls._motionRotation[1] = (-y * Math.PI / 180) * 2.5;
+        HelperControls._motionRotation[0] = (-x * Math.PI / 180) * 1.5;
+        HelperControls._motionRotation[1] = (-y * Math.PI / 180) * 1.5;
     }
 }
 export default HelperControls;

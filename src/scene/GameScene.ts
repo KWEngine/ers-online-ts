@@ -180,6 +180,7 @@ class GameScene
 
     public async load(sceneName:string)
     {
+        
         // Lies die Szeneninfos aus der entsprechenden JSON-Datei ein:
         let s:ERSScene = HelperScene.parseSceneSettings(sceneName);
 
@@ -200,13 +201,20 @@ class GameScene
 
         // Initialisiere Instanzen und Lichtgebung:
         this.init(s.inits);
+
+        if(HelperGeneral.isMobileDevice())
+        {
+            HelperGeneral.setMobileControlsVisible(true);
+        }
+        else
+        {
+            this.showStartInfo();
+        }
+
     }
 
     private init(inits:ERSSceneInits):void
     {
-        let pointerlockMessage:HTMLElement|null = document.getElementById("pointerlock-inner"); 
-        pointerlockMessage!.innerHTML = "Drücke diese Schaltfläche<br />um fortzufahren.";
-
         const ambientlight = new AmbientLight(parseInt(inits.ambientLight));
         this._scene.add(ambientlight);
         this.setBackgroundImage(inits.background_image);
@@ -234,6 +242,7 @@ class GameScene
             portal.setPosition(inits.portals[i].position[0], inits.portals[i].position[1], inits.portals[i].position[2]);
             portal.setRotation(inits.portals[i].rotation[0], inits.portals[i].rotation[1], inits.portals[i].rotation[2]);
             portal.setScale(inits.portals[i].scale[0], inits.portals[i].scale[1], inits.portals[i].scale[2]);
+            portal.setTarget(inits.portals[i].target);
             this.addObject(portal);
         }
 
@@ -244,8 +253,11 @@ class GameScene
             infospot.setPosition(inits.infospots[i].position[0], inits.infospots[i].position[1], inits.infospots[i].position[2]);
             infospot.setRotation(inits.infospots[i].rotation[0], inits.infospots[i].rotation[1], inits.infospots[i].rotation[2]);
             infospot.setScale(inits.infospots[i].scale[0], inits.infospots[i].scale[1], inits.infospots[i].scale[2]);
+            infospot.setInnerHTMLSource(inits.infospots[i].innerHTMLSource);
             this.addObject(infospot);
         }
+
+        
     }
 
     private async loadStaticModels()
@@ -407,17 +419,53 @@ class GameScene
 
     public showStartInfo():void
     {
-        HelperControls.setPointerLock(false);
-        this._targetElement.style.cursor = 'default';
-        document.getElementById('pointerlock-inner')!.innerHTML = "<span>Klicke mit der linken Maustaste, <br /> um deine Tour zu beginnen!</span>";
+        document.getElementById("pointerlock")!.setAttribute("style", "-webkit-backdrop-filter: blur(0.5rem) contrast(125%) brightness(0.8);");
+        document.getElementById("pointerlock")!.setAttribute("style", "backdrop-filter: blur(0.5rem) contrast(125%) brightness(0.8);");
+        document.getElementById("pointerlock")!.style.opacity = "1";
+        document.getElementById('pointerlock-inner')!.innerHTML = "<span>Betätige diese Schaltfläche, <br /> um deine Tour zu beginnen!</span>";
         document.getElementById("pointerlock")!.style.display = "flex";
+    }
+
+    public showPortalInfo():void
+    {
+        HelperGeneral.setInfoSreenActive(2); // 0 = disabled, 1 = info, 2 = portal
+
+        if(HelperGeneral.isMobileDevice())
+        {
+            HelperGeneral.setMobileControlsVisible(false);
+
+            HelperControls._motionMove[0] = 0;
+            HelperControls._motionMove[1] = 0;
+            HelperControls._camPitchYawId = -1;
+            HelperControls._camMoveStrafeId = -1;
+
+            
+        }
+        else
+        {
+            HelperControls._motionMove[0] = 0;
+            HelperControls._motionMove[1] = 0;
+            //HelperControls._motionRotation[0] = 0;
+            //HelperControls._motionRotation[1] = 0;
+            HelperControls.exitPointerLockForInfoScreen();
+        }
+        
+        document.getElementById("infoscreen")!.setAttribute("style", "-webkit-backdrop-filter: blur(0.5rem) contrast(125%) brightness(0.8);");
+        document.getElementById("infoscreen")!.setAttribute("style", "backdrop-filter: blur(0.5rem) contrast(125%) brightness(0.8);");
+        document.getElementById("infoscreen")!.style.opacity = "1";
+        document.getElementById('infoscreen')!.style.display = "flex";
+    }
+
+    public closePortalInfo():void
+    {
+        HelperGeneral.setInfoSreenActive(0); // 0 = disabled, 1 = info, 2 = portal
+        HelperControls.enterPointerLockAfterInfoScreen();
+        document.getElementById("infoscreen")!.style.opacity = "0";
+        document.getElementById('infoscreen')!.style.display = "none";
     }
 
     public makeSceneActive():void
     {
-        this._targetElement.style.cursor = 'none';
-        HelperControls.setPointerLock(true);
-        
         document.getElementById("pointerlock")!.style.display = "none";
     }
 
