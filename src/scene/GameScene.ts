@@ -17,6 +17,7 @@ import HelperControls from "../helpers/HelperControls";
 import HitboxG from "../model/HitboxG";
 import ERSPortal from "../game/ERSPortal";
 import CameraState from "../game/CameraState";
+import { getData } from "../inc";
 
 class GameScene
 {
@@ -243,6 +244,7 @@ class GameScene
             portal.setRotation(inits.portals[i].rotation[0], inits.portals[i].rotation[1], inits.portals[i].rotation[2]);
             portal.setScale(inits.portals[i].scale[0], inits.portals[i].scale[1], inits.portals[i].scale[2]);
             portal.setTarget(inits.portals[i].target);
+            portal.setInnerHTMLSource(inits.portals[i].innerHTMLSource);
             this.addObject(portal);
         }
 
@@ -470,7 +472,7 @@ class GameScene
         }
     }
 
-    private setInfoScreenVisible(visible:boolean):void
+    private setInfoScreenVisible(visible:boolean, html:string = ""):void
     {
         if(visible)
         {
@@ -478,20 +480,27 @@ class GameScene
             document.getElementById("infoscreen")!.style.opacity = "1";
             document.getElementById('infoscreen')!.style.display = "flex";
             document.getElementById('infoscreen-close')!.innerText = "X";
+            document.getElementById('infoscreen-inner')!.innerHTML = html;
         }
         else{
             HelperGeneral.setMobileControlsVisible(true);
             document.getElementById('infoscreen')!.style.display = "none";
             document.getElementById("infoscreen")!.style.opacity = "0";
+            document.getElementById('infoscreen-inner')!.innerHTML = "";
         }
     }
 
-    public showPortalInfo():void
+    public async showPortalInfo(innerHTMLSource:string)
     {
+        let url = '/portalhtml/' + innerHTMLSource;
+        const html:any = await getData(url);
+
+        //getData(url).then(response => HTML_infoboxText.innerHTML = response);    
+
         HelperGeneral.setInfoSreenActive(2); // 0 = disabled, 1 = info, 2 = portal
         this.resetControlsForOverlay();
         this.setOverlayVisible(true);
-        this.setInfoScreenVisible(true);
+        this.setInfoScreenVisible(true, html);
     }
 
     public closePortalInfo():void

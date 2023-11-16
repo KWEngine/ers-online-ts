@@ -3,7 +3,7 @@ import InteractiveObject from "./InteractiveObject";
 class ERSPortal extends InteractiveObject
 {
     private _target:string = "";
-    private _innerHTML:string = "";
+    private _innerHTMLSource:string = "";
 
     public act(): void 
     {
@@ -20,14 +20,14 @@ class ERSPortal extends InteractiveObject
         return this._target;
     }
 
-    public setInnerHTML(html:string):void
+    public setInnerHTMLSource(html:string):void
     {
-        this._innerHTML = html;
+        this._innerHTMLSource = html;
     }
 
-    public getInnerHTML():string
+    public getInnerHTMLSource():string
     {
-        return this._innerHTML;
+        return this._innerHTMLSource;
     }
 }
 export default ERSPortal;

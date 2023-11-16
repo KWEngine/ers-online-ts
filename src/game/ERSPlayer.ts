@@ -4,6 +4,7 @@ import GameScene from "../scene/GameScene";
 import InteractiveObject from "./InteractiveObject";
 import Collision from "./Collision";
 import ERSPortal from "./ERSPortal";
+import ERSInfoSpot from "./ERSInfoSpot";
 
 class ERSPlayer extends InteractiveObject
 {
@@ -13,7 +14,7 @@ class ERSPlayer extends InteractiveObject
 
     public act(): void 
     {
-        let portal:boolean = false;
+        let portal:string = "";
 
         this.updateDirectionVector();
         this.moveOffsetByVectorAndSpeed(this._direction, this._speed);
@@ -24,14 +25,18 @@ class ERSPlayer extends InteractiveObject
             let c:Collision = collisionList[i];
             if(c.getCollider().getGameObject() instanceof ERSPortal)
             {
-                portal = true;
+                portal = (c.getCollider().getGameObject() as ERSPortal).getInnerHTMLSource();
+            }
+            else if(c.getCollider().getGameObject() instanceof ERSInfoSpot)
+            {
+
             }
             this.moveOffsetByVector(c.getMTV());
         }
 
-        if(portal)
+        if(portal.length > 0)
         {
-            GameScene.instance.showPortalInfo();
+            GameScene.instance.showPortalInfo(portal);
         }
     }
 
