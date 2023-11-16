@@ -99,9 +99,9 @@ html, body
 #navigation-mobile
 {
   position:absolute;
-  bottom:5vh;
-  left:7.5%;
-  width:85%;
+  bottom:2vh;
+  left:4%;
+  width:92%;
   display:none;
   z-index: 3;
   height:20vh;
@@ -129,6 +129,9 @@ html, body
   #navigation-mobile
   {
     height:15vw;
+    bottom:4vh;
+    left:7.5%;
+    width:85%;
   }
 }
 
