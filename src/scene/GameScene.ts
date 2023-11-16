@@ -417,19 +417,27 @@ class GameScene
         return false; // todo
     }
 
-    private showOverlay():void
+    private setOverlayVisible(visible:boolean):void
     {
-        document.getElementById("pointerlock")!.setAttribute("style", "-webkit-backdrop-filter: blur(0.5rem) contrast(125%) brightness(0.8);");
-        document.getElementById("pointerlock")!.setAttribute("style", "backdrop-filter: blur(0.5rem) contrast(125%) brightness(0.8);");
-        document.getElementById("pointerlock")!.style.opacity = "1";
-        document.getElementById("pointerlock")!.style.display = "flex";
+        if(visible)
+        {
+            document.getElementById("pointerlock")!.setAttribute("style", "-webkit-backdrop-filter: blur(0.5rem) contrast(125%) brightness(0.8);");
+            document.getElementById("pointerlock")!.setAttribute("style", "backdrop-filter: blur(0.5rem) contrast(125%) brightness(0.8);");
+            document.getElementById("pointerlock")!.style.opacity = "1";
+            document.getElementById("pointerlock")!.style.display = "flex";
+        }
+        else
+        {
+            document.getElementById("pointerlock")!.style.opacity = "0";
+            document.getElementById("pointerlock")!.style.display = "none";
+        }
     }
 
     public showStartInfo():void
     {
         if(HelperGeneral.isMobileDevice() == false)
         {
-            this.showOverlay();   
+            this.setOverlayVisible(true);   
             document.getElementById('pointerlock-msg')!.innerHTML = "<span>Betätige diese Schaltfläche, <br /> um deine Tour zu beginnen!</span>";
             document.getElementById("pointerlock-msg")!.style.opacity = "1";
             document.getElementById("pointerlock-msg")!.style.display = "flex";
@@ -466,8 +474,8 @@ class GameScene
             document.getElementById('infoscreen-close')!.innerText = "X";
         }
         else{
-            document.getElementById("infoscreen")!.style.opacity = "0";
             document.getElementById('infoscreen')!.style.display = "none";
+            document.getElementById("infoscreen")!.style.opacity = "0";
         }
     }
 
@@ -475,7 +483,7 @@ class GameScene
     {
         HelperGeneral.setInfoSreenActive(2); // 0 = disabled, 1 = info, 2 = portal
         this.resetControlsForOverlay();
-        this.showOverlay();
+        this.setOverlayVisible(true);
         this.setInfoScreenVisible(true);
     }
 
@@ -484,6 +492,7 @@ class GameScene
         HelperGeneral.setInfoSreenActive(0); // 0 = disabled, 1 = info, 2 = portal
         HelperControls.enterPointerLockAfterInfoScreen();
         this.setInfoScreenVisible(false);
+        this.setOverlayVisible(false);
     }
 
     public makeSceneActive():void
