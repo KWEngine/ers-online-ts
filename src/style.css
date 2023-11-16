@@ -105,7 +105,7 @@ html, body
   width:92%;
   display:none;
   z-index: 3;
-  height:15vh;
+  height:15vh; /* portrait */
 }
 
 #navigation-mobile > #navigation-mobile-left, #navigation-mobile-right
@@ -133,7 +133,6 @@ html, body
     bottom:4vh;
     left:7.5%;
     width:85%;
-    height:20vh;
   }
 }
 
