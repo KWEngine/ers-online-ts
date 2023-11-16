@@ -63,10 +63,12 @@ class HelperControls
         HelperControls._motionRotation[1] += -y * Math.PI / 180;
     }
     
-    public static setCameraRotationMobile(x:number, y:number):void
+    public static addCameraRotationMobile(x:number, y:number):void
     {
-        HelperControls._motionRotation[0] = (-x * Math.PI / 180) * 1.5;
-        HelperControls._motionRotation[1] = (-y * Math.PI / 180) * 1.5;
+        x = x * x;
+        y = HelperGeneral.clamp(y, -0.5, +0.5);
+        HelperControls._motionRotation[0] = (-x * Math.PI / 180) * 1.0;
+        HelperControls._motionRotation[1] = (-y * Math.PI / 180) * 1.0;
     }
 }
 export default HelperControls;

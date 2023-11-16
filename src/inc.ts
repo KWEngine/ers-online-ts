@@ -184,7 +184,7 @@ function onTouchDivRightStart(e:any)
             let rect = e.target.getBoundingClientRect();
             let x = (e.changedTouches[i].clientX - rect.left) / rect.width - 0.5; 
             let y = (e.changedTouches[i].clientY - rect.top) / rect.height - 0.5;
-            HelperControls.setCameraRotationMobile(y > 0.5 ? 0.5 : y < -0.5 ? -0.5 : y, x);
+            HelperControls.addCameraRotationMobile(y, x);
             HelperControls._camPitchYawId = e.changedTouches[i].identifier;
             break;
         }
@@ -209,7 +209,7 @@ function onTouchDivRight(e:any)
             let rect:any = e.target.getBoundingClientRect();
             let x:number = (e.changedTouches[i].clientX - rect.left) / rect.width - 0.5; 
             let y:number = (e.changedTouches[i].clientY - rect.top) / rect.height - 0.5;
-            HelperControls.setCameraRotationMobile(y > 0.5 ? 0.5 : y < -0.5 ? -0.5 : y, x);
+            HelperControls.addCameraRotationMobile(y, x);
             break;
         }
 
@@ -283,14 +283,15 @@ if(HelperGeneral.isMobileDevice())
     */
 
     document.getElementById("pointerlock")!.style.display = "none";
-    document.getElementById("pointerlock-inner")!.style.display = "none";
+    document.getElementById("pointerlock-msg")!.style.display = "none";
+    document.getElementById("pointerlock-msg")!.style.opacity = "0";
 }
 else
 {
     document.body.addEventListener('mousemove', onMouseMove);
     document.body.addEventListener('keydown', onKeyDown);
     document.body.addEventListener('keyup', onKeyUp);
-    document.getElementById('pointerlock')!.addEventListener('click', pointerLock);
+    document.getElementById('pointerlock-msg')!.addEventListener('click', pointerLock);
     
     if ("onpointerlockchange" in document)
     {
@@ -302,8 +303,6 @@ window.addEventListener('resize', onWindowResize, false );
 window.addEventListener('orientationchange', onWindowResize, false);
 document.addEventListener('focusin', onFocusGained); //?
 document.addEventListener('focusout', onFocusLost);  //?
-document.getElementById('infoscreen-close')?.addEventListener('click', closeInfoScreen);
-
-document.getElementById("pointerlock-inner")!.innerHTML = '<img src="/img/loading.svg" alt="loading animation" />';
+document.getElementById('infoscreen-close')!.addEventListener('click', closeInfoScreen);
 
 export {getSceneFromLocation};

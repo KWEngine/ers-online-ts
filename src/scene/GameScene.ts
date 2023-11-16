@@ -417,19 +417,24 @@ class GameScene
         return false; // todo
     }
 
-    public showStartInfo():void
+    private showOverlay():void
     {
         document.getElementById("pointerlock")!.setAttribute("style", "-webkit-backdrop-filter: blur(0.5rem) contrast(125%) brightness(0.8);");
         document.getElementById("pointerlock")!.setAttribute("style", "backdrop-filter: blur(0.5rem) contrast(125%) brightness(0.8);");
         document.getElementById("pointerlock")!.style.opacity = "1";
-        document.getElementById('pointerlock-inner')!.innerHTML = "<span>Betätige diese Schaltfläche, <br /> um deine Tour zu beginnen!</span>";
         document.getElementById("pointerlock")!.style.display = "flex";
     }
 
-    public showPortalInfo():void
+    public showStartInfo():void
     {
-        HelperGeneral.setInfoSreenActive(2); // 0 = disabled, 1 = info, 2 = portal
+        this.showOverlay();   
+        document.getElementById('pointerlock-msg')!.innerHTML = "<span>Betätige diese Schaltfläche, <br /> um deine Tour zu beginnen!</span>";
+        document.getElementById("pointerlock-msg")!.style.opacity = "1";
+        document.getElementById("pointerlock-msg")!.style.display = "flex";
+    }
 
+    private resetControlsForOverlay():void
+    {
         if(HelperGeneral.isMobileDevice())
         {
             HelperGeneral.setMobileControlsVisible(false);
@@ -445,28 +450,43 @@ class GameScene
         {
             HelperControls._motionMove[0] = 0;
             HelperControls._motionMove[1] = 0;
-            //HelperControls._motionRotation[0] = 0;
-            //HelperControls._motionRotation[1] = 0;
             HelperControls.exitPointerLockForInfoScreen();
         }
-        
-        document.getElementById("infoscreen")!.setAttribute("style", "-webkit-backdrop-filter: blur(0.5rem) contrast(125%) brightness(0.8);");
-        document.getElementById("infoscreen")!.setAttribute("style", "backdrop-filter: blur(0.5rem) contrast(125%) brightness(0.8);");
-        document.getElementById("infoscreen")!.style.opacity = "1";
-        document.getElementById('infoscreen')!.style.display = "flex";
+    }
+
+    private setInfoScreenVisible(visible:boolean):void
+    {
+        if(visible)
+        {
+            document.getElementById("infoscreen")!.style.opacity = "1";
+            document.getElementById('infoscreen')!.style.display = "flex";
+            document.getElementById('infoscreen-close')!.innerText = "X";
+        }
+        else{
+            document.getElementById("infoscreen")!.style.opacity = "0";
+            document.getElementById('infoscreen')!.style.display = "none";
+        }
+    }
+
+    public showPortalInfo():void
+    {
+        HelperGeneral.setInfoSreenActive(2); // 0 = disabled, 1 = info, 2 = portal
+        this.resetControlsForOverlay();
+        this.showOverlay();
+        this.setInfoScreenVisible(true);
     }
 
     public closePortalInfo():void
     {
         HelperGeneral.setInfoSreenActive(0); // 0 = disabled, 1 = info, 2 = portal
         HelperControls.enterPointerLockAfterInfoScreen();
-        document.getElementById("infoscreen")!.style.opacity = "0";
-        document.getElementById('infoscreen')!.style.display = "none";
+        this.setInfoScreenVisible(false);
     }
 
     public makeSceneActive():void
     {
         document.getElementById("pointerlock")!.style.display = "none";
+        document.getElementById("pointerlock-msg")!.style.display = "none";
     }
 
     public getCameraLookAtVector():Vector3
