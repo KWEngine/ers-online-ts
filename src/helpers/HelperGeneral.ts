@@ -17,15 +17,18 @@ class HelperGeneral
 
     public static setMobileControlsVisible(v:boolean):void
     {
-        if(v)
+        if(HelperGeneral.isMobileDevice())
         {
-            document.getElementById('navigation-mobile')!.style.opacity = "1";
-            document.getElementById('navigation-mobile')!.style.display = "flex";
-        }
-        else
-        {
-            document.getElementById('navigation-mobile')!.style.opacity = "0";
-            document.getElementById('navigation-mobile')!.style.display = "none";
+            if(v)
+            {
+                document.getElementById('navigation-mobile')!.style.opacity = "1";
+                document.getElementById('navigation-mobile')!.style.display = "flex";
+            }
+            else
+            {
+                document.getElementById('navigation-mobile')!.style.opacity = "0";
+                document.getElementById('navigation-mobile')!.style.display = "none";
+            }
         }
     }
 
