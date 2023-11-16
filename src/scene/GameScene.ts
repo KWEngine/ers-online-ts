@@ -448,7 +448,7 @@ class GameScene
     {
         if(HelperGeneral.isMobileDevice())
         {
-            HelperGeneral.setMobileControlsVisible(false);
+            
 
             HelperControls._motionMove[0] = 0;
             HelperControls._motionMove[1] = 0;
@@ -469,11 +469,13 @@ class GameScene
     {
         if(visible)
         {
+            HelperGeneral.setMobileControlsVisible(false);
             document.getElementById("infoscreen")!.style.opacity = "1";
             document.getElementById('infoscreen')!.style.display = "flex";
             document.getElementById('infoscreen-close')!.innerText = "X";
         }
         else{
+            HelperGeneral.setMobileControlsVisible(true);
             document.getElementById('infoscreen')!.style.display = "none";
             document.getElementById("infoscreen")!.style.opacity = "0";
         }
