@@ -92,7 +92,7 @@ function closeInfoScreen(e:any)
         //console.log("showStartInfo()");
         //GameScene.instance.showStartInfo();
     }
-    
+    e.preventDefault();
 }
 
 function onTouchDivLeftStart(e:any)
