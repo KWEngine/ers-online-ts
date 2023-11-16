@@ -310,7 +310,14 @@ class GameScene
         this._player.addRotationY(rotation[1]);
         this._player.setScale(scale[0], scale[1], scale[2]);
         this._player.setYOffset(yOffset);
-        this._cameraStateCurrent._eulerInitial.set(0, HelperGeneral.deg2rad(-inits.player.lookAt), 0);
+        if(HelperGeneral.isMobileDevice())
+        {
+            this._cameraStateCurrent._euler.set(0, HelperGeneral.deg2rad(-inits.player.lookAt), 0);
+        }
+        else
+        {
+            this._cameraStateCurrent._eulerInitial.set(0, HelperGeneral.deg2rad(-inits.player.lookAt), 0);
+        }
         this.addObject(this._player);
     }
 
