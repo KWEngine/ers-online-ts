@@ -25,7 +25,8 @@ class HelperControls
 
     public static enterPointerLockAfterInfoScreen():void
     {
-        GameScene.instance.getRenderDomElement().requestPointerLock();
+        if(HelperGeneral.isMobileDevice() == false)
+            GameScene.instance.getRenderDomElement().requestPointerLock();
     }
 
     public static updatePlayerControlsForDesktop():void
