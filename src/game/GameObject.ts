@@ -89,11 +89,22 @@ abstract class GameObject
         return this._stateCurrent._position.clone();
     }
 
+    public getPositionY():number
+    {
+        return this._stateCurrent._position.y;
+    }
+
     public setPosition(x:number, y:number, z:number):void
     {
         this._stateCurrent._position.x = x;
         this._stateCurrent._position.y = y;
         this._stateCurrent._position.z = z;
+        this.updateHitboxes();
+    }
+
+    public setPositionY(y:number):void
+    {
+        this._stateCurrent._position.y = y;
         this.updateHitboxes();
     }
 

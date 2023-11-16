@@ -310,8 +310,7 @@ class GameScene
         this._player.addRotationY(rotation[1]);
         this._player.setScale(scale[0], scale[1], scale[2]);
         this._player.setYOffset(yOffset);
-        this._camera.position.set(position[0], position[1] + yOffset, position[2]);
-        this._camera.lookAt(inits.player.lookAt[0], inits.player.lookAt[1] + yOffset, inits.player.lookAt[2]);
+        this._cameraStateCurrent._eulerInitial.set(0, HelperGeneral.deg2rad(-inits.player.lookAt), 0);
         this.addObject(this._player);
     }
 
@@ -448,14 +447,11 @@ class GameScene
     {
         if(HelperGeneral.isMobileDevice())
         {
-            
-
             HelperControls._motionMove[0] = 0;
             HelperControls._motionMove[1] = 0;
             HelperControls._camPitchYawId = -1;
             HelperControls._camMoveStrafeId = -1;
 
-            
         }
         else
         {
