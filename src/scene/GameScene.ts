@@ -313,6 +313,8 @@ class GameScene
         if(HelperGeneral.isMobileDevice())
         {
             //this._cameraStateCurrent._euler.set(0, HelperGeneral.deg2rad(-inits.player.lookAt), 0);
+            this._cameraStateCurrent._euler.x = HelperGeneral.deg2rad(-inits.player.lookAt);
+            this._cameraStateCurrent._euler.y = 0;
         }
         else
         {
