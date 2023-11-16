@@ -427,10 +427,13 @@ class GameScene
 
     public showStartInfo():void
     {
-        this.showOverlay();   
-        document.getElementById('pointerlock-msg')!.innerHTML = "<span>Betätige diese Schaltfläche, <br /> um deine Tour zu beginnen!</span>";
-        document.getElementById("pointerlock-msg")!.style.opacity = "1";
-        document.getElementById("pointerlock-msg")!.style.display = "flex";
+        if(HelperGeneral.isMobileDevice() == false)
+        {
+            this.showOverlay();   
+            document.getElementById('pointerlock-msg')!.innerHTML = "<span>Betätige diese Schaltfläche, <br /> um deine Tour zu beginnen!</span>";
+            document.getElementById("pointerlock-msg")!.style.opacity = "1";
+            document.getElementById("pointerlock-msg")!.style.display = "flex";
+        }
     }
 
     private resetControlsForOverlay():void
