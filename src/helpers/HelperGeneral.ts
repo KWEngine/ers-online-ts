@@ -12,6 +12,8 @@ class HelperGeneral
     private static readonly _identityQuaternion = new Quaternion(0,0,0,1);
     public static readonly _mat4Identity = new Matrix4();
     public static readonly MAXNUM:number = 9999999.9;
+    public static readonly RAYCASTOFFSET:number = 100;
+    public static readonly PORTALCOOLDOWN:number = 5;
     private static readonly ISMOBILE:boolean = HelperGeneral.checkIfMobileDevice();
     private static _infoScreenState:number = 0; // 0 = disabled, 1 = info, 2 = portal
 
@@ -30,6 +32,11 @@ class HelperGeneral
                 document.getElementById('navigation-mobile')!.style.display = "none";
             }
         }
+    }
+
+    public static roundTo2(n:number):number
+    {
+        return Math.round(n * 100) / 100;
     }
 
     public static setInfoSreenActive(state:number):void
@@ -189,10 +196,11 @@ class HelperGeneral
 
     public static transformPosition(pos:Vector3, mat:Matrix4, result:Vector3):void
     {
-        result.x = pos.x * mat.elements[0] + pos.y * mat.elements[4] + pos.z * mat.elements[8] + mat.elements[12];
-        result.y = pos.x * mat.elements[1] + pos.y * mat.elements[5] + pos.z * mat.elements[9] + mat.elements[13];
-        result.z = pos.x * mat.elements[2] + pos.y * mat.elements[6] + pos.z * mat.elements[10] + mat.elements[14];
-
+        result.set(
+            pos.x * mat.elements[0] + pos.y * mat.elements[4] + pos.z * mat.elements[8] + mat.elements[12],
+            pos.x * mat.elements[1] + pos.y * mat.elements[5] + pos.z * mat.elements[9] + mat.elements[13],
+            pos.x * mat.elements[2] + pos.y * mat.elements[6] + pos.z * mat.elements[10] + mat.elements[14]
+        );
     }
 }
 

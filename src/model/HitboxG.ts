@@ -1,10 +1,11 @@
-import { Matrix4, Quaternion, Vector3 } from "three";
+import { Matrix4, Quaternion, Triangle, Vector3 } from "three";
 import GameObject from "../game/GameObject";
 import Collision from "../game/Collision";
 import Hitbox from "./Hitbox";
 import HelperGeneral from "../helpers/HelperGeneral";
 import Face from "./Face";
 import ERSPlayer from "../game/ERSPlayer";
+import ERSHitboxStatic from "../game/ERSHitboxStatic";
 
 class HitboxG
 {
@@ -23,12 +24,14 @@ class HitboxG
     private _meshVertices:Vector3[] = [];
     private _meshNormals:Vector3[] =  [];
     private _meshFaces:Face[] = [];
+    private _isStairsOrFloor:boolean;
 
     private _collisionCandidates:HitboxG[];
 
     constructor(og:Hitbox, g:GameObject)
     {
-        this._name = og.getName();
+        this._name = og.getName().toLowerCase();
+        this._isStairsOrFloor = this._name.includes('floor');
         this._id = HitboxG._idCounter++;
         this._gameObject = g;
         this._collisionCandidates = [];
@@ -86,6 +89,24 @@ class HitboxG
     public getGameObject():GameObject
     {
         return this._gameObject;
+    }
+
+    public isStairsOrFloor():boolean
+    {
+        return this._isStairsOrFloor;
+    }
+
+    public getFaces():Face[]
+    {
+        return this._meshFaces;
+    }
+
+    public updateFaces():void
+    {
+        for(let i:number = 0; i < this._meshFaces.length; i++)
+        {
+            this._meshFaces[i].updateTriangle(this._matrix, this._matrixInverse);
+        }
     }
 
     public update(scale:Vector3, rotation:Quaternion, translation:Vector3):void

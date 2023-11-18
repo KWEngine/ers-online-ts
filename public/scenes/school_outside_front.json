@@ -13,7 +13,7 @@
             "position": [-9.5, 0, 15.5],
             "rotation": [0, 0, 0],
             "scale":[1, 1.8, 1],
-            "yOffset": 1.7,
+            "yOffset": 1.6,
             "lookAt": 20
         },
         "renderObjects":
@@ -34,7 +34,7 @@
         [
             {
                 "name": "enter-forum",
-                "position": [0, 0.8, -10],
+                "position": [-0.3, 0.1, -12],
                 "rotation": [0, 180, 0],
                 "scale": [1, 1, 1],
                 "model": "ers-arrow.glb",

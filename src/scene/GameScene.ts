@@ -220,20 +220,19 @@ class GameScene
         this._scene.add(ambientlight);
         this.setBackgroundImage(inits.background_image);
 
-        this.generatePlayer(inits);
+        
+        for(let i:number = 0; i < inits.hitboxes.length; i++)
+        {
+            let model:Group = this._modelDatabase.get(inits.hitboxes[i].model)!;
+            let o:ERSHitboxStatic = new ERSHitboxStatic(model, inits.hitboxes[i].name, inits.hitboxes[i].model);
+            this.addObject(o);
+        }
 
         for(let i:number = 0; i < inits.renderObjects.length; i++)
         {
             let model:Group = this._modelDatabase.get(inits.renderObjects[i].model)!;
             let ro:ERSRenderObject = new ERSRenderObject(model, inits.renderObjects[i].name, inits.renderObjects[i].model);
             this.addObject(ro);
-        }
-
-        for(let i:number = 0; i < inits.hitboxes.length; i++)
-        {
-            let model:Group = this._modelDatabase.get(inits.hitboxes[i].model)!;
-            let o:ERSHitboxStatic = new ERSHitboxStatic(model, inits.hitboxes[i].name, inits.hitboxes[i].model);
-            this.addObject(o);
         }
 
         for(let i: number = 0; i < inits.portals.length; i++)
@@ -259,7 +258,7 @@ class GameScene
             this.addObject(infospot);
         }
 
-        
+        this.generatePlayer(inits);
     }
 
     private async loadStaticModels()
@@ -345,6 +344,7 @@ class GameScene
         {
             this._gameObjects.push(o);
             this.addHitboxesForObject(o);
+            (o as ERSHitboxStatic).updateFaces();
         }
         else if(o instanceof ERSPlayer)
         {

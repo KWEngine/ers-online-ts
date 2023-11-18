@@ -4,6 +4,7 @@ class ERSPortal extends InteractiveObject
 {
     private _target:string = "";
     private _innerHTMLSource:string = "";
+    private _cooldown:number = 0;
 
     public act(): void 
     {

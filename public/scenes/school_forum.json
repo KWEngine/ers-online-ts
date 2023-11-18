@@ -1,0 +1,50 @@
+{
+    "loads":
+    {
+        "models": ["school_forum.glb", "school_forum.hitboxes.glb"]
+    },
+    
+    "inits":
+    {
+        "ambientLight": "0xffffff",
+        "background_image": "/img/panorama_street01.jpg",
+        "player":
+        {
+            "position": [2, 0, 2],
+            "rotation": [0, 0, 0],
+            "scale":[1, 1.8, 1],
+            "yOffset": 1.6,
+            "lookAt": 0
+        },
+        "renderObjects":
+        [
+            {
+                "name": "school_forum",
+                "model": "school_forum.glb"
+            }
+        ],
+        "hitboxes":
+        [
+            {
+                "name": "school_forum_hitboxes",
+                "model":"school_forum.hitboxes.glb"
+            }
+        ],
+        "portals":
+        [
+            {
+                "name": "exit-forum-to-front",
+                "position": [2, 1, 3.5],
+                "rotation": [-90, 0, 0],
+                "scale": [1, 1, 1],
+                "model": "ers-arrow.glb",
+                "target": "/",
+                "innerHTMLSource": "forum-to-start.html"
+            }
+        ],
+        "infospots":
+        [
+            
+        ]
+    }
+}

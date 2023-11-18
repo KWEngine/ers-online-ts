@@ -265,9 +265,13 @@ function getSceneFromLocation(loc:Location):string
     {
         return 'school_outside_front';
     }
-    else if(loc.pathname == "/c-block/")
+    else if(loc.pathname == "/c-block")
     {
         return 'school_outside_front'; // Noch im Test :-)
+    }
+    else if(loc.pathname == "/forum")
+    {
+        return 'school_forum';
     }
 
     // Standard-Fallback-Location:

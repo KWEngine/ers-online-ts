@@ -126,6 +126,8 @@ abstract class GameObject
         this._stateCurrent._position.x += vec.x * speedFactor;
         this._stateCurrent._position.y += vec.y * speedFactor;
         this._stateCurrent._position.z += vec.z * speedFactor;
+
+        this._stateCurrent._position.y -= 0.05;
         this.updateHitboxes();
     }
 

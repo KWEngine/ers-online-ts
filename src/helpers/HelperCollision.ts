@@ -25,6 +25,81 @@ class HelperCollision
         return collisionlist;
     }
 
+    /*
+    internal static bool RayTriangleIntersection(Vector3 rayStart, Vector3 rayDirection, Vector3 vertex0, Vector3 vertex1, Vector3 vertex2, out Vector3 contactPoint)
+    {
+        const float EPSILON = 0.0000001f;
+        contactPoint = Vector3.Zero;
+        Vector3 edge1, edge2, h, s, q;
+        float a, f, u, v;
+        edge1 = vertex1 - vertex0;
+        edge2 = vertex2 - vertex0;
+        h = Vector3.Cross(rayDirection, edge2);
+        a = Vector3.Dot(edge1, h);
+        if (a > -EPSILON && a < EPSILON)
+            return false;    // ray is parallel to triangle
+        f = 1.0f / a;
+        s = rayStart - vertex0;
+        u = f * Vector3.Dot(s, h); 
+        if (u < 0.0 || u > 1.0)
+            return false;
+
+        q = Vector3.Cross(s, edge1);
+        v = f * Vector3.Dot(rayDirection, q); 
+        if (v < 0.0 || u + v > 1.0)
+            return false;
+        float t = f * Vector3.Dot(edge2, q); <--
+        if (t > EPSILON) // ray intersection
+        {
+            contactPoint = rayStart + rayDirection * t;
+            return true;
+        }
+        else
+            return false;
+    }
+    */
+
+    private static edge1:Vector3 = new Vector3(0,0,0);
+    private static edge2:Vector3 = new Vector3(0,0,0);
+    private static h:Vector3 = new Vector3(0,0,0);
+    private static s:Vector3 = new Vector3(0,0,0);
+    private static q:Vector3 = new Vector3(0,0,0);
+
+
+    public static raycastTriangle(rayStart:Vector3, rayDirection:Vector3, vertex0:Vector3, vertex1:Vector3, vertex2:Vector3, contact:Vector3):boolean
+    {
+        const EPSILON:number = 0.0000001;
+        this.edge1.set(vertex1.x - vertex0.x, vertex1.y - vertex0.y, vertex1.z - vertex0.z);
+        this.edge2.set(vertex2.x - vertex0.x, vertex2.y - vertex0.y, vertex2.z - vertex0.z);
+        this.h.crossVectors(rayDirection, this.edge2);
+        let a:number = this.edge1.dot(this.h);
+        if(a > -EPSILON && a < EPSILON)
+            return false;
+
+        let f:number = 1.0 / a;
+        this.s.set(rayStart.x - vertex0.x, rayStart.y - vertex0.y, rayStart.z - vertex0.z);
+        let u:number = f * this.s.dot(this.h);
+        if(u < 0.0 || u > 1.0)
+            return false;
+
+        this.q.crossVectors(this.s, this.edge1);
+        let v:number = f * rayDirection.dot(this.q);
+        if(v < 0.0 || u + v > 1.0)
+            return false;
+
+        let t:number = f * this.edge2.dot(this.q);
+        if(t > EPSILON)
+        {
+            contact.set(
+                rayStart.x + rayDirection.x * t,
+                rayStart.y + rayDirection.y * t,
+                rayStart.z + rayDirection.z * t
+            );
+            return true;
+        }
+        return false;
+    }
+
     public static generateHitboxesFor(o:Object3D, hbs:Hitbox[]):void
     {
         if(o instanceof Mesh)
@@ -174,6 +249,23 @@ class HelperCollision
     {
         let target:HitboxG = new HitboxG(source, g);
         return target;
+    }
+
+    private static sign(p1:Vector3, p2:Vector3, p3:Vector3):number
+    {
+        return (p1.x - p3.x) * (p2.z - p3.z) * (p2.x - p3.x) * (p1.z - p3.z);
+    }
+
+    public static isPointInTriangle2D(p:Vector3, tv1:Vector3, tv2:Vector3, tv3:Vector3):boolean
+    {
+        let d1:number = this.sign(p, tv1, tv2);
+        let d2:number = this.sign(p, tv2, tv3);
+        let d3:number = this.sign(p, tv3, tv1);
+        
+        let has_neg:boolean = d1 < 0 || d2 < 0 || d3 < 0;
+        let has_pos:boolean = d1 > 0 || d2 > 0 || d3 > 0;
+
+        return !(has_neg && has_pos);
     }
 }
 
