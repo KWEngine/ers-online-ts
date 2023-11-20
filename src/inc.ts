@@ -125,11 +125,11 @@ function onTouchDivLeftStart(e:any)
         if(e.target.id == "navigation-mobile-left" && HelperControls._camMoveStrafeId < 0)
         {
             let rect = e.target.getBoundingClientRect();
-            let x:number = (e.changedTouches[i].clientX - rect.left) / rect.width - 0.5; 
-            let y:number = (e.changedTouches[i].clientY - rect.top) / rect.height - 0.5;
+            let x:number = HelperGeneral.clamp((e.changedTouches[i].clientX - rect.left) / rect.width - 0.5, -0.75, 0.75); 
+            let y:number = HelperGeneral.clamp((e.changedTouches[i].clientY - rect.top) / rect.height - 0.5, -0.75, 0.75);
 
-            HelperControls._motionMove[0] = -y * 1.33;
-            HelperControls._motionMove[1] = x * 1.33;
+            HelperControls._motionMove[0] = -y;
+            HelperControls._motionMove[1] = x;
 
             HelperControls._camMoveStrafeId = e.changedTouches[i].identifier;
             break;
@@ -152,11 +152,11 @@ function onTouchDivLeft(e:any)
         if(e.target.id == "navigation-mobile-left" && e.changedTouches[i].identifier == HelperControls._camMoveStrafeId)
         {
             let rect:any = e.target.getBoundingClientRect();
-            let x:number = (e.changedTouches[i].clientX - rect.left) / rect.width - 0.5; 
-            let y:number = (e.changedTouches[i].clientY - rect.top) / rect.height - 0.5;
+            let x:number = HelperGeneral.clamp((e.changedTouches[i].clientX - rect.left) / rect.width - 0.5, -0.75, 0.75); 
+            let y:number = HelperGeneral.clamp((e.changedTouches[i].clientY - rect.top) / rect.height - 0.5, -0.75, 0.75);
 
-            HelperControls._motionMove[0] = -y * 1.33;
-            HelperControls._motionMove[1] = x * 1.33;
+            HelperControls._motionMove[0] = -y;
+            HelperControls._motionMove[1] = x;
             break;
         }
     }
