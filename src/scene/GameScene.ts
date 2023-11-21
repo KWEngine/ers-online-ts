@@ -1,4 +1,4 @@
-import { AmbientLight, PerspectiveCamera, Scene, WebGLRenderer, Vector3, Clock, Group, SphereGeometry, TextureLoader, SRGBColorSpace, MeshBasicMaterial, Mesh } from "three";
+import { AmbientLight, PerspectiveCamera, Scene, WebGLRenderer, Vector3, Clock, Group, SphereGeometry, TextureLoader, SRGBColorSpace, MeshBasicMaterial, Mesh, DirectionalLight, Object3D } from "three";
 import ModelLoader from "../model/ModelLoader";
 import ERSInfoSpot from "../game/ERSInfoSpot";
 import HelperScene from "../helpers/HelperScene";
@@ -36,6 +36,7 @@ class GameScene
     private readonly _hitboxDatabase:Map<string, Hitbox[]>;
 
     private _targetElement:HTMLElement;
+    private _frameCounter:number;
     private _width:number;
     private _height:number;
     private _renderer:WebGLRenderer;
@@ -55,6 +56,7 @@ class GameScene
     private constructor()
     {
         this._dtAccumulator = 0;
+        this._frameCounter = 0;
         this._width = window.innerWidth;
         this._height = window.innerHeight;
         this._modelDatabase = new Map();
@@ -158,10 +160,11 @@ class GameScene
 
         // Aktualisiere Kameraposition:
         this.updateCameraPositionAndOrientation(alpha);
-       
+    
         // Aktualisiere Hintergrund-Meshposition:
         this._background.position.set(this._player!.get3DObject().position.x, 0, this._player!.get3DObject().position.z);
 
+        this._frameCounter++;
         requestAnimationFrame(this.render);
         this._renderer.render(this._scene, this._camera);
     }
@@ -220,6 +223,21 @@ class GameScene
         this._scene.add(ambientlight);
         this.setBackgroundImage(inits.background_image);
 
+        // Füge Lichtquellen hinzu:
+        for(let i:number = 0; i < inits.staticLight.length; i++)
+        {
+            if(inits.staticLight[i].type == "sun")
+            {
+                let l:DirectionalLight = new DirectionalLight(
+                    HelperGeneral.hexToIntColor(inits.staticLight[i].color[0]),
+                    inits.staticLight[i].color[1]);
+                l.position.set(inits.staticLight[i].position[0], inits.staticLight[i].position[1], inits.staticLight[i].position[2]);
+                let dummyTarget:Object3D = new Object3D();
+                dummyTarget.position.set(inits.staticLight[i].target[0], inits.staticLight[i].target[1], inits.staticLight[i].target[2]);
+                this._scene.add(l);
+
+            }
+        }
         
         for(let i:number = 0; i < inits.hitboxes.length; i++)
         {
@@ -240,6 +258,7 @@ class GameScene
             let model:Group = this._modelDatabase.get(inits.portals[i].model)!;
             let portal:ERSPortal = new ERSPortal(model, inits.portals[i].name, inits.portals[i].model);
             portal.setPosition(inits.portals[i].position[0], inits.portals[i].position[1], inits.portals[i].position[2]);
+            portal.setPivot(inits.portals[i].position[0], inits.portals[i].position[1], inits.portals[i].position[2]);
             portal.setRotation(inits.portals[i].rotation[0], inits.portals[i].rotation[1], inits.portals[i].rotation[2]);
             portal.setScale(inits.portals[i].scale[0], inits.portals[i].scale[1], inits.portals[i].scale[2]);
             portal.setTarget(inits.portals[i].target);
@@ -252,6 +271,7 @@ class GameScene
             let model:Group = this._modelDatabase.get(inits.infospots[i].model)!;
             let infospot:ERSInfoSpot = new ERSInfoSpot(model, inits.infospots[i].name, inits.infospots[i].model);
             infospot.setPosition(inits.infospots[i].position[0], inits.infospots[i].position[1], inits.infospots[i].position[2]);
+            infospot.setPivot(inits.infospots[i].position[0], inits.infospots[i].position[1], inits.infospots[i].position[2]);
             infospot.setRotation(inits.infospots[i].rotation[0], inits.infospots[i].rotation[1], inits.infospots[i].rotation[2]);
             infospot.setScale(inits.infospots[i].scale[0], inits.infospots[i].scale[1], inits.infospots[i].scale[2]);
             infospot.setInnerHTMLSource(inits.infospots[i].innerHTMLSource);
@@ -427,6 +447,11 @@ class GameScene
         return false; // todo
     }
 
+    public isOverlayVisible():boolean
+    {
+        return document.getElementById("pointerlock")!.style.display == "flex";
+    }
+
     private setOverlayVisible(visible:boolean):void
     {
         if(visible)
@@ -448,7 +473,7 @@ class GameScene
         if(HelperGeneral.isMobileDevice() == false)
         {
             this.setOverlayVisible(true);   
-            document.getElementById('pointerlock-msg')!.innerHTML = "<span>Betätige diese Schaltfläche, <br /> um deine Tour zu beginnen!</span>";
+            document.getElementById('pointerlock-msg')!.innerHTML = "<span>Betätige diese Schaltfläche, <br /> um fortzufahren!</span>";
             document.getElementById("pointerlock-msg")!.style.opacity = "1";
             document.getElementById("pointerlock-msg")!.style.display = "flex";
         }
@@ -490,12 +515,29 @@ class GameScene
         }
     }
 
+    public async showInfoInfo(innerHTMLSource:string)
+    {
+        let url = '/infohtml/' + innerHTMLSource;
+        const html:any = await getData(url);
+
+        HelperGeneral.setInfoSreenActive(1); // 0 = disabled, 1 = info, 2 = portal
+        this.resetControlsForOverlay();
+        this.setOverlayVisible(true);
+        this.setInfoScreenVisible(true, html);
+    }
+
+    public closeInfoInfo():void
+    {
+        HelperGeneral.setInfoSreenActive(0); // 0 = disabled, 1 = info, 2 = portal
+        HelperControls.enterPointerLockAfterInfoScreen();
+        this.setInfoScreenVisible(false);
+        this.setOverlayVisible(false);
+    }
+
     public async showPortalInfo(innerHTMLSource:string)
     {
         let url = '/portalhtml/' + innerHTMLSource;
         const html:any = await getData(url);
-
-        //getData(url).then(response => HTML_infoboxText.innerHTML = response);    
 
         HelperGeneral.setInfoSreenActive(2); // 0 = disabled, 1 = info, 2 = portal
         this.resetControlsForOverlay();

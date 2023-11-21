@@ -8,6 +8,15 @@
     {
         "ambientLight": "0xffffff",
         "background_image": "/img/panorama_street01.jpg",
+        "staticLight":
+        [
+            {
+                "type": "sun",
+                "position":[50, 50, 50],
+                "target":[0, 0, -5],
+                "color": ["ffffff", 3]
+            }
+        ],
         "player":
         {
             "position": [2, 0, 2],

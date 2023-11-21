@@ -8,6 +8,15 @@
     {
         "ambientLight": "0xffffff",
         "background_image": "/img/panorama_street01.jpg",
+        "staticLight":
+        [
+            {
+                "type": "sun",
+                "position":[50, 50, 50],
+                "target":[0, 0, -5],
+                "color": ["ffffff", 3]
+            }
+        ],
         "player":
         {
             "position": [-9.5, 0, 15.5],
@@ -45,12 +54,12 @@
         "infospots":
         [
             {
-                "name": "test-info",
+                "name": "info_01",
                 "position": [2, 1, 3],
                 "rotation": [0, 0, 0],
-                "scale": [1, 1, 1],
+                "scale": [0.5, 0.5, 0.5],
                 "model": "ers-info.glb",
-                "innerHTMLSource": "test.html"
+                "innerHTMLSource": "outside_front_01.html"
             }
         ]
     }

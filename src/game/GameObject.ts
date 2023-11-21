@@ -34,7 +34,7 @@ abstract class GameObject
         this._statePrevious = new State();
         this._stateRender = new State();
         this.copyHitboxesFromModel();
-        this.updateHitboxes();
+        this.updateHitboxesAndLAV();
     }
 
     private copyHitboxesFromModel()
@@ -69,7 +69,7 @@ abstract class GameObject
     {
         let q:Quaternion = HelperGeneral.quaternionFrom3Axes(x, y, z);
         this._stateCurrent._rotation.set(q.x, q.y, q.z, q.w);
-        this.updateHitboxes();
+        this.updateHitboxesAndLAV();
     }
 
     public getRotation():Quaternion
@@ -89,6 +89,11 @@ abstract class GameObject
         return this._stateCurrent._position.clone();
     }
 
+    public getPositionInstance():Vector3
+    {
+        return this._stateCurrent._position;
+    }
+
     public getPositionY():number
     {
         return this._stateCurrent._position.y;
@@ -99,13 +104,13 @@ abstract class GameObject
         this._stateCurrent._position.x = x;
         this._stateCurrent._position.y = y;
         this._stateCurrent._position.z = z;
-        this.updateHitboxes();
+        this.updateHitboxesAndLAV();
     }
 
     public setPositionY(y:number):void
     {
         this._stateCurrent._position.y = y;
-        this.updateHitboxes();
+        this.updateHitboxesAndLAV();
     }
 
     public moveOffset(x:number, y:number, z:number):void
@@ -113,7 +118,7 @@ abstract class GameObject
         this._stateCurrent._position.x += x;
         this._stateCurrent._position.y += y;
         this._stateCurrent._position.z += z;
-        this.updateHitboxes();
+        this.updateHitboxesAndLAV();
     }
 
     public moveOffsetByVector(v:Vector3):void
@@ -128,7 +133,7 @@ abstract class GameObject
         this._stateCurrent._position.z += vec.z * speedFactor;
 
         this._stateCurrent._position.y -= 0.05;
-        this.updateHitboxes();
+        this.updateHitboxesAndLAV();
     }
 
     public strafeOffsetByVectorAndSpeed(vec:Vector3, speedFactor:number):void
@@ -142,25 +147,38 @@ abstract class GameObject
     {
         let addedRotation:Quaternion = HelperGeneral.quaternionFromAxisAngle("x", degrees);
         this._stateCurrent._rotation.multiply(addedRotation);
-        this.updateHitboxes();
+        this.updateHitboxesAndLAV();
     }
 
     public addRotationY(degrees:number):void
     {
         let addedRotation:Quaternion = HelperGeneral.quaternionFromAxisAngle("y", degrees);
         this._stateCurrent._rotation.multiply(addedRotation);
-        this.updateHitboxes();
+        this.updateHitboxesAndLAV();
     }
 
     public addRotationZ(degrees:number):void
     {
         let addedRotation:Quaternion = HelperGeneral.quaternionFromAxisAngle("z", degrees);
         this._stateCurrent._rotation.multiply(addedRotation);
-        this.updateHitboxes();
+        this.updateHitboxesAndLAV();
     }
 
-    private updateHitboxes():void
+    public getLookAtVector():Vector3
     {
+        return this._stateCurrent._lookAtVector.clone();
+    }
+
+    public getLookAtVectorInstance():Vector3
+    {
+        return this._stateCurrent._lookAtVector;
+    }
+
+    private updateHitboxesAndLAV():void
+    {
+        this._stateCurrent._lookAtVector.set(0, 0, 1);
+        HelperGeneral.rotateVectorByQuaternion(this._stateCurrent._lookAtVector, this._stateCurrent._rotation);
+
         let left:number = 99999999.0;
         let right:number = -99999999.0;
         let bottom:number = 99999999.0;

@@ -98,7 +98,7 @@ function closeInfoScreen(e:any)
 {
     if(HelperGeneral.isInfoScreenActive())
     {
-        //console.log("info active");
+        GameScene.instance.closeInfoInfo();
     }
     else if(HelperGeneral.isPortalScreenActive())
     {

@@ -5,6 +5,9 @@ import { Vector3, Quaternion, Matrix4, Euler, Object3D, Mesh } from "three";
 class HelperGeneral
 {
     private static readonly _zeroVector:Vector3 = new Vector3(0,0,0);
+    private static readonly _qrI:Quaternion = new Quaternion(0, 0, 0, 1);
+    private static readonly _qrS:Quaternion = new Quaternion(0, 0, 0, 1);
+    private static readonly _qrTmp:Quaternion = new Quaternion(0, 0, 0, 1);
     private static readonly _unitX:Vector3 = new Vector3(1,0,0);
     private static readonly _unitY:Vector3 = new Vector3(0,1,0);
     private static readonly _unitZ:Vector3 = new Vector3(0,0,1);
@@ -86,6 +89,10 @@ class HelperGeneral
         dest._rotation.y = src._rotation.y;
         dest._rotation.z = src._rotation.z;
         dest._rotation.w = src._rotation.w;
+
+        dest._lookAtVector.x = src._lookAtVector.x;
+        dest._lookAtVector.y = src._lookAtVector.y;
+        dest._lookAtVector.z = src._lookAtVector.z;
     }
 
     public static blendStates(a:State, b:State, alpha:number, renderState:State):void
@@ -93,6 +100,7 @@ class HelperGeneral
         renderState._position = this._zeroVector.lerpVectors(a._position, b._position, alpha).clone();
         renderState._scale = this._zeroVector.lerpVectors(a._scale, b._scale, alpha).clone();
         renderState._rotation = this._identityQuaternion.slerpQuaternions(a._rotation, b._rotation, alpha).clone();
+        renderState._lookAtVector = this._zeroVector.lerpVectors(a._lookAtVector, b._lookAtVector, alpha).clone();
     }
 
     public static copyStatesCamera(src:CameraState, dest:CameraState)
@@ -115,6 +123,12 @@ class HelperGeneral
         );
     }
 
+    public static hexToIntColor(rrggbb:string):number // erwartet: "rrggbb"
+    {
+        let bbggrr:string = rrggbb.substr(4, 2) + rrggbb.substr(2, 2) + rrggbb.substr(0, 2);
+        return parseInt(bbggrr, 16);
+    }
+
     public static quaternionFromAxisAngle(axisInput:string, angleInDegrees:number):Quaternion
     {
         let axis:Vector3 = axisInput == "x" ? this._unitX : axisInput == "y" ? this._unitY : this._unitZ;
@@ -129,6 +143,22 @@ class HelperGeneral
         result.normalize();
 
         return result;
+    }
+
+    public static rotateVectorByQuaternion(source:Vector3, rotation:Quaternion):void
+    {
+        this._qrI.x = rotation.x;   
+        this._qrI.y = rotation.y;
+        this._qrI.z = rotation.z;
+        this._qrI.w = rotation.w;
+
+        this._qrI.invert();
+        
+        this._qrS.set(source.x, source.y, source.z, 0.0);
+        this._qrTmp.multiplyQuaternions(rotation, this._qrS);
+        this._qrTmp.multiplyQuaternions(this._qrTmp, this._qrI);
+
+        source.set(this._qrTmp.x, this._qrTmp.y, this._qrTmp.z);
     }
 
     public static disableInvisibleMeshes(o:Object3D)

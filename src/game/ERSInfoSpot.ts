@@ -1,32 +1,30 @@
-import InteractiveObject from "./InteractiveObject";
+import GameScene from "../scene/GameScene";
+import ERSRadiusObject from "./ERSRadiusObject";
 
-class ERSInfoSpot extends InteractiveObject
+class ERSInfoSpot extends ERSRadiusObject
 {
-    private _innerHTMLSource:string = "";
-    private _pivotHeight:number = 1;
     private _counter:number = 0;
 
     public act(): void
     {
         let d:number = Math.sin(this._counter);
         this._counter += (Math.PI * 2.0) / 240.0;
-        this.setPositionY(this._pivotHeight + d * 0.5);
+        this.setPositionY(this.getPivotInstance().y + d * 0.25);
         this.addRotationY(0.5);
+
+        if(this.isPlayerNearby())
+        {
+            if(this.isPlayerLookingAtMe() == true && this.isActivatedByPlayer() == false)
+            {
+                this.setActivatedByPlayer(true);
+                GameScene.instance.showInfoInfo(this.getInnerHTMLSource());
+            }
+        } 
     }
 
-    public setPivotHeight(p:number):void
+    public setPivot(x:number, y:number, z:number):void
     {
-        this._pivotHeight = p;
-    }
-
-    public setInnerHTMLSource(t:string):void
-    {
-        this._innerHTMLSource = t;
-    }
-
-    public getInnerHTMLSource():string
-    {
-        return this._innerHTMLSource;
+        this.getPivotInstance().set(x, y, z);
     }
 }
 export default ERSInfoSpot;

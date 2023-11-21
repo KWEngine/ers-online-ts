@@ -72,6 +72,19 @@ html, body
   background-color:red;
 }
 
+.ersinfo-header
+{
+  background-color:black;
+  color:white;
+  margin-bottom:0.5em;
+}
+
+.ersinfo-footer
+{
+  margin-top:1em;
+  border-top:1px solid black;
+}
+
 .portal
 {
   width:100%;
