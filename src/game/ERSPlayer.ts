@@ -22,6 +22,12 @@ class ERSPlayer extends InteractiveObject
 
     public act(): void 
     {
+        if(this.getPositionInstance().y < -0.5)
+        {
+            GameScene.instance.restartWithDefaultPlayerPosition();
+            return;
+        }
+
         this.updateDirectionVector();
         this.moveOffsetByVectorAndSpeed(this._direction, this._speed);
 
@@ -35,9 +41,6 @@ class ERSPlayer extends InteractiveObject
                 continue;   
             }
             
-            //    portal = (c.getCollider().getGameObject() as ERSPortal).getInnerHTMLSource();
-            
-            
             if(c.getCollider().isStairsOrFloor())
             {
                 this.moveOffsetToFloor(c.getCollider());
@@ -47,8 +50,6 @@ class ERSPlayer extends InteractiveObject
                 this.moveOffsetByVector(c.getMTV());
             }
         }
-
-        //    GameScene.instance.showPortalInfo(portal);
     }
 
     private isLookingAt(p:Vector3):boolean

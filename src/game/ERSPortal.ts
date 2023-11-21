@@ -1,3 +1,4 @@
+import { Vector3 } from "three";
 import GameScene from "../scene/GameScene";
 import ERSRadiusObject from "./ERSRadiusObject";
 

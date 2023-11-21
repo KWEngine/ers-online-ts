@@ -331,17 +331,39 @@ class GameScene
         this._player.addRotationY(rotation[1]);
         this._player.setScale(scale[0], scale[1], scale[2]);
         this._player.setYOffset(yOffset);
+        this.setPlayerInitialLookAtRotation(inits.player.lookAt);
+        this.addObject(this._player);
+    }
+
+    public restartWithDefaultPlayerPosition():void
+    {
+        window.location.href = window.location.pathname;
+    }
+
+    private setPlayerInitialLookAtRotation(deg:number):void
+    {
+        // Vorher: Prüfe auf Get-Parameter
+        const searchParams:URLSearchParams = new URLSearchParams(window.location.search);
+        if(searchParams.has('x') && searchParams.has('y') && searchParams.has('z'))
+        {
+            let x:number = parseFloat(searchParams.get('x')!);
+            let y:number = parseFloat(searchParams.get('y')!);
+            let z:number = parseFloat(searchParams.get('z')!);
+            this._player!.setPosition(x, y, z);
+        }
+        if(searchParams.has('r'))
+        {
+            deg = parseInt(searchParams.get('r')!);
+        }
+
         if(HelperGeneral.isMobileDevice())
         {
-            //this._cameraStateCurrent._euler.set(0, HelperGeneral.deg2rad(-inits.player.lookAt), 0);
-            //this._cameraStateCurrent._euler.x = HelperGeneral.deg2rad(-inits.player.lookAt);
-            this._cameraStateCurrent._euler.y = HelperGeneral.deg2rad(-inits.player.lookAt);
+            this._cameraStateCurrent._euler.y = HelperGeneral.deg2rad(-deg);
         }
         else
         {
-            this._cameraStateCurrent._eulerInitial.set(0, HelperGeneral.deg2rad(-inits.player.lookAt), 0);
+            this._cameraStateCurrent._eulerInitial.set(0, HelperGeneral.deg2rad(-deg), 0);
         }
-        this.addObject(this._player);
     }
 
     public getHitboxesForModel(m:string):Hitbox[]
