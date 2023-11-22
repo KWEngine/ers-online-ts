@@ -164,12 +164,21 @@ class GameScene
         // Aktualisiere Kameraposition:
         this.updateCameraPositionAndOrientation(alpha);
     
+        this.updateHeaderPositionInformation();
+
         // Aktualisiere Hintergrund-Meshposition:
         this._background.position.set(this._player!.get3DObject().position.x, 0, this._player!.get3DObject().position.z);
 
         this._frameCounter++;
         requestAnimationFrame(this.render);
         this._renderer.render(this._scene, this._camera);
+    }
+
+    private updateHeaderPositionInformation():void
+    {
+        document.getElementById("data-position-x")!.innerText = "" + (Math.round(this._player!.getPositionInstance().x * 100) / 100).toFixed(1);
+        document.getElementById("data-position-y")!.innerText = "" + (Math.round(this._player!.getPositionInstance().y * 100) / 100).toFixed(1);
+        document.getElementById("data-position-z")!.innerText = "" + (Math.round(this._player!.getPositionInstance().z * 100) / 100).toFixed(1);
     }
 
     private updateCameraPositionAndOrientation(alpha:number):void
