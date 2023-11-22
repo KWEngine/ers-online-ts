@@ -62,13 +62,23 @@ class HelperControls
     {
         HelperControls._motionRotation[0] += -x * Math.PI / 180;
         HelperControls._motionRotation[1] += -y * Math.PI / 180;
+
+        if(GameScene.instance.isDebugMode())
+        {
+            document.getElementById("header")!.innerText = "x:" + x + " | y:" + y;
+        }
     }
     
     public static addCameraRotationMobile(x:number, y:number):void
     {
         x = (x * x) * Math.sign(x);
-
         y = HelperGeneral.clamp(y, -0.5, +0.5);
+
+        if(GameScene.instance.isDebugMode())
+        {
+            document.getElementById("header")!.innerText = "x:" + x + " | y:" + y;
+        }
+
         HelperControls._motionRotation[0] = (-x * Math.PI / 180) * 1.0;
         HelperControls._motionRotation[1] = (-y * Math.PI / 180) * 1.0;
     }

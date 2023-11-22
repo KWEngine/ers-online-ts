@@ -51,10 +51,13 @@ class GameScene
     private _dtAccumulator:number;
     private _camLookAtVector:Vector3;
     private _camLookAtVectorXZ:Vector3;
+    private _debugMode:boolean;
 
 
     private constructor()
     {
+        this._debugMode = true;
+
         this._dtAccumulator = 0;
         this._frameCounter = 0;
         this._width = window.innerWidth;
@@ -535,6 +538,11 @@ class GameScene
             document.getElementById("infoscreen")!.style.opacity = "0";
             document.getElementById('infoscreen-inner')!.innerHTML = "";
         }
+    }
+
+    public isDebugMode():boolean
+    {
+        return this._debugMode;
     }
 
     public async showInfoInfo(innerHTMLSource:string)
