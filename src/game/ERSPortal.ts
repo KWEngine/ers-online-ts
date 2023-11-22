@@ -1,4 +1,3 @@
-import { Vector3 } from "three";
 import GameScene from "../scene/GameScene";
 import ERSRadiusObject from "./ERSRadiusObject";
 
@@ -9,13 +8,16 @@ class ERSPortal extends ERSRadiusObject
 
     public act(): void 
     {
-        let d:number = Math.sin(this._counter);
-        this._counter += (Math.PI * 2.0) / 120.0;
-        this.setPosition(
-          this.getPivotInstance().x + d * 0.25 * this.getLookAtVectorInstance().x,
-          this.getPivotInstance().y + d * 0.25 * this.getLookAtVectorInstance().y,
-          this.getPivotInstance().z + d * 0.25 * this.getLookAtVectorInstance().z,
-        );
+        if(this.isActivatedByPlayer() == false)
+        {
+            let d:number = Math.sin(this._counter);
+            this._counter += (Math.PI * 2.0) / 120.0;
+            this.setPosition(
+            this.getPivotInstance().x + d * 0.25 * this.getLookAtVectorInstance().x,
+            this.getPivotInstance().y + d * 0.25 * this.getLookAtVectorInstance().y,
+            this.getPivotInstance().z + d * 0.25 * this.getLookAtVectorInstance().z,
+            );
+        }
 
         if(this.isPlayerNearby())
         {

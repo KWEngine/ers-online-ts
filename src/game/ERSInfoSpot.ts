@@ -7,10 +7,13 @@ class ERSInfoSpot extends ERSRadiusObject
 
     public act(): void
     {
-        let d:number = Math.sin(this._counter);
-        this._counter += (Math.PI * 2.0) / 240.0;
-        this.setPositionY(this.getPivotInstance().y + d * 0.25);
-        this.addRotationY(0.5);
+        if(this.isActivatedByPlayer() == false)
+        {
+            let d:number = Math.sin(this._counter);
+            this._counter += (Math.PI * 2.0) / 240.0;
+            this.setPositionY(this.getPivotInstance().y + d * 0.25);
+            this.addRotationY(0.5);
+        }
 
         if(this.isPlayerNearby())
         {
