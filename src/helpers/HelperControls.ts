@@ -71,8 +71,8 @@ class HelperControls
     
     public static addCameraRotationMobile(x:number, y:number):void
     {
-        x = (x * x) * Math.sign(x);
-        y = HelperGeneral.clamp(y, -0.5, +0.5);
+        x = HelperGeneral.clamp((x * x) * Math.sign(x), -0.5, +0.5);
+        y = HelperGeneral.clamp(y, -0.75, +0.75);
 
         if(GameScene.instance.isDebugMode())
         {

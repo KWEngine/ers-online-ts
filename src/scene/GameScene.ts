@@ -56,7 +56,7 @@ class GameScene
 
     private constructor()
     {
-        this._debugMode = true;
+        this._debugMode = false;
 
         this._dtAccumulator = 0;
         this._frameCounter = 0;
