@@ -90,7 +90,10 @@ class GameScene
         this._renderComposer.addPass(new RenderPass(this._scene, this._camera));
         this._renderComposer.addPass(
             new UnrealBloomPass(
-                new Vector2(this._width * 0.5, this._height * 0.5), // Auflösung des Glow-Effekts
+                new Vector2(                            // Auflösung des Glow-Effekts
+                    256,
+                    256
+                    ), 
                 0.50,                                   // Stärke des Glow-Effekts
                 0.50,                                   // Zus. Radius des Glow-Effekts
                 1.00                                    // Effekt-Schwellwert
