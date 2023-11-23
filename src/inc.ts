@@ -212,7 +212,7 @@ function onTouchDivRightReset(e:any)
 
 function onSelectionChanged(e:any)
 {
-    GameScene.instance.spawnLocationSpotForRooom("A102");
+    GameScene.instance.spawnLocationSpotForRoom("A102");
 }
 
 

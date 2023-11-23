@@ -20,11 +20,6 @@ class HelperGeneral
     private static readonly ISMOBILE:boolean = HelperGeneral.checkIfMobileDevice();
     private static _infoScreenState:number = 0; // 0 = disabled, 1 = info, 2 = portal
 
-    public static showHeader():void
-    {
-        document.getElementById('header')!.style.opacity = "1";
-    }
-
     public static setMobileControlsVisible(v:boolean):void
     {
         if(HelperGeneral.isMobileDevice())

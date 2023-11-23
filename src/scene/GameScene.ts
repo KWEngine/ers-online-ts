@@ -20,6 +20,7 @@ import CameraState from "../game/CameraState";
 import { getData } from "../inc";
 import { EffectComposer, RenderPass, UnrealBloomPass } from "three/examples/jsm/Addons.js";
 import ERSLocationSpot from "../game/ERSLocationSpot";
+import ERSDoorLib from "../game/ERSDoorLib";
 
 class GameScene
 {
@@ -39,6 +40,7 @@ class GameScene
     private readonly _hitboxDatabase:Map<string, Hitbox[]>;
 
     private _targetElement:HTMLElement;
+    private _navTarget:ERSLocationSpot|null;
     private _frameCounter:number;
     private _width:number;
     private _height:number;
@@ -119,6 +121,7 @@ class GameScene
 
         this._textureLoader = new TextureLoader();
         this._background = new Mesh();
+        this._navTarget = null;
     }
 
     public getRenderDomElement():HTMLElement
@@ -266,7 +269,7 @@ class GameScene
             this.showStartInfo();
         }
 
-        HelperGeneral.showHeader();
+        await this.showHeader();
 
     }
 
@@ -465,12 +468,29 @@ class GameScene
         this._gameObjectsNew.push(o);
     }
 
-    public spawnLocationSpotForRooom(r:string):void
+    public spawnLocationSpotForRoom(r:string):void
     {
-        console.log("spawnLocationSpotForRoom");
+        if(this._navTarget != null)
+        {
+            this._navTarget.markForRemoval();
+        }
+
+        if(r.length == 0)
+        {
+            this._navTarget = null;
+        }
+        else
+        {
+            let exp:string[] = r.split(";");
+            let x:number = parseFloat(exp[1]);
+            let y:number = parseFloat(exp[2]);
+            let z:number = parseFloat(exp[3]);
+            this._navTarget = this.spawnLocationSpot(x, y + 0.25, z);
+        }
+        
     }
 
-    public spawnLocationSpot(x:number, y:number, z:number):void
+    private spawnLocationSpot(x:number, y:number, z:number):ERSLocationSpot
     {
         let model:Group = this._modelDatabase.get('ers-location.glb')!;
         let ls:ERSLocationSpot = new ERSLocationSpot(model, 'target', 'ers-location.glb');
@@ -479,6 +499,7 @@ class GameScene
         ls.setRotation(0, 0, 0);
         ls.setScale(1, 1, 1);
         this.addObjectForNextFrame(ls);
+        return ls;
     }
 
     private addObjects():void
@@ -586,14 +607,64 @@ class GameScene
         }
     }
 
-    public async showHeader()
+    private async showHeader()
     {
-        const html:any = await getData('/infohtml/_framework.html');
-        document.getElementById('header')!.innerHTML = html;
-        console.log(document.getElementById('roomsearch'));
-        document.getElementById('roomsearch')!.addEventListener('onselectionchange', function(){
-            GameScene.instance.spawnLocationSpotForRooom("A102");
-        });
+        let header:HTMLElement|null = document.getElementById('header');
+        if(header != null)
+        {
+            let headerCenter:HTMLElement|null = document.getElementById('header-center');
+            if(headerCenter != null)
+            {
+                let table:HTMLTableElement = document.createElement('table');
+                table.setAttribute('id', 'data-position');
+                let row:HTMLTableRowElement = table.insertRow(0);
+                row.insertCell().innerHTML = "Position:&nbsp";
+                row.insertCell().innerText = "(";
+                row.insertCell().setAttribute('id', 'data-position-x');
+                row.insertCell().innerText = "|";
+                row.insertCell().setAttribute('id', 'data-position-y');
+                row.insertCell().innerText = "|";
+                row.insertCell().setAttribute('id', 'data-position-z');
+                row.insertCell().innerText = ")";
+                headerCenter!.appendChild(table);
+            }
+
+            let headerRight:HTMLElement|null = document.getElementById('header-right');
+            if(headerRight != null)
+            {
+                let p:HTMLElement = document.createElement('p');
+                p.innerText = "Raumsuche:";
+    
+                let select:HTMLSelectElement = document.createElement('select');
+                select.setAttribute('id', 'roomsearch');
+                select.setAttribute('name', 'roomsearch');
+
+                //let new HTMLOptionElement()
+                let doors:any = await getData('/doors/doors.json');
+                let doorlib:ERSDoorLib = JSON.parse(doors);
+                
+                let option:HTMLElement = document.createElement('option');
+                option.setAttribute('value', "");
+                option.innerText = "";
+                select.appendChild(option);
+
+                for(let i:number = 0; i < doorlib.a.length; i++)
+                {
+                    let option:HTMLElement = document.createElement('option');
+                    option.setAttribute('value', 'A' + doorlib.a[i].name + ";" + doorlib.a[i].coords[0] + ";" + doorlib.a[i].coords[1] + ";" + doorlib.a[i].coords[2]);
+                    option.innerText = 'A' + doorlib.a[i].name;
+                    select.appendChild(option);
+                }
+                headerRight.appendChild(p);
+                headerRight.appendChild(select);
+                select.addEventListener('change', function(e:any)
+                {
+                    GameScene.instance.spawnLocationSpotForRoom(e.srcElement.options[e.srcElement.selectedIndex].value || "");
+                });
+            }
+            
+        }
+        document.getElementById('header')!.style.opacity = "1";
     }
 
     public showStartInfo():void
