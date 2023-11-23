@@ -20,9 +20,11 @@ abstract class GameObject
     private _statePrevious:State;
     private _stateRender:State;
     private _modelFileName:string;
+    private _isMarkedForRemoval:boolean;
 
     constructor(object3d:Group, name:string, modelFileName:string)
     {
+        this._isMarkedForRemoval = false;
         this._modelFileName = modelFileName;
         this._id = GameObject._idCounter++;
         this._object3d = object3d.clone(true);
@@ -35,6 +37,16 @@ abstract class GameObject
         this._stateRender = new State();
         this.copyHitboxesFromModel();
         this.updateHitboxesAndLAV();
+    }
+
+    public markForRemoval():void
+    {
+        this._isMarkedForRemoval = true;
+    }
+
+    public isMarkedForRemoval():boolean
+    {
+        return this._isMarkedForRemoval;
     }
 
     private copyHitboxesFromModel()
@@ -82,6 +94,25 @@ abstract class GameObject
         this._stateCurrent._scale.x = x;
         this._stateCurrent._scale.y = y;
         this._stateCurrent._scale.z = z;
+        this.updateHitboxesAndLAV();
+    }
+
+    public getScaleAvg():number
+    {
+        return (this._stateCurrent._scale.x + this._stateCurrent._scale.y + this._stateCurrent._scale.z) / 3.0;
+    }
+
+    public setScaleRelative(s:number)
+    {
+        let x:number = this._stateCurrent._scale.x;
+        let y:number = this._stateCurrent._scale.y;
+        let z:number = this._stateCurrent._scale.z;
+
+        x *= s;
+        y *= s;
+        z *= s;
+
+        this.setScale(x, y, z);
     }
 
     public getPosition():Vector3

@@ -114,12 +114,6 @@ function closeInfoScreen(e:any)
 
 function onTouchDivLeftStart(e:any)
 {
-    /*if(!checkForInfoOverlay())
-    {
-        e.preventDefault();
-        return;
-    }*/
-
     for(let i:number = 0; i < e.changedTouches.length; i++)
     {
         if(e.target.id == "navigation-mobile-left" && HelperControls._camMoveStrafeId < 0)
@@ -139,14 +133,6 @@ function onTouchDivLeftStart(e:any)
 }
 function onTouchDivLeft(e:any)
 {
-    /*
-    if(!checkForInfoOverlay())
-    {
-        e.preventDefault();
-        return;
-    }
-    */
-
     for(let i:number = 0; i < e.changedTouches.length; i++)
     {
         if(e.target.id == "navigation-mobile-left" && e.changedTouches[i].identifier == HelperControls._camMoveStrafeId)
@@ -164,14 +150,6 @@ function onTouchDivLeft(e:any)
 }
 function onTouchDivLeftReset(e:any)
 {
-    /*
-    if(!checkForInfoOverlay())
-    {
-        e.preventDefault();
-        return;
-    }
-    */
-
     for(let i:number = 0; i < e.changedTouches.length; i++)
     {
         if(e.target.id == "navigation-mobile-left")
@@ -186,14 +164,6 @@ function onTouchDivLeftReset(e:any)
 }
 function onTouchDivRightStart(e:any)
 {
-    /*
-    if(!checkForInfoOverlay())
-    {
-        e.preventDefault();
-        return;
-    }
-    */
-
     for(let i:number = 0; i < e.changedTouches.length; i++)
     {
         if(e.target.id == "navigation-mobile-right" && HelperControls._camPitchYawId < 0)
@@ -211,14 +181,6 @@ function onTouchDivRightStart(e:any)
 }
 function onTouchDivRight(e:any)
 {
-    /*
-    if(!checkForInfoOverlay())
-    {
-        e.preventDefault();
-        return;
-    }
-    */
-
     for(let i:number = 0; i < e.changedTouches.length; i++)
     {
         if(e.target.id == "navigation-mobile-right" && e.changedTouches[i].identifier == HelperControls._camPitchYawId)
@@ -235,14 +197,6 @@ function onTouchDivRight(e:any)
 }
 function onTouchDivRightReset(e:any)
 {
-    /*
-    if(!checkForInfoOverlay())
-    {
-        e.preventDefault();
-        return;
-    }
-    */
-
     for(let i:number = 0; i < e.changedTouches.length; i++)
     {
         if(e.target.id == "navigation-mobile-right")
@@ -256,7 +210,10 @@ function onTouchDivRightReset(e:any)
     e.preventDefault();
 }
 
-
+function onSelectionChanged(e:any)
+{
+    GameScene.instance.spawnLocationSpotForRooom("A102");
+}
 
 
 function getSceneFromLocation(loc:Location):string
@@ -295,13 +252,6 @@ if(HelperGeneral.isMobileDevice())
 
     document.getElementById("navigation-mobile-left")!.addEventListener('touchcancel', onTouchDivLeftReset);
     document.getElementById("navigation-mobile-right")!.addEventListener('touchcancel', onTouchDivRightReset);
-
-    /*
-    document.getElementById("nav-container")!.classList.add('mobiletext');
-    document.getElementById("overlay-info")!.classList.add('mobileheight2');
-    document.getElementById("overlay-info-content")!.classList.add('mobile');
-    document.getElementById("overlay-info-close")!.classList.add('mobileheight');
-    */
 
     document.getElementById("pointerlock")!.style.display = "none";
     document.getElementById("pointerlock-msg")!.style.display = "none";

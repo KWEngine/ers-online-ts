@@ -19,6 +19,7 @@ import ERSPortal from "../game/ERSPortal";
 import CameraState from "../game/CameraState";
 import { getData } from "../inc";
 import { EffectComposer, RenderPass, UnrealBloomPass } from "three/examples/jsm/Addons.js";
+import ERSLocationSpot from "../game/ERSLocationSpot";
 
 class GameScene
 {
@@ -31,6 +32,7 @@ class GameScene
 
     private readonly _scene = new Scene();
     private readonly _gameObjects:GameObject[] = [];
+    private readonly _gameObjectsNew:GameObject[] = [];
     private readonly _hitboxes:HitboxG[] = [];
     private readonly _clock:Clock;
     private readonly _modelDatabase:Map<string, Group>;
@@ -197,6 +199,9 @@ class GameScene
         // Aktualisiere Hintergrund-Meshposition:
         this._background.position.set(this._player!.get3DObject().position.x, 0, this._player!.get3DObject().position.z);
 
+        this.removeObjects();
+        this.addObjects();
+
         this._frameCounter++;
         requestAnimationFrame(this.render);
         this._renderComposer.render();
@@ -204,12 +209,15 @@ class GameScene
 
     private updateHeaderPositionInformation():void
     {
-        let x:string = (Math.round(this._player!.getPositionInstance().x * 10) * 0.1 >= 0 ? "+" : "") + (Math.round(this._player!.getPositionInstance().x * 100) / 100).toFixed(1);
-        let y:string = (Math.round(this._player!.getPositionInstance().y * 10) * 0.1 >= 0 ? "+" : "") + (Math.round(this._player!.getPositionInstance().y * 100) / 100).toFixed(1);
-        let z:string = (Math.round(this._player!.getPositionInstance().z * 10) * 0.1 >= 0 ? "+" : "") + (Math.round(this._player!.getPositionInstance().z * 100) / 100).toFixed(1);
-        document.getElementById("data-position-x")!.innerText = x;
-        document.getElementById("data-position-y")!.innerText = y;
-        document.getElementById("data-position-z")!.innerText = z;
+        if(document.getElementById("data-position-x"))
+        {
+            let x:string = (Math.round(this._player!.getPositionInstance().x * 10) * 0.1 >= 0 ? "+" : "") + (Math.round(this._player!.getPositionInstance().x * 100) / 100).toFixed(1);
+            let y:string = (Math.round(this._player!.getPositionInstance().y * 10) * 0.1 >= 0 ? "+" : "") + (Math.round(this._player!.getPositionInstance().y * 100) / 100).toFixed(1);
+            let z:string = (Math.round(this._player!.getPositionInstance().z * 10) * 0.1 >= 0 ? "+" : "") + (Math.round(this._player!.getPositionInstance().z * 100) / 100).toFixed(1);
+            document.getElementById("data-position-x")!.innerText = x;
+            document.getElementById("data-position-y")!.innerText = y;
+            document.getElementById("data-position-z")!.innerText = z;
+        }
     }
 
     private updateCameraPositionAndOrientation(alpha:number):void
@@ -258,6 +266,8 @@ class GameScene
             this.showStartInfo();
         }
 
+        HelperGeneral.showHeader();
+
     }
 
     private init(inits:ERSSceneInits):void
@@ -286,14 +296,14 @@ class GameScene
         {
             let model:Group = this._modelDatabase.get(inits.hitboxes[i].model)!;
             let o:ERSHitboxStatic = new ERSHitboxStatic(model, inits.hitboxes[i].name, inits.hitboxes[i].model);
-            this.addObject(o);
+            this.addObjectInternal(o);
         }
 
         for(let i:number = 0; i < inits.renderObjects.length; i++)
         {
             let model:Group = this._modelDatabase.get(inits.renderObjects[i].model)!;
             let ro:ERSRenderObject = new ERSRenderObject(model, inits.renderObjects[i].name, inits.renderObjects[i].model);
-            this.addObject(ro);
+            this.addObjectInternal(ro);
         }
 
         for(let i: number = 0; i < inits.portals.length; i++)
@@ -306,7 +316,7 @@ class GameScene
             portal.setScale(inits.portals[i].scale[0], inits.portals[i].scale[1], inits.portals[i].scale[2]);
             portal.setTarget(inits.portals[i].target);
             portal.setInnerHTMLSource(inits.portals[i].innerHTMLSource);
-            this.addObject(portal);
+            this.addObjectInternal(portal);
         }
 
         for(let i: number = 0; i < inits.infospots.length; i++)
@@ -318,7 +328,7 @@ class GameScene
             infospot.setRotation(inits.infospots[i].rotation[0], inits.infospots[i].rotation[1], inits.infospots[i].rotation[2]);
             infospot.setScale(inits.infospots[i].scale[0], inits.infospots[i].scale[1], inits.infospots[i].scale[2]);
             infospot.setInnerHTMLSource(inits.infospots[i].innerHTMLSource);
-            this.addObject(infospot);
+            this.addObjectInternal(infospot);
         }
 
         this.generatePlayer(inits);
@@ -326,14 +336,19 @@ class GameScene
 
     private async loadStaticModels()
     {
+        // Lade 3D-Modell für Location-Spots:
+        let locationModel = await ModelLoader.instance.loadAsync("/models/ers-location.glb");
+        HelperGeneral.disableInvisibleMeshes(locationModel.scene);
+        this._modelDatabase.set("ers-location.glb", locationModel.scene);
+
         // Lade 3D-Modell für Info-Spots:
         let infoModel = await ModelLoader.instance.loadAsync("/models/ers-info.glb");
-        let infoHitbox:Hitbox[] = [];
+        //let infoHitbox:Hitbox[] = [];
         HelperGeneral.disableInvisibleMeshes(infoModel.scene);
         //HelperGeneral.addGlowToObject(infoModel.scene, 5);
-        HelperCollision.generateHitboxesFor(infoModel.scene, infoHitbox);
+        //HelperCollision.generateHitboxesFor(infoModel.scene, infoHitbox);
         this._modelDatabase.set("ers-info.glb", infoModel.scene);
-        this._hitboxDatabase.set("ers-info.glb", infoHitbox);
+        //this._hitboxDatabase.set("ers-info.glb", infoHitbox);
  
         // Lade 3D-Modell des Player-Objekts:
         let playerModel = await ModelLoader.instance.loadAsync("/models/ers-player.glb");
@@ -345,12 +360,12 @@ class GameScene
 
         // Lade 3D-Modell für Portal-Spots:
         let portalModel = await ModelLoader.instance.loadAsync("/models/ers-arrow.glb");
-        let portalHitbox:Hitbox[] = [];
+        //let portalHitbox:Hitbox[] = [];
         HelperGeneral.disableInvisibleMeshes(portalModel.scene);
         HelperGeneral.addGlowToObject(portalModel.scene, 5);
-        HelperCollision.generateHitboxesFor(portalModel.scene, portalHitbox);
+        //HelperCollision.generateHitboxesFor(portalModel.scene, portalHitbox);
         this._modelDatabase.set("ers-arrow.glb", portalModel.scene);
-        this._hitboxDatabase.set("ers-arrow.glb", portalHitbox);
+        //this._hitboxDatabase.set("ers-arrow.glb", portalHitbox);
     }
 
     private setBackgroundImage(img:string):void
@@ -377,7 +392,7 @@ class GameScene
         this._player.setScale(scale[0], scale[1], scale[2]);
         this._player.setYOffset(yOffset);
         this.setPlayerInitialLookAtRotation(inits.player.lookAt);
-        this.addObject(this._player);
+        this.addObjectInternal(this._player);
     }
 
     public restartWithDefaultPlayerPosition():void
@@ -420,7 +435,7 @@ class GameScene
         return [];
     }
 
-    public addObject(o : GameObject):void
+    private addObjectInternal(o : GameObject):void
     {
         if(o instanceof RenderObject)
         {
@@ -438,57 +453,93 @@ class GameScene
             this._gameObjects.push(o);
             this.addHitboxesForObject(o);
         } 
-        else if(o instanceof ERSInfoSpot || o instanceof ERSPortal)
+        else if(o instanceof ERSInfoSpot || o instanceof ERSPortal || o instanceof ERSLocationSpot)
         {
             this._gameObjects.push(o);
-            this.addHitboxesForObject(o);
             this._scene.add(o.get3DObject());
         }
     }
 
-    public removeObject(o: GameObject):void
+    public addObjectForNextFrame(o:GameObject):void
     {
+        this._gameObjectsNew.push(o);
+    }
+
+    public spawnLocationSpotForRooom(r:string):void
+    {
+        console.log("spawnLocationSpotForRoom");
+    }
+
+    public spawnLocationSpot(x:number, y:number, z:number):void
+    {
+        let model:Group = this._modelDatabase.get('ers-location.glb')!;
+        let ls:ERSLocationSpot = new ERSLocationSpot(model, 'target', 'ers-location.glb');
+        ls.setPosition(x, y, z);
+        ls.setPivot(x, y, z);
+        ls.setRotation(0, 0, 0);
+        ls.setScale(1, 1, 1);
+        this.addObjectForNextFrame(ls);
+    }
+
+    private addObjects():void
+    {
+        for(let i:number = 0; i < this._gameObjectsNew.length; i++)
+        {
+            this.addObjectInternal(this._gameObjectsNew[i]);
+        }
+        this._gameObjectsNew.splice(0, this._gameObjectsNew.length);
+    }
+
+    private removeObjects():void
+    {
+        for(let i:number = this._gameObjects.length - 1; i >= 0; i--)
+        {
+            let o:GameObject = this._gameObjects[i];
+            if(o.isMarkedForRemoval())
+            {
+                if(o instanceof ERSInfoSpot || o instanceof ERSPortal || o instanceof ERSLocationSpot)
+                {
+                    const predicate = (element:GameObject) => element.getId() == o.getId();
+                    let index:number = this._gameObjects.findIndex(predicate);
+                    if(index >= 0)
+                    {
+                        this._gameObjects.splice(index, 1);
+                        this._scene.remove(o.get3DObject());
+                    }
+                }
+                
+                if(o instanceof RenderObject) 
+                {
+                    const predicate = (element:GameObject) => element.getId() == o.getId();
+                    let index:number = this._gameObjects.findIndex(predicate);
+                    if(index >= 0)
+                    {
+                        this._gameObjects.splice(index, 1);
+                        this._scene.remove(o.get3DObject());
+                    }
+                }
+                else if(o instanceof InteractiveObject)
+                {
+                    const predicate = (element:GameObject) => element.getId() == o.getId();
+                    let index:number = this._gameObjects.findIndex(predicate);
+                    if(index >= 0)
+                    {
+                        this._gameObjects.splice(index, 1);
+                        this.removeHitboxesForObject(o);
+                        this._scene.remove(o.get3DObject());
+                    }
+                }
+            }
+        }
+
         
-        if(o instanceof ERSInfoSpot || o instanceof ERSPortal)
-        {
-            const predicate = (element:GameObject) => element.getId() == o.getId();
-            let index:number = this._gameObjects.findIndex(predicate);
-            if(index >= 0)
-            {
-                this._gameObjects.splice(index, 1);
-                this.removeHitboxesForObject(o);
-                this._scene.remove(o.get3DObject());
-            }
-        }
-        
-        if(o instanceof RenderObject) 
-        {
-            const predicate = (element:GameObject) => element.getId() == o.getId();
-            let index:number = this._gameObjects.findIndex(predicate);
-            if(index >= 0)
-            {
-                this._gameObjects.splice(index, 1);
-                this._scene.remove(o.get3DObject());
-            }
-        }
-        else if(o instanceof InteractiveObject)
-        {
-            const predicate = (element:GameObject) => element.getId() == o.getId();
-            let index:number = this._gameObjects.findIndex(predicate);
-            if(index >= 0)
-            {
-                this._gameObjects.splice(index, 1);
-                this.removeHitboxesForObject(o);
-                this._scene.remove(o.get3DObject());
-            }
-        }
     }
 
     private removeHitboxesForObject(o : GameObject):void
     {
         for(let hbIndex:number = 0; hbIndex < o.getHitboxes().length; hbIndex++)
         {
-            for(let i:number = 0; i < this._hitboxes.length; i++)
+            for(let i:number = this._hitboxes.length - 1; i >= 0 ; i--)
             {
                 const predicate = (element:HitboxG) => element.getId() == o.getHitboxes()[hbIndex].getId();
                 let index:number = this._hitboxes.findIndex(predicate);
@@ -533,6 +584,16 @@ class GameScene
             document.getElementById("pointerlock")!.style.opacity = "0";
             document.getElementById("pointerlock")!.style.display = "none";
         }
+    }
+
+    public async showHeader()
+    {
+        const html:any = await getData('/infohtml/_framework.html');
+        document.getElementById('header')!.innerHTML = html;
+        console.log(document.getElementById('roomsearch'));
+        document.getElementById('roomsearch')!.addEventListener('onselectionchange', function(){
+            GameScene.instance.spawnLocationSpotForRooom("A102");
+        });
     }
 
     public showStartInfo():void
