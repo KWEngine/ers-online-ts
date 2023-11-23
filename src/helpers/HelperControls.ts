@@ -71,12 +71,12 @@ class HelperControls
     
     public static addCameraRotationMobile(x:number, y:number):void
     {
-        x = HelperGeneral.clamp((x * x) * Math.sign(x), -0.5, +0.5);
-        y = HelperGeneral.clamp(y, -0.75, +0.75);
+        x = HelperGeneral.clamp((x * x) * Math.sign(x), -0.33, +0.33);
+        y = HelperGeneral.clamp(y, -0.67, +0.67);
 
         if(GameScene.instance.isDebugMode())
         {
-            document.getElementById("header")!.innerText = "x:" + x + " | y:" + y;
+            document.getElementById("header-padding")!.innerText = "x:" + x + " | y:" + y;
         }
 
         HelperControls._motionRotation[0] = (-x * Math.PI / 180) * 1.0;

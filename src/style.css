@@ -11,6 +11,7 @@ html, body
   box-sizing: border-box;
   font-family: 'Monaco';
   user-select: none;
+  overflow:hidden;
 }
 
 #infoscreen, #pointerlock
@@ -134,9 +135,7 @@ html, body
   background-color:rgb(0,0,0);
   color:white;
   text-decoration: none;
-
   padding: 0.5em 2em;
-  
 }
 
 #pointerlock-msg
@@ -220,6 +219,11 @@ html, body
   justify-content: space-between;
 }
 
+#header-padding
+{
+  flex-grow:1;
+}
+
 #header-left
 {
   flex-grow:0;
@@ -232,13 +236,14 @@ html, body
 }
 #header-center
 {
-  flex-grow:1;
+  flex-grow:0;
+  flex-shrink:0;
   display:flex;
   align-items: center;
 }
 #header-right
 {
-  flex-grow:1;
+  flex-grow:0;
   display:flex;
   align-items: stretch;
   justify-content: space-around;
@@ -252,7 +257,7 @@ html, body
   background-color:rgba(255, 255, 255, 0.5);
   border-radius:5%;
   margin-right:1em;
-
+  color:black;
 }
 
 #data-position

@@ -1,4 +1,4 @@
-import { AmbientLight, PerspectiveCamera, Scene, WebGLRenderer, Vector3, Clock, Group, SphereGeometry, TextureLoader, SRGBColorSpace, MeshBasicMaterial, Mesh, DirectionalLight, Object3D } from "three";
+import { AmbientLight, PerspectiveCamera, Scene, WebGLRenderer, Vector3, Clock, Group, SphereGeometry, TextureLoader, SRGBColorSpace, MeshBasicMaterial, Mesh, DirectionalLight, Object3D, WebGLRenderTarget, ColorManagement, ACESFilmicToneMapping, HalfFloatType, RGBAFormat, Vector2 } from "three";
 import ModelLoader from "../model/ModelLoader";
 import ERSInfoSpot from "../game/ERSInfoSpot";
 import HelperScene from "../helpers/HelperScene";
@@ -18,6 +18,7 @@ import HitboxG from "../model/HitboxG";
 import ERSPortal from "../game/ERSPortal";
 import CameraState from "../game/CameraState";
 import { getData } from "../inc";
+import { EffectComposer, RenderPass, UnrealBloomPass } from "three/examples/jsm/Addons.js";
 
 class GameScene
 {
@@ -40,6 +41,8 @@ class GameScene
     private _width:number;
     private _height:number;
     private _renderer:WebGLRenderer;
+    private _renderTarget:WebGLRenderTarget;
+    private _renderComposer:EffectComposer;
     private _camera:PerspectiveCamera;
     private _cameraStateCurrent:CameraState;
     private _cameraStatePrevious:CameraState;
@@ -68,12 +71,31 @@ class GameScene
         this._camLookAtVectorXZ = new Vector3(0, 0, -1);
         this._renderer = new WebGLRenderer(
             {
-                alpha:true,
-                antialias:true,
+                alpha:false,
+                antialias:false
             }
         );
+        this._renderer.outputColorSpace = SRGBColorSpace;
+        this._renderer.toneMapping = ACESFilmicToneMapping;
         this._renderer.setPixelRatio(window.devicePixelRatio);
         this._renderer.setSize(this._width, this._height);
+
+        const aspectRatio = this._width / this._height;
+        this._camera = new PerspectiveCamera(45, aspectRatio, 0.1, GameScene.MAXCAMDISTANCE);
+
+        this._renderTarget = new WebGLRenderTarget(this._width, this._height, { type: HalfFloatType, format: RGBAFormat, colorSpace: SRGBColorSpace});
+        this._renderTarget.samples = 1;
+        this._renderComposer = new EffectComposer(this._renderer, this._renderTarget);
+        this._renderComposer.setSize(this._width, this._height);
+        this._renderComposer.addPass(new RenderPass(this._scene, this._camera));
+        this._renderComposer.addPass(
+            new UnrealBloomPass(
+                new Vector2(this._width * 0.5, this._height * 0.5), // Auflösung des Glow-Effekts
+                0.50,                                   // Stärke des Glow-Effekts
+                0.50,                                   // Zus. Radius des Glow-Effekts
+                1.00                                    // Effekt-Schwellwert
+            )
+        );
 
         this._targetElement = document.getElementById("app")!;
         if(!this._targetElement)
@@ -81,8 +103,8 @@ class GameScene
             throw "unable to find render target";
         }
         this._targetElement.appendChild(this._renderer.domElement);
-        const aspectRatio = this._width / this._height;
-        this._camera = new PerspectiveCamera(45, aspectRatio, 0.1, GameScene.MAXCAMDISTANCE);
+        
+        
 
         this._clock = new Clock();
         this._player = null;
@@ -171,14 +193,17 @@ class GameScene
 
         this._frameCounter++;
         requestAnimationFrame(this.render);
-        this._renderer.render(this._scene, this._camera);
+        this._renderComposer.render();
     }
 
     private updateHeaderPositionInformation():void
     {
-        document.getElementById("data-position-x")!.innerText = "" + (Math.round(this._player!.getPositionInstance().x * 100) / 100).toFixed(1);
-        document.getElementById("data-position-y")!.innerText = "" + (Math.round(this._player!.getPositionInstance().y * 100) / 100).toFixed(1);
-        document.getElementById("data-position-z")!.innerText = "" + (Math.round(this._player!.getPositionInstance().z * 100) / 100).toFixed(1);
+        let x:string = (Math.round(this._player!.getPositionInstance().x * 10) * 0.1 >= 0 ? "+" : "") + (Math.round(this._player!.getPositionInstance().x * 100) / 100).toFixed(1);
+        let y:string = (Math.round(this._player!.getPositionInstance().y * 10) * 0.1 >= 0 ? "+" : "") + (Math.round(this._player!.getPositionInstance().y * 100) / 100).toFixed(1);
+        let z:string = (Math.round(this._player!.getPositionInstance().z * 10) * 0.1 >= 0 ? "+" : "") + (Math.round(this._player!.getPositionInstance().z * 100) / 100).toFixed(1);
+        document.getElementById("data-position-x")!.innerText = x;
+        document.getElementById("data-position-y")!.innerText = y;
+        document.getElementById("data-position-z")!.innerText = z;
     }
 
     private updateCameraPositionAndOrientation(alpha:number):void
@@ -299,6 +324,7 @@ class GameScene
         let infoModel = await ModelLoader.instance.loadAsync("/models/ers-info.glb");
         let infoHitbox:Hitbox[] = [];
         HelperGeneral.disableInvisibleMeshes(infoModel.scene);
+        //HelperGeneral.addGlowToObject(infoModel.scene, 5);
         HelperCollision.generateHitboxesFor(infoModel.scene, infoHitbox);
         this._modelDatabase.set("ers-info.glb", infoModel.scene);
         this._hitboxDatabase.set("ers-info.glb", infoHitbox);
@@ -315,6 +341,7 @@ class GameScene
         let portalModel = await ModelLoader.instance.loadAsync("/models/ers-arrow.glb");
         let portalHitbox:Hitbox[] = [];
         HelperGeneral.disableInvisibleMeshes(portalModel.scene);
+        HelperGeneral.addGlowToObject(portalModel.scene, 5);
         HelperCollision.generateHitboxesFor(portalModel.scene, portalHitbox);
         this._modelDatabase.set("ers-arrow.glb", portalModel.scene);
         this._hitboxDatabase.set("ers-arrow.glb", portalHitbox);

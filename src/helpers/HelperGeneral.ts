@@ -179,6 +179,17 @@ class HelperGeneral
         }
     }
 
+    public static addGlowToObject(o:Object3D, intensity:number):void
+    {
+        o.traverse((obj:Object3D) => 
+        {
+            if(obj instanceof Mesh)
+            {
+                (obj as any).material.emissiveIntensity = intensity;
+            }
+        })
+    }
+
     public static quaternionFrom3Axes(x:number, y:number, z:number):Quaternion
     {
         let e:Euler = new Euler(this.deg2rad(x), this.deg2rad(y), this.deg2rad(z), 'YXZ');
