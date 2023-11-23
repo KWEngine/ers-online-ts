@@ -326,4 +326,10 @@ document.addEventListener('focusin', onFocusGained); //?
 document.addEventListener('focusout', onFocusLost);  //?
 document.getElementById('infoscreen-close')!.addEventListener('click', closeInfoScreen);
 
+// Schriftgroesse auf mobilen Endgeraeten verkleinern:
+if(HelperGeneral.isMobileDevice())
+{
+    document.documentElement.style.fontSize = "80%";
+}
+
 export {getSceneFromLocation, getData};

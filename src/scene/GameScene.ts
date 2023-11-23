@@ -141,9 +141,12 @@ class GameScene
 
     public updateViewport()
     {
+        this._width = window.innerWidth;
+        this._height = window.innerHeight;
         this._camera.aspect = window.innerWidth / window.innerHeight;
         this._camera.updateProjectionMatrix();
         this._renderer.setSize( window.innerWidth, window.innerHeight );
+        this._renderComposer.setSize(window.innerWidth, window.innerHeight);
         this._renderer.setViewport(0, 0, window.innerWidth, window.innerHeight);
     }
 

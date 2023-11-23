@@ -219,7 +219,6 @@ class HelperGeneral
 
     private static checkIfMobileDevice():boolean
     {
-        //return true;
         return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
         //return window.matchMedia("(any-pointer:coarse)").matches;
     }
