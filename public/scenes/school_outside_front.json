@@ -68,13 +68,15 @@
                 "id": 0,
                 "name":"A",
                 "location": [-0.3, 0, 4],
-                "neighbours": [1]
+                "neighbours": [1],
+                "neighboursCosts": [4]
             },
             {
                 "id": 1,
                 "name": "B",
                 "location": [-0.3, 0, -10],
-                "neighbours": [0]
+                "neighbours": [0],
+                "neighboursCosts": [4]
             }
         ]
     }

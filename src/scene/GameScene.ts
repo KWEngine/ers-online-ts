@@ -381,7 +381,8 @@ class GameScene
                 let dn:DijkstraNode = new DijkstraNode(name, location);
                 for(let j:number = 0; j < dijkstranodes[i].neighbours.length; j++)
                 {
-                    dn.addNeighbourIndex(dijkstranodes[i].neighbours[j]);
+                    let cost:number = dijkstranodes[i].neighboursCosts[j];
+                    dn.addNeighbourIndex(dijkstranodes[i].neighbours[j], cost);
                 }
                 this._graph.add(dn);
             }

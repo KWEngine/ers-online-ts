@@ -28,11 +28,10 @@ class DijkstraGraph
             for(let j:number = 0; j < currentNode.getNeighbourIndices().length; j++)
             {
                 let neighbourNode:DijkstraNode = this._nodes[currentNode.getNeighbourIndices()[j]];
+                
+                
 
-                let cost:number = currentNode.getLocationInstance().x * neighbourNode.getLocationInstance().x +
-                    currentNode.getLocationInstance().y * neighbourNode.getLocationInstance().y +
-                    currentNode.getLocationInstance().z * neighbourNode.getLocationInstance().z;
-
+                let cost:number = 0;
                 currentNode.addNeighbour(neighbourNode, cost);
             }
         }

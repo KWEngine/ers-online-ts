@@ -5,6 +5,7 @@ class DijkstraNode
     private _name:string;
     private _neighbours:Map<DijkstraNode, number>;
     private _neighbourIndices:number[];
+    private _neighbourIndicesCosts:number[];
     private _location:Vector3;
 
 
@@ -13,6 +14,7 @@ class DijkstraNode
         this._name = name;
         this._neighbours = new Map<DijkstraNode, number>();
         this._neighbourIndices = [];
+        this._neighbourIndicesCosts = [];
         this._location = location;
     }
 
@@ -21,9 +23,10 @@ class DijkstraNode
         return this._location;
     }
 
-    public addNeighbourIndex(index:number)
+    public addNeighbourIndex(index:number, cost:number)
     {
         this._neighbourIndices.push(index);
+        this._neighbourIndicesCosts.push(cost);
     }
 
     public getNeighbourIndices():number[]
