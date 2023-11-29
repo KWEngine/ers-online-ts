@@ -346,12 +346,8 @@ class GameScene
 
         // Lade 3D-Modell für Info-Spots:
         let infoModel = await ModelLoader.instance.loadAsync("/models/ers-info.glb");
-        //let infoHitbox:Hitbox[] = [];
         HelperGeneral.disableInvisibleMeshes(infoModel.scene);
-        //HelperGeneral.addGlowToObject(infoModel.scene, 5);
-        //HelperCollision.generateHitboxesFor(infoModel.scene, infoHitbox);
         this._modelDatabase.set("ers-info.glb", infoModel.scene);
-        //this._hitboxDatabase.set("ers-info.glb", infoHitbox);
  
         // Lade 3D-Modell des Player-Objekts:
         let playerModel = await ModelLoader.instance.loadAsync("/models/ers-player.glb");
@@ -363,12 +359,13 @@ class GameScene
 
         // Lade 3D-Modell für Portal-Spots:
         let portalModel = await ModelLoader.instance.loadAsync("/models/ers-arrow.glb");
-        //let portalHitbox:Hitbox[] = [];
         HelperGeneral.disableInvisibleMeshes(portalModel.scene);
         HelperGeneral.addGlowToObject(portalModel.scene, 5);
-        //HelperCollision.generateHitboxesFor(portalModel.scene, portalHitbox);
         this._modelDatabase.set("ers-arrow.glb", portalModel.scene);
-        //this._hitboxDatabase.set("ers-arrow.glb", portalHitbox);
+
+        // Lade 3D-Modell für Navi-Chips:
+        let chipModel = await ModelLoader.instance.loadAsync("/models/ers-dijkstrachip.glb");
+        this._modelDatabase.set("ers-dijkstrachip.glb", chipModel.scene);
     }
 
     private setBackgroundImage(img:string):void
