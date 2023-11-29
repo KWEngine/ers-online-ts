@@ -62,7 +62,10 @@ class DijkstraSolver
 
     public calculate(source:DijkstraNode, destination:DijkstraNode):void
     {
+        console.log(this._distances);
         this._distances.set(source, 0);
+        console.log(this._distances);
+        console.log(this._routes);
 
         while(this._allNodes.length > 0)
         {
@@ -77,25 +80,25 @@ class DijkstraSolver
     {
         console.log("shortest route for " + source.getName() + " to " + destination.getName() + ":");
         let output:string[] = [];
-        this.gatherRoute(destination, output);
-
-        for(let i:number = output.length - 1; i >= 0; i--)
-        {
-            console.log(output[i]);
-        }
-        console.log("------------");
-        throw new Error("[DijkstraSolver] stopping...");
+        this.gatherRoute(source, destination, output);
+        //console.log(output);
     }
 
-    private gatherRoute(d:DijkstraNode, output:string[]):void
+    private gatherRoute(s:DijkstraNode, d:DijkstraNode, output:string[]):void
     {
-        if(this._routes.has(d) == false)
+        
+        console.log(this._routes);
+        console.log(d);
+        console.log(this._routes.get(d));
+        console.log("--");
+        
+        if(this._routes.get(d) == null || this._routes.get(d)?.getName() == s.getName())
         {
             output.push(d.getName());
             return;
         }
         output.push(d.getName());
-        this.gatherRoute(this._routes.get(d)!, output);
+        this.gatherRoute(s, this._routes.get(d)!, output);
     }
 
     private examineConnections(n:DijkstraNode):void

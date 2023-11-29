@@ -8,6 +8,7 @@ class ERSSceneInits
     public hitboxes:any[] = [];
     public portals:any[] = [];
     public infospots:any[] = [];
+    public dijkstranodes:any[] = [];
 }
 
 export default ERSSceneInits;

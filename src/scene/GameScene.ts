@@ -21,6 +21,9 @@ import { getData } from "../inc";
 import { EffectComposer, RenderPass, UnrealBloomPass } from "three/examples/jsm/Addons.js";
 import ERSLocationSpot from "../game/ERSLocationSpot";
 import ERSDoorLib from "../game/ERSDoorLib";
+import DijkstraGraph from "../game/DijkstraGraph";
+import DijkstraNode from "../game/DijkstraNode";
+import DijkstraSolver from "../game/DijkstraSolver";
 
 class GameScene
 {
@@ -59,6 +62,9 @@ class GameScene
     private _camLookAtVector:Vector3;
     private _camLookAtVectorXZ:Vector3;
     private _debugMode:boolean;
+    
+    private _graph:DijkstraGraph;
+    private _graphSolver:DijkstraSolver|null;
 
 
     private constructor()
@@ -122,6 +128,9 @@ class GameScene
         this._textureLoader = new TextureLoader();
         this._background = new Mesh();
         this._navTarget = null;
+
+        this._graph = new DijkstraGraph();
+        this._graphSolver = null;
     }
 
     public getRenderDomElement():HTMLElement
@@ -205,9 +214,30 @@ class GameScene
         this.removeObjects();
         this.addObjects();
 
+        //this.displayNavigationChips();
+        //throw new Error("end of cycle");
         this._frameCounter++;
         requestAnimationFrame(this.render);
         this._renderComposer.render();
+
+        
+    }
+
+    private displayNavigationChips():void
+    {
+        let nearestNode:DijkstraNode|null = this._graph.getNearestDijkstraNode();
+        
+        if(nearestNode != null)
+        {
+            // test displaying chips to target
+            
+            // target
+            let target:DijkstraNode|null = this._graph.getNodeByName("B");
+            if(target != null && this._graphSolver != null && nearestNode.getName() != target.getName())
+            {
+                this._graphSolver.calculate(nearestNode, target);          
+            }
+        }    
     }
 
     private updateHeaderPositionInformation():void
@@ -244,6 +274,7 @@ class GameScene
 
         // Lade die 3D-Modelle, die eh in jeder Szene vorhanden sind, vorab:
         await this.loadStaticModels();
+
 
         // Lade die 3D-Modelle die für die aktuelle Szene in der 
         // entsprechenden JSON-Datei stehen:
@@ -334,7 +365,29 @@ class GameScene
             this.addObjectInternal(infospot);
         }
 
+        this.generateDijkstraNodeGraph(inits.dijkstranodes);
+
         this.generatePlayer(inits);
+    }
+
+    private generateDijkstraNodeGraph(dijkstranodes:any[]) : void
+    {
+        if(dijkstranodes != null)
+        {
+            for(let i:number = 0; i < dijkstranodes.length; i++)
+            {
+                let name:string = dijkstranodes[i].name;
+                let location:Vector3 = new Vector3(dijkstranodes[i].location[0], dijkstranodes[i].location[1], dijkstranodes[i].location[2]);
+                let dn:DijkstraNode = new DijkstraNode(name, location);
+                for(let j:number = 0; j < dijkstranodes[i].neighbours.length; j++)
+                {
+                    dn.addNeighbourIndex(dijkstranodes[i].neighbours[j]);
+                }
+                this._graph.add(dn);
+            }
+            this._graph.setNeighboursForAllNodes();
+            this._graphSolver = new DijkstraSolver(this._graph);
+        }
     }
 
     private async loadStaticModels()

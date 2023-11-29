@@ -61,6 +61,21 @@
                 "model": "ers-info.glb",
                 "innerHTMLSource": "outside_front_01.html"
             }
+        ],
+        "dijkstranodes":
+        [
+            {
+                "id": 0,
+                "name":"A",
+                "location": [-0.3, 0, 4],
+                "neighbours": [1]
+            },
+            {
+                "id": 1,
+                "name": "B",
+                "location": [-0.3, 0, -10],
+                "neighbours": [0]
+            }
         ]
     }
 }

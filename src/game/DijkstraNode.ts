@@ -1,13 +1,34 @@
+import { Vector3 } from "three";
+
 class DijkstraNode
 {
     private _name:string;
     private _neighbours:Map<DijkstraNode, number>;
+    private _neighbourIndices:number[];
+    private _location:Vector3;
 
 
-    constructor(name:string)
+    constructor(name:string, location:Vector3)
     {
         this._name = name;
         this._neighbours = new Map<DijkstraNode, number>();
+        this._neighbourIndices = [];
+        this._location = location;
+    }
+
+    public getLocationInstance():Vector3
+    {
+        return this._location;
+    }
+
+    public addNeighbourIndex(index:number)
+    {
+        this._neighbourIndices.push(index);
+    }
+
+    public getNeighbourIndices():number[]
+    {
+        return this._neighbourIndices;
     }
 
     public addNeighbour(n:DijkstraNode, cost:number)
