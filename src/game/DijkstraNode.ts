@@ -34,6 +34,11 @@ class DijkstraNode
         return this._neighbourIndices;
     }
 
+    public getNeighbourIndicesCosts():number[]
+    {
+        return this._neighbourIndicesCosts;
+    }
+
     public addNeighbour(n:DijkstraNode, cost:number)
     {
         this._neighbours.set(n, cost);

@@ -1,4 +1,4 @@
-import { AmbientLight, PerspectiveCamera, Scene, WebGLRenderer, Vector3, Clock, Group, SphereGeometry, TextureLoader, SRGBColorSpace, MeshBasicMaterial, Mesh, DirectionalLight, Object3D, WebGLRenderTarget, ColorManagement, ACESFilmicToneMapping, HalfFloatType, RGBAFormat, Vector2 } from "three";
+import { AmbientLight, PerspectiveCamera, Scene, WebGLRenderer, Vector3, Clock, Group, SphereGeometry, TextureLoader, SRGBColorSpace, MeshBasicMaterial, Mesh, DirectionalLight, Object3D, WebGLRenderTarget, ColorManagement, ACESFilmicToneMapping, HalfFloatType, RGBAFormat, Vector2, InstancedMesh, MeshStandardMaterial } from "three";
 import ModelLoader from "../model/ModelLoader";
 import ERSInfoSpot from "../game/ERSInfoSpot";
 import HelperScene from "../helpers/HelperScene";
@@ -133,6 +133,11 @@ class GameScene
         this._graphSolver = null;
     }
 
+    public getModel(name:string):Group
+    {
+        return this._modelDatabase.get(name)!;
+    }
+
     public getRenderDomElement():HTMLElement
     {
         return this._targetElement;
@@ -214,7 +219,7 @@ class GameScene
         this.removeObjects();
         this.addObjects();
 
-        //this.displayNavigationChips();
+        this.displayNavigationChips();
         //throw new Error("end of cycle");
         this._frameCounter++;
         requestAnimationFrame(this.render);
@@ -229,13 +234,10 @@ class GameScene
         
         if(nearestNode != null)
         {
-            // test displaying chips to target
-            
-            // target
             let target:DijkstraNode|null = this._graph.getNodeByName("B");
             if(target != null && this._graphSolver != null && nearestNode.getName() != target.getName())
             {
-                this._graphSolver.calculate(nearestNode, target);          
+                let route:Vector3[] = this._graphSolver.calculate(nearestNode, target);
             }
         }    
     }
@@ -366,11 +368,11 @@ class GameScene
         }
 
         this.generateDijkstraNodeGraph(inits.dijkstranodes);
-
+ 
         this.generatePlayer(inits);
     }
 
-    private generateDijkstraNodeGraph(dijkstranodes:any[]) : void
+    private generateDijkstraNodeGraph(dijkstranodes:any[]):void
     {
         if(dijkstranodes != null)
         {
@@ -387,8 +389,13 @@ class GameScene
                 this._graph.add(dn);
             }
             this._graph.setNeighboursForAllNodes();
+            for(let iMesh of this._graph.generateChips())
+            {
+                this._scene.add(iMesh);
+            }
             this._graphSolver = new DijkstraSolver(this._graph);
         }
+        
     }
 
     private async loadStaticModels()

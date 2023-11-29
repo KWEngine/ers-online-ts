@@ -1,3 +1,4 @@
+import { Vector3 } from "three";
 import DijkstraGraph from "./DijkstraGraph";
 import DijkstraNode from "./DijkstraNode";
 
@@ -60,53 +61,58 @@ class DijkstraSolver
         return leastExpensive;
     }
 
-    public calculate(source:DijkstraNode, destination:DijkstraNode):void
+    public calculate(source:DijkstraNode, destination:DijkstraNode):Vector3[]
     {
-        /*
-        console.log(this._distances);
-        this._distances.set(source, 0);
-        console.log(this._distances);
-        console.log(this._routes);
-        */
-
         while(this._allNodes.length > 0)
         {
             let leastExpensiveNode:DijkstraNode = this.getLeastExpensiveNode();
             this.examineConnections(leastExpensiveNode);
             this._allNodes.splice(this._allNodes.indexOf(leastExpensiveNode), 1);
         }
-        this.printDebug(source, destination);
+        return this.getRoute(source, destination);
+    }
+
+    private getRoute(source:DijkstraNode, destination:DijkstraNode):Vector3[]
+    {
+        let route:Vector3[] = [];
+        route.push(source.getLocationInstance().clone());
+        this.gatherRoute(source, destination, route);
+
+        return route;
     }
 
     private printDebug(source:DijkstraNode, destination:DijkstraNode):void
     {
         console.log("shortest route for " + source.getName() + " to " + destination.getName() + ":");
         let output:string[] = [];
-        this.gatherRoute(source, destination, output);
+        this.gatherRouteDebug(source, destination, output);
         console.log(output);
     }
 
-    private gatherRoute(s:DijkstraNode, d:DijkstraNode, output:string[]):void
+    private gatherRoute(s:DijkstraNode, d:DijkstraNode, spots:Vector3[]):void
     {
-        /*
-        console.log(this._routes);
-        console.log(d);
-        console.log(this._routes.get(d));
-        console.log("--");
-        */
-        if(this._routes.get(d) == null || this._routes.get(d)!.getName() == s.getName())
+        if(this._routes.get(d) == null)
+        {
+            spots.push(d.getLocationInstance().clone());
+            return;
+        }
+        spots.push(d.getLocationInstance().clone());
+        this.gatherRoute(s, this._routes.get(d)!, spots);
+    }
+
+    private gatherRouteDebug(s:DijkstraNode, d:DijkstraNode, output:string[]):void
+    {
+        if(this._routes.get(d) == null)
         {
             output.push(d.getName());
             return;
         }
         output.push(d.getName());
-        this.gatherRoute(s, this._routes.get(d)!, output);
+        this.gatherRouteDebug(s, this._routes.get(d)!, output);
     }
 
     private examineConnections(n:DijkstraNode):void
     {
-        console.log("examine connections");
-        console.log(this._distances);
         for(let neighbour of n.getNeighbours().keys())
         {
             let distanceOfN:number = this._distances.get(n)!;
