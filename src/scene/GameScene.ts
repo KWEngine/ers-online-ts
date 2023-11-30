@@ -65,6 +65,8 @@ class GameScene
     
     private _graph:DijkstraGraph;
     private _graphSolver:DijkstraSolver|null;
+    private _graphChips:InstancedMesh[];
+    private _graphChipsGroupId:number;
 
 
     private constructor()
@@ -130,7 +132,9 @@ class GameScene
         this._navTarget = null;
 
         this._graph = new DijkstraGraph();
+        this._graphChips = [];
         this._graphSolver = null;
+        this._graphChipsGroupId = -1;
     }
 
     public getModel(name:string):Group
@@ -220,7 +224,6 @@ class GameScene
         this.addObjects();
 
         this.displayNavigationChips();
-        //throw new Error("end of cycle");
         this._frameCounter++;
         requestAnimationFrame(this.render);
         this._renderComposer.render();
@@ -230,16 +233,42 @@ class GameScene
 
     private displayNavigationChips():void
     {
-        let nearestNode:DijkstraNode|null = this._graph.getNearestDijkstraNode();
-        
-        if(nearestNode != null)
+        let g:Object3D = this._scene.getObjectById(this._graphChipsGroupId)!;
+        for(let i:number = 0; i < this._graphChips.length; i++)
         {
-            let target:DijkstraNode|null = this._graph.getNodeByName("B");
-            if(target != null && this._graphSolver != null && nearestNode.getName() != target.getName())
+            (this._graphChips[i].material as MeshStandardMaterial).visible = false;
+        }
+
+        if(this._navTarget != null)
+        {
+            let nearestNode:DijkstraNode|null = this._graph.getNearestDijkstraNode(this._player!);
+            
+            if(nearestNode != null)
             {
-                let route:Vector3[] = this._graphSolver.calculate(nearestNode, target);
-            }
-        }    
+                //let target:DijkstraNode|null = this._graph.getNearestDijkstraNode(this._navTarget);
+                let target:DijkstraNode|null = null;
+                
+                if(target != null && this._graphSolver != null)
+                {
+                    this._graphSolver.reset();
+                    let route:DijkstraNode[] = this._graphSolver.calculate(nearestNode, target);
+                    if(route.length > 1)
+                    {
+                        for(let i:number = 0; i < route.length - 1; i++)
+                        {
+                            let idx = this.getChipIndexFor(route[i], route[i + 1]);
+                            if(idx != undefined)
+                                (this._graphChips[idx].material as MeshStandardMaterial).visible = true;
+                        }
+                    }
+                }
+            }    
+        }
+    }
+
+    private getChipIndexFor(n1:DijkstraNode, n2:DijkstraNode):number
+    {
+        return n1.getNeighbourChipIndexInGraph(n2);
     }
 
     private updateHeaderPositionInformation():void
@@ -367,9 +396,9 @@ class GameScene
             this.addObjectInternal(infospot);
         }
 
-        this.generateDijkstraNodeGraph(inits.dijkstranodes);
- 
         this.generatePlayer(inits);
+
+        this.generateDijkstraNodeGraph(inits.dijkstranodes);
     }
 
     private generateDijkstraNodeGraph(dijkstranodes:any[]):void
@@ -383,16 +412,19 @@ class GameScene
                 let dn:DijkstraNode = new DijkstraNode(name, location);
                 for(let j:number = 0; j < dijkstranodes[i].neighbours.length; j++)
                 {
-                    let cost:number = dijkstranodes[i].neighboursCosts[j];
-                    dn.addNeighbourIndex(dijkstranodes[i].neighbours[j], cost);
+                    dn.addNeighbourIndex(dijkstranodes[i].neighbours[j]);
                 }
                 this._graph.add(dn);
             }
             this._graph.setNeighboursForAllNodes();
-            for(let iMesh of this._graph.generateChips())
+            this._graphChips = this._graph.getChipsMeshes();
+            let meshGroup:Group = new Group();
+            this._graphChipsGroupId = meshGroup.id;
+            for(let chip of this._graphChips)
             {
-                this._scene.add(iMesh);
+                meshGroup.add(chip);
             }
+            this._scene.add(meshGroup);
             this._graphSolver = new DijkstraSolver(this._graph);
         }
         

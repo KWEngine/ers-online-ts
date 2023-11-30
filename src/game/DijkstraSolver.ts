@@ -1,9 +1,10 @@
-import { Vector3 } from "three";
 import DijkstraGraph from "./DijkstraGraph";
 import DijkstraNode from "./DijkstraNode";
 
 class DijkstraSolver
 {
+    //private readonly MAX_INT:number = 1000000;
+
     private _distances:Map<DijkstraNode, number> = new Map();
     private _routes:Map<DijkstraNode, DijkstraNode|null> = new Map();
     private _graph:DijkstraGraph;
@@ -23,29 +24,27 @@ class DijkstraSolver
             this._allNodes.push(this._graph.getNodes()[i]);
         }
 
-        this._distances = this.resetDistances();
-        this._routes = this.resetRoutes();
+        this.resetDistances();
+        this.resetRoutes();
 
     }
 
-    private resetDistances():Map<DijkstraNode, number>
+    private resetDistances()
     {
-        let distances:Map<DijkstraNode, number> = new Map<DijkstraNode, number>();
+        this._distances.clear();
         for(let i:number = 0; i < this._graph.getNodes().length; i++)
         {
-            distances.set(this._graph.getNodes()[i], Number.MAX_SAFE_INTEGER);
+            this._distances.set(this._graph.getNodes()[i], Number.MAX_SAFE_INTEGER);
         }
-        return distances;
     }
 
-    private resetRoutes():Map<DijkstraNode, DijkstraNode|null>
+    private resetRoutes()
     {
-        let routes:Map<DijkstraNode, DijkstraNode|null> = new Map<DijkstraNode, DijkstraNode|null>();
+        this._routes.clear();
         for(let i:number = 0; i < this._graph.getNodes().length; i++)
         {
-            routes.set(this._graph.getNodes()[i], null);
+            this._routes.set(this._graph.getNodes()[i], null);
         }
-        return routes;
     }
 
     private getLeastExpensiveNode():DijkstraNode
@@ -61,8 +60,9 @@ class DijkstraSolver
         return leastExpensive;
     }
 
-    public calculate(source:DijkstraNode, destination:DijkstraNode):Vector3[]
+    public calculate(source:DijkstraNode, destination:DijkstraNode):DijkstraNode[]
     {
+        this._distances.set(source, 0);
         while(this._allNodes.length > 0)
         {
             let leastExpensiveNode:DijkstraNode = this.getLeastExpensiveNode();
@@ -72,49 +72,28 @@ class DijkstraSolver
         return this.getRoute(source, destination);
     }
 
-    private getRoute(source:DijkstraNode, destination:DijkstraNode):Vector3[]
+    private getRoute(source:DijkstraNode, destination:DijkstraNode):DijkstraNode[]
     {
-        let route:Vector3[] = [];
-        route.push(source.getLocationInstance().clone());
+        let route:DijkstraNode[] = [];
         this.gatherRoute(source, destination, route);
-
         return route;
     }
 
-    private printDebug(source:DijkstraNode, destination:DijkstraNode):void
-    {
-        console.log("shortest route for " + source.getName() + " to " + destination.getName() + ":");
-        let output:string[] = [];
-        this.gatherRouteDebug(source, destination, output);
-        console.log(output);
-    }
-
-    private gatherRoute(s:DijkstraNode, d:DijkstraNode, spots:Vector3[]):void
+    private gatherRoute(s:DijkstraNode, d:DijkstraNode, route:DijkstraNode[]):void
     {
         if(this._routes.get(d) == null)
         {
-            spots.push(d.getLocationInstance().clone());
+            route.push(d);
             return;
         }
-        spots.push(d.getLocationInstance().clone());
-        this.gatherRoute(s, this._routes.get(d)!, spots);
-    }
-
-    private gatherRouteDebug(s:DijkstraNode, d:DijkstraNode, output:string[]):void
-    {
-        if(this._routes.get(d) == null)
-        {
-            output.push(d.getName());
-            return;
-        }
-        output.push(d.getName());
-        this.gatherRouteDebug(s, this._routes.get(d)!, output);
+        route.push(d);
+        this.gatherRoute(s, this._routes.get(d)!, route);
     }
 
     private examineConnections(n:DijkstraNode):void
     {
         for(let neighbour of n.getNeighbours().keys())
-        {
+        {   
             let distanceOfN:number = this._distances.get(n)!;
             let neighbourValue:number = n.getNeighbours().get(neighbour)!;
             let distanceOfNeighbour = this._distances.get(neighbour)!;
@@ -126,7 +105,5 @@ class DijkstraSolver
             }
         }
     }
-
-
 }
 export default DijkstraSolver;
