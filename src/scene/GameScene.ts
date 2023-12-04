@@ -558,20 +558,20 @@ class GameScene
         this._gameObjectsNew.push(o);
     }
 
-    public spawnLocationSpotForRoom(r:string):void
+    public spawnLocationSpotForRoom(block:string|null, n:string|null):void
     {
         if(this._navTarget != null)
         {
             this._navTarget.markForRemoval();
         }
 
-        if(r.length == 0)
+        if(block == null || block.length == 0 || n == null || n.length == 0)
         {
             this._navTarget = null;
         }
         else
         {
-            let exp:string[] = r.split(";");
+            let exp:string[] = n.split(";");
             let x:number = parseFloat(exp[1]);
             let y:number = parseFloat(exp[2]);
             let z:number = parseFloat(exp[3]);
@@ -725,36 +725,106 @@ class GameScene
                 let p:HTMLElement = document.createElement('p');
                 p.innerText = "Raumsuche:";
     
-                let select:HTMLSelectElement = document.createElement('select');
-                select.setAttribute('id', 'roomsearch');
-                select.setAttribute('name', 'roomsearch');
+                let selectBlock:HTMLSelectElement = document.createElement('select');
+                selectBlock.setAttribute('class', 'roomsearch');
+                selectBlock.setAttribute('id', 'blocksearch');
+                selectBlock.setAttribute('name', 'blocksearch');
+                let blockOptionEmpty:HTMLElement = document.createElement('option');
+                blockOptionEmpty.setAttribute('value', "");
+                blockOptionEmpty.innerText = "";
+                let blockOptionA:HTMLElement = document.createElement('option');
+                blockOptionA.setAttribute('value', "A");
+                blockOptionA.innerText = "A";
+                let blockOptionB:HTMLElement = document.createElement('option');
+                blockOptionB.setAttribute('value', "B");
+                blockOptionB.innerText = "B";
+                let blockOptionC:HTMLElement = document.createElement('option');
+                blockOptionC.setAttribute('value', "C");
+                blockOptionC.innerText = "C";
+                selectBlock.appendChild(blockOptionEmpty);
+                selectBlock.appendChild(blockOptionA);
+                selectBlock.appendChild(blockOptionB);
+                selectBlock.appendChild(blockOptionC);
 
-                //let new HTMLOptionElement()
-                let doors:any = await getData('/doors/doors.json');
-                let doorlib:ERSDoorLib = JSON.parse(doors);
+
+
+                let selectNumber:HTMLSelectElement = document.createElement('select');
+                selectNumber.setAttribute('id', 'roomsearch');
+                selectNumber.setAttribute('class', 'roomsearch');
+                selectNumber.setAttribute('name', 'roomsearch');
                 
-                let option:HTMLElement = document.createElement('option');
-                option.setAttribute('value', "");
-                option.innerText = "";
-                select.appendChild(option);
-
-                for(let i:number = 0; i < doorlib.a.length; i++)
-                {
-                    let option:HTMLElement = document.createElement('option');
-                    option.setAttribute('value', 'A' + doorlib.a[i].name + ";" + doorlib.a[i].coords[0] + ";" + doorlib.a[i].coords[1] + ";" + doorlib.a[i].coords[2]);
-                    option.innerText = 'A' + doorlib.a[i].name;
-                    select.appendChild(option);
-                }
                 headerRight.appendChild(p);
-                headerRight.appendChild(select);
-                select.addEventListener('change', function(e:any)
+                headerRight.appendChild(selectBlock);
+                headerRight.appendChild(selectNumber);
+
+                selectNumber.addEventListener('change', this.populateRoomListForBlock);
+                selectBlock.addEventListener('change', function(e:any)
                 {
-                    GameScene.instance.spawnLocationSpotForRoom(e.srcElement.options[e.srcElement.selectedIndex].value || "");
+                    let bs:HTMLSelectElement|null = document.getElementById('blocksearch') as HTMLSelectElement;
+                    let rs:HTMLSelectElement|null = document.getElementById('roomsearch') as HTMLSelectElement;
+                    let block:string|null = null;
+                    let room:string|null = null;
+                    if(bs && rs)
+                    {
+                        block = bs.options[bs.selectedIndex].value;
+                        room = rs.options[rs.selectedIndex].value;
+                    }
+                    GameScene.instance.spawnLocationSpotForRoom(block, room);
                 });
             }
             
         }
         document.getElementById('header')!.style.opacity = "1";
+    }
+
+    private async populateRoomListForBlock(e:any)
+    {
+        GameScene.instance.spawnLocationSpotForRoom(null, null); // entferne aktuelles Navi-Ziel
+        let bs:HTMLSelectElement|null = document.getElementById('blocksearch') as HTMLSelectElement;
+        let block:string|null = null;
+        if(bs != null)
+        {
+            let selectNumber:HTMLSelectElement = document.getElementById('roomsearch') as HTMLSelectElement;
+            selectNumber.selectedIndex = -1;
+            while(selectNumber.options.length > 0)
+            {
+                selectNumber.remove(0);
+            }
+
+            block = bs.options[bs.selectedIndex].value;
+            if(block == "A" || block == "B" || block == "C")
+            {
+                let doors:ERSDoorLib = await this.getRoomListForBlock(block);
+                let option:HTMLElement = document.createElement('option');
+                option.setAttribute('value', "");
+                option.innerText = "";
+                selectNumber.appendChild(option);
+
+                for(let i:number = 0; i < doors.a.length; i++)
+                {
+                    let option:HTMLElement = document.createElement('option');
+                    option.setAttribute('value', block + doors.a[i].name + ";" + doors.a[i].coords[0] + ";" + doors.a[i].coords[1] + ";" + doors.a[i].coords[2]);
+                    option.innerText = block + doors.a[i].name;
+                    selectNumber.appendChild(option);
+
+                }
+            }
+        }
+        else
+        {
+
+        }
+    }
+
+    private async getRoomListForBlock(block:string):Promise<ERSDoorLib>
+    {
+        // Hole aktuelle Location aus der URL:
+        // Todo...
+
+        let doors:any = await getData('/doors/doors.json');
+        let doorlib:ERSDoorLib = JSON.parse(doors);
+        return doorlib;
+        
     }
 
     public showStartInfo():void
