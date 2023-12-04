@@ -49,11 +49,121 @@
                 "model": "ers-arrow.glb",
                 "target": "/",
                 "innerHTMLSource": "forum-to-start.html"
+            },
+            {
+                "name": "exit-forum-to-c-block",
+                "position": [25.8, 1, -5.9],
+                "rotation": [-90, -90, 0],
+                "scale": [1, 1, 1],
+                "model": "ers-arrow.glb",
+                "target": "/c-block",
+                "innerHTMLSource": "forum-to-c-block_low.html"
             }
         ],
         "infospots":
         [
             
+        ],
+        "dijkstranodes":
+        [
+            {
+                "id": 0,
+                "name":"exit-forum-to-front",
+                "location": [1.8, 0, 2.2],
+                "neighbours": [1]
+            },
+            {
+                "id": 1,
+                "name": "forum-center",
+                "location": [1.8, 0.0, -1.1],
+                "neighbours": [0, 2, 3, 4]
+            },
+            {
+                "id": 2,
+                "name": "exit-forum-to-back",
+                "location": [2.3, 0, -4.9],
+                "neighbours": [1, 3, 4]
+            },
+            {
+                "id": 3,
+                "name": "exit-forum-to-c",
+                "location": [24.9, 0.0, -5.8],
+                "neighbours": [1, 2]
+            },
+            
+            {
+                "id": 4,
+                "name": "forum-stairs-low",
+                "location": [-1.3, 0, -3.1],
+                "neighbours": [1, 2, 5]
+            },
+            {
+                "id": 5,
+                "name": "forum-stairs-mid-1",
+                "location": [-6.3, 2.5, -3.1],
+                "neighbours": [4, 6]
+            },
+            {
+                "id": 6,
+                "name": "forum-stairs-mid-2",
+                "location": [-6.9, 2.5, -1.7],
+                "neighbours": [5, 7]
+            },
+            {
+                "id": 7,
+                "name": "forum-stairs-high",
+                "location": [-5.9, 3.05, -0.2],
+                "neighbours": [6, 8]
+            },
+            {
+                "id": 8,
+                "name": "forum-high-center",
+                "location": [-4.9, 3.05, 1.4],
+                "neighbours": [7, 9, 10]
+            },
+            {
+                "id": 9,
+                "name": "exit-forum-high-to-b",
+                "location": [-9.5, 3.05, 1.9],
+                "neighbours": [8]
+            },
+            {
+                "id": 10,
+                "name": "forum-high-a101",
+                "location": [-0.7, 3.05, -0.9],
+                "neighbours": [8, 11]
+            },
+            {
+                "id": 11,
+                "name": "forum-high-a102",
+                "location": [6.9, 3.05, -1.1],
+                "neighbours": [10, 12]
+            },
+            {
+                "id": 12,
+                "name": "exit-forum-high-to-c",
+                "location": [17.4, 3.05, -3.0],
+                "neighbours": [11]
+            },
+            {
+                "id": 13,
+                "name": "forum-lehrerzimmer",
+                "location": [-14.3, 0, 1.1],
+                "neighbours": [0, 1, 14]
+            },
+            {
+                "id": 14,
+                "name": "exit-forum-to-b",
+                "location": [-24.3, 0, -0.9],
+                "neighbours": [13]
+            },
+            {
+                "id": 15,
+                "name": "exit-forum-to-b-high",
+                "location": [-23.7, 0, 2.2],
+                "neighbours": [13]
+            }
+
         ]
     }
 }

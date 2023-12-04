@@ -1,4 +1,5 @@
 import CameraState from "../game/CameraState";
+import DijkstraNode from "../game/DijkstraNode";
 import State from "../game/State";
 import { Vector3, Quaternion, Matrix4, Euler, Object3D, Mesh } from "three";
 
@@ -242,6 +243,47 @@ class HelperGeneral
             pos.x * mat.elements[2] + pos.y * mat.elements[6] + pos.z * mat.elements[10] + mat.elements[14]
         );
     }
+
+    public static isTargetInCurrentLocation(room:string):boolean
+    {
+        if(window.location.pathname == "/")
+        {
+            return false;
+        }
+        else if(window.location.pathname == "/forum" || window.location.pathname == "/forum/")
+        {
+            if(room == "A101" || room == "A102")
+            {
+                return true;
+            }
+        }
+        else if(window.location.pathname == "/c-block" || window.location.pathname == "/c-block/")
+        {
+            return room.charAt(0) == 'C' && room.charAt(1) == '0';
+        }
+        else if(window.location.pathname == "/c-block/e1" || window.location.pathname == "/c-block/e1/")
+        {
+            return room.charAt(0) == 'C' && room.charAt(1) == '1';
+        }
+        else if(window.location.pathname == "/b-block" || window.location.pathname == "/b-block/")
+        {
+            return room.charAt(0) == 'B' && room.charAt(1) == '0';
+        }
+        else if(window.location.pathname == "/b-block/e1" || window.location.pathname == "/b-block/e1/")
+        {
+            return room.charAt(0) == 'B' && room.charAt(1) == '1';
+        }
+
+        return false;
+    }
+
+    /*
+    public static findNearestTraversalNode(room:string, playerLocation:Vector3):DijkstraNode
+    {
+        
+    }
+    */
+
 }
 
 export default HelperGeneral;

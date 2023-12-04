@@ -17,6 +17,7 @@ class ERSLocationSpot extends ERSRadiusObject
             if(this.isPlayerNearby() && this.isActivatedByPlayer() == false)
             {
                 this.setActivatedByPlayer(true);  
+                GameScene.instance.eraseNavTarget();
             } 
         }
         else

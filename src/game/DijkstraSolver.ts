@@ -1,3 +1,4 @@
+import GameScene from "../scene/GameScene";
 import DijkstraGraph from "./DijkstraGraph";
 import DijkstraNode from "./DijkstraNode";
 
@@ -23,13 +24,12 @@ class DijkstraSolver
         {
             this._allNodes.push(this._graph.getNodes()[i]);
         }
-
         this.resetDistances();
         this.resetRoutes();
 
     }
 
-    private resetDistances()
+    private resetDistances():void
     {
         this._distances.clear();
         for(let i:number = 0; i < this._graph.getNodes().length; i++)
@@ -38,7 +38,7 @@ class DijkstraSolver
         }
     }
 
-    private resetRoutes()
+    private resetRoutes():void
     {
         this._routes.clear();
         for(let i:number = 0; i < this._graph.getNodes().length; i++)

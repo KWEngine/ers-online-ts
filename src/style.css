@@ -239,7 +239,7 @@ body
 {
   flex-grow:0;
   flex-shrink:0;
-  flex-basis:8rem;
+  flex-basis:6rem;
   background-image:url('/img/ers-logo-header.png');
   background-size: contain;
   background-repeat: no-repeat;

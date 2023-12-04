@@ -1,6 +1,7 @@
 import GameScene from './scene/GameScene';
 import HelperControls from './helpers/HelperControls';
 import HelperGeneral from './helpers/HelperGeneral';
+import ERSDoorLib from './game/ERSDoorLib';
 
 async function getData(url = '', data = {}) {
      
@@ -212,7 +213,8 @@ function onTouchDivRightReset(e:any)
 
 function onSelectionChanged(e:any)
 {
-    GameScene.instance.spawnLocationSpotForRoom("A102");
+    alert("[inc.ts] onSelectionChanged");
+    //GameScene.instance.spawnLocationSpotForRoom("A102");
 }
 
 
@@ -233,6 +235,66 @@ function getSceneFromLocation(loc:Location):string
 
     // Standard-Fallback-Location:
     return 'school_outside_front';
+}
+
+async function populateRoomListForBlock(e:any)
+{
+    GameScene.instance.spawnLocationSpotForRoom(null, null); // entferne aktuelles Navi-Ziel
+    let bs:HTMLSelectElement|null = document.getElementById('blocksearch') as HTMLSelectElement;
+    let block:string|null = null;
+    if(bs != null)
+    {
+        let selectNumber:HTMLSelectElement = document.getElementById('roomsearch') as HTMLSelectElement;
+        selectNumber.selectedIndex = -1;
+        while(selectNumber.options.length > 0)
+        {
+            selectNumber.removeChild(selectNumber[selectNumber.options.length - 1]);
+        }
+
+        block = bs.options[bs.selectedIndex].value;
+        if(block == "A" || block == "B" || block == "C")
+        {
+            selectNumber.disabled = false;
+            let list:any[] = await getRoomListForBlock(block);
+
+            let option:HTMLElement = document.createElement('option');
+            option.setAttribute('value', "");
+            option.innerText = "";
+            selectNumber.appendChild(option);
+
+            for(let i:number = 0; i < list.length; i++)
+            {
+                let option:HTMLElement = document.createElement('option');
+                option.setAttribute('value', block + list[i].name + ";" + list[i].coords[0] + ";" + list[i].coords[1] + ";" + list[i].coords[2]);
+                option.innerText = list[i].name;
+                selectNumber.appendChild(option);
+
+            }
+        }
+        else
+        {
+            selectNumber.disabled = true;
+        }
+    }
+}
+
+async function getRoomListForBlock(block:string):Promise<any[]>
+{
+    let doors:any = await getData('/doors/doors.json');
+    let doorlib:ERSDoorLib = JSON.parse(doors);
+    if(block == "A")
+    {
+        return doorlib.a;
+    }
+    else if(block == "B")
+    {
+        return doorlib.b;
+    }
+    else if(block == "C")
+    {
+        return doorlib.c;
+    }
+    return [];  
 }
 
 // ============= BEGINNE PROGRAMM ============== //
@@ -282,4 +344,4 @@ if(HelperGeneral.isMobileDevice())
     document.documentElement.style.fontSize = "80%";
 }
 
-export {getSceneFromLocation, getData};
+export {getSceneFromLocation, getData, populateRoomListForBlock};

@@ -1,4 +1,4 @@
-import { Group, InstancedMesh, Matrix4, Mesh, MeshPhysicalMaterial, Vector3 } from "three";
+import { Group, InstancedMesh, Matrix4, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, Vector3 } from "three";
 import GameScene from "../scene/GameScene";
 import DijkstraNode from "./DijkstraNode";
 import GameObject from "./GameObject";
@@ -23,20 +23,25 @@ class DijkstraGraph
     {
         let delta:Vector3 = new Vector3();
         delta.subVectors(n1.getLocationInstance(), n2.getLocationInstance());
-        let deltaLength:number = Math.floor(delta.length());
+        let deltaLength:number = Math.ceil(delta.length());
         delta.normalize();
 
         // Generiere InstancedMesh-Instanzen für den Weg:
         let mesh:Group = GameScene.instance.getModel("ers-dijkstrachip.glb");
-        let iMesh:InstancedMesh = new InstancedMesh((mesh.children[0] as Mesh).geometry, new MeshPhysicalMaterial({specularColor: 0x000000, color: 0xff0000, emissive: 0xff0000, emissiveIntensity: 0.5, opacity: 1}), deltaLength);
-        for(let k:number = 0; k < deltaLength; k++)
+        let iMesh:InstancedMesh = new InstancedMesh(
+            (mesh.children[0] as Mesh).geometry, 
+            new MeshBasicMaterial({color: 0xff0000, opacity: 1}), 
+            deltaLength * 2
+            );
+        for(let k:number = 0, l:number = 0; l < deltaLength; k++, l+=0.49)
         {
             let mat4:Matrix4 = new Matrix4();
             mat4.setPosition(new Vector3(
-                n1.getLocationInstance().x - delta.x * k, 
-                n1.getLocationInstance().y - delta.y * k,
-                n1.getLocationInstance().z - delta.z * k));
-            mat4.scale(new Vector3(0.25, 0.25, 0.25));
+                n1.getLocationInstance().x - delta.x * l, 
+                n1.getLocationInstance().y - delta.y * l,
+                n1.getLocationInstance().z - delta.z * l)
+                );
+            mat4.scale(new Vector3(0.1, 0.1, 0.1));
             iMesh.setMatrixAt(k, mat4);
         }
         return iMesh;
@@ -80,6 +85,16 @@ class DijkstraGraph
             let diffX:number = g.getPositionInstance().x - this._nodes[i].getLocationInstance().x;
             let diffY:number = g.getPositionInstance().y - this._nodes[i].getLocationInstance().y;
             let diffZ:number = g.getPositionInstance().z - this._nodes[i].getLocationInstance().z;
+
+            if(diffY > 2.5)
+            {
+                diffY += 3;
+            }
+            else if(diffY < -2.5)
+            {
+                diffY -= 3;
+            }
+
             let distanceSq:number = diffX * diffX + diffY * diffY + diffZ * diffZ;
             if(distanceSq < minDist)
             {

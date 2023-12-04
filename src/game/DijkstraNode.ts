@@ -1,4 +1,4 @@
-import { InstancedMesh, Vector3 } from "three";
+import { Vector3 } from "three";
 
 class DijkstraNode
 {

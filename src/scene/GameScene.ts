@@ -17,10 +17,9 @@ import HelperControls from "../helpers/HelperControls";
 import HitboxG from "../model/HitboxG";
 import ERSPortal from "../game/ERSPortal";
 import CameraState from "../game/CameraState";
-import { getData } from "../inc";
+import { getData, populateRoomListForBlock } from "../inc";
 import { EffectComposer, RenderPass, UnrealBloomPass } from "three/examples/jsm/Addons.js";
 import ERSLocationSpot from "../game/ERSLocationSpot";
-import ERSDoorLib from "../game/ERSDoorLib";
 import DijkstraGraph from "../game/DijkstraGraph";
 import DijkstraNode from "../game/DijkstraNode";
 import DijkstraSolver from "../game/DijkstraSolver";
@@ -242,12 +241,9 @@ class GameScene
         if(this._navTarget != null)
         {
             let nearestNode:DijkstraNode|null = this._graph.getNearestDijkstraNode(this._player!);
-            
             if(nearestNode != null)
             {
-                //let target:DijkstraNode|null = this._graph.getNearestDijkstraNode(this._navTarget);
-                let target:DijkstraNode|null = null;
-                
+                let target:DijkstraNode|null = this._graph.getNearestDijkstraNode(this._navTarget);
                 if(target != null && this._graphSolver != null)
                 {
                     this._graphSolver.reset();
@@ -572,10 +568,19 @@ class GameScene
         else
         {
             let exp:string[] = n.split(";");
-            let x:number = parseFloat(exp[1]);
-            let y:number = parseFloat(exp[2]);
-            let z:number = parseFloat(exp[3]);
-            this._navTarget = this.spawnLocationSpot(x, y + 0.25, z);
+            let room:string = exp[0];
+            if(HelperGeneral.isTargetInCurrentLocation(room))
+            {
+                let x:number = parseFloat(exp[1]);
+                let y:number = parseFloat(exp[2]);
+                let z:number = parseFloat(exp[3]);
+                this._navTarget = this.spawnLocationSpot(x, y + 0.25, z);
+            }
+            else
+            {
+                // To do: Finde den nächstgelegenen Übergangspunkt!
+                //        ...
+            }
         }
         
     }
@@ -752,24 +757,30 @@ class GameScene
                 selectNumber.setAttribute('id', 'roomsearch');
                 selectNumber.setAttribute('class', 'roomsearch');
                 selectNumber.setAttribute('name', 'roomsearch');
+                selectNumber.disabled = true;
                 
                 headerRight.appendChild(p);
                 headerRight.appendChild(selectBlock);
                 headerRight.appendChild(selectNumber);
 
-                selectNumber.addEventListener('change', this.populateRoomListForBlock);
-                selectBlock.addEventListener('change', function(e:any)
+                selectBlock.addEventListener('change', populateRoomListForBlock);
+                selectNumber.addEventListener('change', function(e:any)
                 {
                     let bs:HTMLSelectElement|null = document.getElementById('blocksearch') as HTMLSelectElement;
                     let rs:HTMLSelectElement|null = document.getElementById('roomsearch') as HTMLSelectElement;
                     let block:string|null = null;
                     let room:string|null = null;
-                    if(bs && rs)
+                    if(bs && rs && rs.selectedIndex >= 0)
                     {
                         block = bs.options[bs.selectedIndex].value;
                         room = rs.options[rs.selectedIndex].value;
+                        GameScene.instance.spawnLocationSpotForRoom(block, room);
                     }
-                    GameScene.instance.spawnLocationSpotForRoom(block, room);
+                    else
+                    {
+                        GameScene.instance.spawnLocationSpotForRoom(null, null);
+                    }
+                    
                 });
             }
             
@@ -777,55 +788,7 @@ class GameScene
         document.getElementById('header')!.style.opacity = "1";
     }
 
-    private async populateRoomListForBlock(e:any)
-    {
-        GameScene.instance.spawnLocationSpotForRoom(null, null); // entferne aktuelles Navi-Ziel
-        let bs:HTMLSelectElement|null = document.getElementById('blocksearch') as HTMLSelectElement;
-        let block:string|null = null;
-        if(bs != null)
-        {
-            let selectNumber:HTMLSelectElement = document.getElementById('roomsearch') as HTMLSelectElement;
-            selectNumber.selectedIndex = -1;
-            while(selectNumber.options.length > 0)
-            {
-                selectNumber.remove(0);
-            }
-
-            block = bs.options[bs.selectedIndex].value;
-            if(block == "A" || block == "B" || block == "C")
-            {
-                let doors:ERSDoorLib = await this.getRoomListForBlock(block);
-                let option:HTMLElement = document.createElement('option');
-                option.setAttribute('value', "");
-                option.innerText = "";
-                selectNumber.appendChild(option);
-
-                for(let i:number = 0; i < doors.a.length; i++)
-                {
-                    let option:HTMLElement = document.createElement('option');
-                    option.setAttribute('value', block + doors.a[i].name + ";" + doors.a[i].coords[0] + ";" + doors.a[i].coords[1] + ";" + doors.a[i].coords[2]);
-                    option.innerText = block + doors.a[i].name;
-                    selectNumber.appendChild(option);
-
-                }
-            }
-        }
-        else
-        {
-
-        }
-    }
-
-    private async getRoomListForBlock(block:string):Promise<ERSDoorLib>
-    {
-        // Hole aktuelle Location aus der URL:
-        // Todo...
-
-        let doors:any = await getData('/doors/doors.json');
-        let doorlib:ERSDoorLib = JSON.parse(doors);
-        return doorlib;
-        
-    }
+    
 
     public showStartInfo():void
     {
@@ -940,6 +903,30 @@ class GameScene
     public getCameraLookAtStrafeVectorXZ():Vector3
     {
         return HelperGeneral.getStrafeVector(this.getCameraLookAtVector(), this._camera.up).normalize();
+    }
+
+    public getNavTarget():ERSLocationSpot|null
+    {
+        return this._navTarget;
+    }
+
+    public eraseNavTarget():void
+    {
+        this.resetRoomSearch();
+    }
+
+    private resetRoomSearch():void
+    {
+        this._navTarget = null;
+        let selectBlock:HTMLSelectElement = document.getElementById('blocksearch') as HTMLSelectElement;
+        if(selectBlock)
+            selectBlock.selectedIndex = -1;
+        let selectNumber:HTMLSelectElement = document.getElementById('roomsearch') as HTMLSelectElement;
+        if(selectNumber)
+        {
+            selectNumber.disabled = true;
+            selectNumber.selectedIndex = -1;
+        }
     }
 
 }
