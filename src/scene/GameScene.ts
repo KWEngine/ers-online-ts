@@ -23,6 +23,7 @@ import ERSLocationSpot from "../game/ERSLocationSpot";
 import DijkstraGraph from "../game/DijkstraGraph";
 import DijkstraNode from "../game/DijkstraNode";
 import DijkstraSolver from "../game/DijkstraSolver";
+import HelperCookie from "../helpers/HelperCookie";
 
 class GameScene
 {
@@ -235,7 +236,7 @@ class GameScene
         let g:Object3D = this._scene.getObjectById(this._graphChipsGroupId)!;
         for(let i:number = 0; i < this._graphChips.length; i++)
         {
-            (this._graphChips[i].material as MeshStandardMaterial).visible = false;
+            (this._graphChips[i].material as MeshBasicMaterial).visible = false;
         }
 
         if(this._navTarget != null)
@@ -254,8 +255,14 @@ class GameScene
                         {
                             let idx = this.getChipIndexFor(route[i], route[i + 1]);
                             if(idx != undefined)
-                                (this._graphChips[idx].material as MeshStandardMaterial).visible = true;
+                                (this._graphChips[idx].material as MeshBasicMaterial).visible = true;
                         }
+                    }
+                    else
+                    {
+                        // To do:   Die letzten Meter zum Ziel sollen ggf. mit einem Pfeil
+                        //          überbrückt werden.
+                        //          ...
                     }
                 }
             }    
@@ -334,6 +341,14 @@ class GameScene
 
         await this.showHeader();
 
+        // Pruefe, ob ggf. ein Suchziel in den Cookies vorhanden
+        // ist und setze dies als Navigationsziel:
+        const searchParams:URLSearchParams = new URLSearchParams(window.location.search);
+        let target:string|null = searchParams.get('target');
+        if(target != null && target.length > 0)
+        {
+            this.selectRoomInHeader(target);
+        }
     }
 
     private init(inits:ERSSceneInits):void
@@ -720,7 +735,45 @@ class GameScene
         }
     }
 
-    private async showHeader()
+    private selectRoomInHeader(room:string):void
+    {
+        if(room.length > 0)
+        {
+            let block:string = room.charAt(0);
+            let number:string = room.substring(1);
+
+            let blocksearch:HTMLSelectElement = document.getElementById('blocksearch') as HTMLSelectElement;
+            
+            if(blocksearch)
+            {
+                for(let i:number = 0; i < blocksearch.options.length; i++)
+                {
+                    if(blocksearch.options[i].value == block)
+                    {
+                        blocksearch.selectedIndex = i;
+                        populateRoomListForBlock(true);
+                        
+                        break;
+                    }
+                }
+                /*
+                let roomsearch:HTMLSelectElement = document.getElementById('roomsearch') as HTMLSelectElement;
+                for(let i:number = 0; i < roomsearch.options.length; i++)
+                {
+                    console.log(roomsearch.options[i]);
+                    if(roomsearch.options[i].value == number)
+                    {
+                        roomsearch.selectedIndex = i;
+                        roomsearch.dispatchEvent(new Event('change'));
+                        break;
+                    }
+                }
+                */
+            }
+        }
+    }
+
+    private showHeader():void
     {
         let header:HTMLElement|null = document.getElementById('header');
         if(header != null)
@@ -837,7 +890,7 @@ class GameScene
         }
     }
 
-    private setInfoScreenVisible(visible:boolean, html:string = ""):void
+    private setInfoScreenVisible(visible:boolean, html:string = "", target:string = ""):void
     {
         if(visible)
         {
@@ -846,6 +899,21 @@ class GameScene
             document.getElementById('infoscreen')!.style.display = "flex";
             document.getElementById('infoscreen-close')!.innerText = "X";
             document.getElementById('infoscreen-inner')!.innerHTML = html;
+            if(target.length > 0)
+            {
+                let portallink:HTMLLinkElement = document.getElementsByClassName('portal-button')[0] as HTMLLinkElement;
+                if(portallink.href.includes('?') == false)
+                {
+                    portallink.href = portallink.href + "?target=" + target;
+                }
+                else
+                {
+                    if(portallink.href.includes('target=') == false)
+                    {
+                        portallink.href = portallink.href + "&target=" + target;
+                    }
+                }
+            }
         }
         else{
             HelperGeneral.setMobileControlsVisible(true);
@@ -879,15 +947,16 @@ class GameScene
         this.setOverlayVisible(false);
     }
 
-    public async showPortalInfo(innerHTMLSource:string)
+    public async showPortalInfo(innerHTMLSource:string, target:string)
     {
         let url = '/portalhtml/' + innerHTMLSource;
         const html:any = await getData(url);
 
+
         HelperGeneral.setInfoSreenActive(2); // 0 = disabled, 1 = info, 2 = portal
         this.resetControlsForOverlay();
         this.setOverlayVisible(true);
-        this.setInfoScreenVisible(true, html);
+        this.setInfoScreenVisible(true, html, target);
     }
 
     public closePortalInfo():void

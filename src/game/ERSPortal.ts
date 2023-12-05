@@ -1,3 +1,5 @@
+import HelperCookie from "../helpers/HelperCookie";
+import HelperGeneral from "../helpers/HelperGeneral";
 import GameScene from "../scene/GameScene";
 import ERSRadiusObject from "./ERSRadiusObject";
 
@@ -24,7 +26,13 @@ class ERSPortal extends ERSRadiusObject
             if(this.isPlayerLookingAtMe() == true && this.isActivatedByPlayer() == false)
             {
                 this.setActivatedByPlayer(true);
-                GameScene.instance.showPortalInfo(this.getInnerHTMLSource());
+                let selectedRoom:string = "";
+                if(GameScene.instance.getNavTarget() != null && GameScene.instance.getNavTarget()!.isTraversalSpot())
+                {
+                    selectedRoom = HelperGeneral.getSelectedBlockRoom();
+                }
+
+                GameScene.instance.showPortalInfo(this.getInnerHTMLSource(), selectedRoom);
             }
         } 
     }

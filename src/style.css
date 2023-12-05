@@ -393,10 +393,34 @@ body
   }
 }
 
-@media screen and (max-width:512px) 
+@media screen and (max-width:768px) 
 {
   #header-center
   {
     display:none;
+  }
+
+  #header-right
+  {
+    font-size: 1.1rem;
+    align-items:stretch;
+  }
+
+  #header-right p
+  {
+    display:flex;
+    align-items:center;
+  }
+
+  .roomsearch
+  {
+    font-size:1.15rem !important;
+    min-width:5em;
+    flex-shrink:0;
+  }
+
+  .roomsearch option
+  {
+    font-size:1.15rem;
   }
 }

@@ -10,7 +10,7 @@ class ERSLocationSpot extends ERSRadiusObject
     {
         if(this._isTraversalSpot)
         {
-
+            
         }
         else
         {

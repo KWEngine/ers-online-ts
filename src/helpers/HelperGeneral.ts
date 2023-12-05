@@ -23,6 +23,36 @@ class HelperGeneral
     private static readonly ISMOBILE:boolean = HelperGeneral.checkIfMobileDevice();
     private static _infoScreenState:number = 0; // 0 = disabled, 1 = info, 2 = portal
 
+    public static getSelectedBlockRoom():string
+    {
+        let blockSelect:HTMLSelectElement = (document.getElementById('blocksearch') as HTMLSelectElement);
+        let roomSelect:HTMLSelectElement = (document.getElementById('roomsearch') as HTMLSelectElement);
+        if(blockSelect && roomSelect && blockSelect.selectedIndex >= 0 && roomSelect.selectedIndex >= 0)
+        {
+            let room:string = roomSelect.options[roomSelect.selectedIndex].value;
+            if(room.includes(";"))
+            {
+                room = room.split(';')[0];
+            }
+            return room;
+        }
+        else
+        {
+            return "";
+        }
+        
+    }
+
+    private static escapeRegExp(string:string) 
+    {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+      
+    private static replaceAll(str:string, find:string, replace:string) 
+    {
+        return str.replace(new RegExp(HelperGeneral.escapeRegExp(find), 'g'), replace);
+    }
+
     public static setMobileControlsVisible(v:boolean):void
     {
         if(HelperGeneral.isMobileDevice())

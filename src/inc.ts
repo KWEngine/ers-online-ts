@@ -270,6 +270,24 @@ async function populateRoomListForBlock(e:any)
                 selectNumber.appendChild(option);
 
             }
+            if(e === true && selectNumber)
+            {
+                const searchParams:URLSearchParams = new URLSearchParams(window.location.search);
+                let target:string|null = searchParams.get('target');
+                if(target != null && target.length > 0)
+                {
+                    for(let i:number = 0; i < selectNumber.options.length; i++)
+                    {
+                        if(selectNumber.options[i].value.startsWith(target))
+                        {
+                            selectNumber.selectedIndex = i;
+                            selectNumber.dispatchEvent(new Event('change'));
+                            break;
+                        }
+                    }
+                }
+                
+            }
         }
         else
         {
