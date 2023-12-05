@@ -2,6 +2,8 @@ import CameraState from "../game/CameraState";
 import DijkstraNode from "../game/DijkstraNode";
 import State from "../game/State";
 import { Vector3, Quaternion, Matrix4, Euler, Object3D, Mesh } from "three";
+import GameScene from "../scene/GameScene";
+import DijkstraGraph from "../game/DijkstraGraph";
 
 class HelperGeneral
 {
@@ -277,12 +279,95 @@ class HelperGeneral
         return false;
     }
 
-    /*
-    public static findNearestTraversalNode(room:string, playerLocation:Vector3):DijkstraNode
+    
+    public static findNearestTraversalNode(room:string, playerLocation:Vector3):DijkstraNode|null
     {
-        
+        let graph:DijkstraGraph = GameScene.instance.getDijkstraGraph();
+        let searchterm:string = "";
+        let pathname:string = window.location.pathname;
+        if(pathname.length > 1 && pathname.endsWith("/"))
+        {
+            pathname = pathname.substring(0, pathname.length - 1);
+        }
+        if(pathname == "/")
+        {
+            searchterm = "exit-outside-front-to-forum";
+        }
+        else if(pathname == "/forum")
+        {
+            if(playerLocation.y > 2)
+            {
+                if(room.charAt(0) == 'B')
+                {
+                    if(room.charAt(1) == '1' || room.charAt(2) == '2')
+                    {
+                        searchterm = "exit-forum-high-to-b";
+                    }
+                    else
+                    {
+                        searchterm = "exit-forum-to-b";
+                    }
+                }
+                else if(room.startsWith("C"))
+                {
+                    if(room.charAt(1) == '1' || room.charAt(2) == '2')
+                    {
+                        searchterm = "exit-forum-high-to-c";
+                    }
+                    else
+                    {
+                        searchterm = "exit-forum-to-c";
+                    }
+                }
+            }
+            else
+            {
+                if(room.charAt(0) == 'B')
+                {
+                    if(room.charAt(1) == '0')
+                        searchterm = "exit-forum-to-b";
+                    else
+                        searchterm = "exit-forum-high-to-b";
+                }
+                else if(room.charAt(0) == 'C')
+                {
+                    if(room.charAt(1) == '0')
+                        searchterm = "exit-forum-to-c";
+                    else
+                        searchterm = "exit-forum-to-c";
+                }
+            }
+        }
+        else if(pathname == "/c-block")
+        {
+            
+        }
+        else if(pathname == "/c-block/e1")
+        {
+            
+        }
+        else if(pathname == "/b-block")
+        {
+            
+        }
+        else if(pathname == "/b-block/e1")
+        {
+            
+        }
+
+        if(searchterm.length == 0)
+        {
+            return null;
+        }
+        else
+        {
+            let node:DijkstraNode|null = graph.getNodeByName(searchterm);
+            if(node == null)
+                console.log("[HelperGeneral::findNearestTraversalNode()] Node '" + searchterm + "' not found.");
+            return node;
+        }
     }
-    */
+    
 
 }
 

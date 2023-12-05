@@ -73,15 +73,16 @@ abstract class ERSRadiusObject extends InteractiveObject
 
     protected isPlayerLookingAtMe():boolean
     {
-        let x:number = this._pivot.x - GameScene.instance.getPlayer().getPositionInstance().x;
-        let y:number = this._pivot.y - GameScene.instance.getPlayer().getPositionInstance().y;
-        let z:number = this._pivot.z - GameScene.instance.getPlayer().getPositionInstance().z;
+        let pPos:Vector3 = new Vector3(
+            this._pivot.x - GameScene.instance.getPlayer().getPositionInstance().x,
+            this._pivot.y - GameScene.instance.getPlayer().getPositionInstance().y,
+            this._pivot.z - GameScene.instance.getPlayer().getPositionInstance().z
+         );
+         pPos.normalize();
 
-        let dotDir:number = GameScene.instance.getPlayer().getLookAtVectorPlayerInstance().x * x +
-            GameScene.instance.getPlayer().getLookAtVectorPlayerInstance().y * y +
-            GameScene.instance.getPlayer().getLookAtVectorPlayerInstance().z * z;
+        let dotDir:number = GameScene.instance.getPlayer().getLookAtVectorPlayerInstance().dot(pPos);
 
-        return dotDir > 0;
+        return dotDir > 0.25;
     }
 
 }

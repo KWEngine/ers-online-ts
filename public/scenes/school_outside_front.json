@@ -66,25 +66,25 @@
         [
             {
                 "id": 0,
-                "name":"A",
+                "name":"outside-front-center",
                 "location": [-0.3, 0, 4],
                 "neighbours": [1, 2, 3]
             },
             {
                 "id": 1,
-                "name": "B",
+                "name": "exit-outside-front-to-forum",
                 "location": [-0.3, 0, -10],
                 "neighbours": [0]
             },
             {
                 "id": 2,
-                "name": "C",
+                "name": "outside-front-left",
                 "location": [-9, 0, 14],
                 "neighbours": [0]
             },
             {
                 "id": 3,
-                "name": "D",
+                "name": "outside-front-right",
                 "location": [9, 0, 14],
                 "neighbours": [0]
             }

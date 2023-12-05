@@ -49,6 +49,11 @@ abstract class GameObject
         return this._isMarkedForRemoval;
     }
 
+    public setVisible(v:boolean):void
+    {
+        this._object3d.visible = v;
+    }
+
     private copyHitboxesFromModel()
     {
         let hbs:Hitbox[] = GameScene.instance.getHitboxesForModel(this._modelFileName);

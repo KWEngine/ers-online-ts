@@ -88,11 +88,11 @@ class DijkstraGraph
 
             if(diffY > 2.5)
             {
-                diffY += 3;
+                diffY += 9;
             }
             else if(diffY < -2.5)
             {
-                diffY -= 3;
+                diffY -= 9;
             }
 
             let distanceSq:number = diffX * diffX + diffY * diffY + diffZ * diffZ;

@@ -262,6 +262,11 @@ class GameScene
         }
     }
 
+    public getDijkstraGraph():DijkstraGraph
+    {
+        return this._graph;
+    }
+
     private getChipIndexFor(n1:DijkstraNode, n2:DijkstraNode):number
     {
         return n1.getNeighbourChipIndexInGraph(n2);
@@ -579,16 +584,29 @@ class GameScene
             else
             {
                 // To do: Finde den nächstgelegenen Übergangspunkt!
-                //        ...
+                let node:DijkstraNode|null = HelperGeneral.findNearestTraversalNode(room, this._player!.getPositionInstance());
+                if(node != null)
+                {
+                    this._navTarget = this.spawnLocationSpot(
+                        node.getLocationInstance().x, 
+                        node.getLocationInstance().y + 0.25, 
+                        node.getLocationInstance().z,
+                        true
+                        );
+                }
             }
         }
         
     }
 
-    private spawnLocationSpot(x:number, y:number, z:number):ERSLocationSpot
+    private spawnLocationSpot(x:number, y:number, z:number, isTraversalSpot:boolean = false):ERSLocationSpot
     {
         let model:Group = this._modelDatabase.get('ers-location.glb')!;
         let ls:ERSLocationSpot = new ERSLocationSpot(model, 'target', 'ers-location.glb');
+        if(isTraversalSpot)
+        {
+            ls.markAsTraversalSpot();
+        }
         ls.setPosition(x, y, z);
         ls.setPivot(x, y, z);
         ls.setRotation(0, 0, 0);
