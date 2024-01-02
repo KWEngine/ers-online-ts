@@ -45,6 +45,7 @@ abstract class ERSRadiusObject extends InteractiveObject
         
     public setPivot(x:number, y:number, z:number):void
     {
+        console.log(x, y, z);
         this._pivot.set(x, y, z);
     }
 

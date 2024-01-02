@@ -226,7 +226,11 @@ function getSceneFromLocation(loc:Location):string
     }
     else if(loc.pathname == "/c-block/" || loc.pathname == "/c-block")
     {
-        return 'school_outside_front'; // Noch im Test :-)
+        return 'school_c-block'; // Noch im Test :-)
+    }
+    else if(loc.pathname == "/b-block/" || loc.pathname == "/b-block")
+    {
+        return 'school_b-block'; // Noch im Test :-)
     }
     else if(loc.pathname == "/forum/" || loc.pathname == "/forum")
     {

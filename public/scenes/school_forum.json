@@ -57,7 +57,16 @@
                 "scale": [1, 1, 1],
                 "model": "ers-arrow.glb",
                 "target": "/c-block",
-                "innerHTMLSource": "forum-to-c-block_low.html"
+                "innerHTMLSource": "forum-to-c-block.html"
+            },
+            {
+                "name": "exit-forum-to-b-block",
+                "position": [-25, 1, -0.75],
+                "rotation": [-90, -90, 0],
+                "scale": [1, 1, 1],
+                "model": "ers-arrow.glb",
+                "target": "/b-block",
+                "innerHTMLSource": "forum-to-b-block.html"
             }
         ],
         "infospots":
