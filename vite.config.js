@@ -9,10 +9,10 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        nested: resolve(__dirname, 'forum/index.html'),
-        nested: resolve(__dirname, 'b-block/index.html'),
-        nested: resolve(__dirname, 'c-block/index.html'),
-        nested: resolve(__dirname, 'c-block/1og/index.html'),
+        forum: resolve(__dirname, 'forum/index.html'),
+        bblock0: resolve(__dirname, 'b-block/index.html'),
+        cblock0: resolve(__dirname, 'c-block/index.html'),
+        cblock1: resolve(__dirname, 'c-block/1og/index.html'),
       },
     },
   },
