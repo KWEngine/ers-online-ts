@@ -1,0 +1,63 @@
+{
+    "loads":
+    {
+        "models": ["school_cblock.glb", "school_cblock.hitboxes.glb"]
+    },
+    
+    "inits":
+    {
+        "ambientLight": "0xffffff",
+        "background_image": "none",
+        "staticLight":
+        [
+            {
+                "type": "sun",
+                "position":[50, 50, 50],
+                "target":[0, 0, -5],
+                "color": ["ffffff", 1.5]
+            }
+        ],
+        "player":
+        {
+            "position": [32, 0, -5.8],
+            "rotation": [0, 0, 0],
+            "scale":[0.5, 1.8, 0.5],
+            "yOffset": 1.6,
+            "lookAt": 90
+        },
+        "renderObjects":
+        [
+            {
+                "name": "school_cblock",
+                "model": "school_cblock.glb"
+            }
+        ],
+        "hitboxes":
+        [
+            {
+                "name": "school_cblock_hitboxes",
+                "model":"school_cblock.hitboxes.glb"
+            }
+        ],
+        "portals":
+        [
+            {
+                "name": "exit-c-block-to-forum",
+                "position": [31.3, 1, -5.9],
+                "rotation": [-90, -90, 0],
+                "scale": [1, 1, 1],
+                "model": "ers-arrow.glb",
+                "target": "/forum",
+                "innerHTMLSource": "c-block-to-forum.html"
+            }
+        ],
+        "infospots":
+        [
+            
+        ],
+        "dijkstranodes":
+        [
+
+        ]
+    }
+}
