@@ -4,7 +4,7 @@ import InteractiveObject from "./InteractiveObject";
 
 abstract class ERSRadiusObject extends InteractiveObject
 {
-    private _radiusInner:number = 1.5;
+    private _radiusInner:number = 1.25;
     private _radiusOuter:number = 3.0;
     private _pivot:Vector3 = new Vector3(0,0,0);
     private _innerHTMLSource:string = "";
@@ -61,28 +61,26 @@ abstract class ERSRadiusObject extends InteractiveObject
     protected isPlayerNearby():boolean
     {
         let x:number = this._pivot.x - GameScene.instance.getPlayer().getPositionInstance().x;
-        let y:number = this._pivot.y - GameScene.instance.getPlayer().getPositionInstance().y;
+        let y:number = (this._pivot.y - GameScene.instance.getPlayer().getPositionInstance().y) * 0.5;
         let z:number = this._pivot.z - GameScene.instance.getPlayer().getPositionInstance().z;
-        let dotNear:number = Math.sqrt(x * x + y * y + z * z);
+        let distance:number = Math.sqrt(x * x + y * y + z * z);
 
-        if(dotNear > this._radiusOuter)
+        if(distance > this._radiusOuter)
             this.setActivatedByPlayer(false);
 
-        return dotNear < this._radiusInner;
+        return distance < this._radiusInner;
     }
 
     protected isPlayerLookingAtMe():boolean
     {
         let pPos:Vector3 = new Vector3(
             this._pivot.x - GameScene.instance.getPlayer().getPositionInstance().x,
-            this._pivot.y - GameScene.instance.getPlayer().getPositionInstance().y,
+            0,
             this._pivot.z - GameScene.instance.getPlayer().getPositionInstance().z
          );
          pPos.normalize();
-
         let dotDir:number = GameScene.instance.getPlayer().getLookAtVectorPlayerInstance().dot(pPos);
-
-        return dotDir > 0.25;
+        return dotDir > 0.8;
     }
 
 }

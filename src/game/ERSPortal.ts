@@ -22,11 +22,9 @@ class ERSPortal extends ERSRadiusObject
         }
 
         let playerNearby:boolean = this.isPlayerNearby();
-        //console.log(playerNearby);
         if(playerNearby == true)
         {
             let lookingAt:boolean = this.isPlayerLookingAtMe();
-            //console.log(lookingAt);
             if(lookingAt == true && this.isActivatedByPlayer() == false)
             {
                 this.setActivatedByPlayer(true);

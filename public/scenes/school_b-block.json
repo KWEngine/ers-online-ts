@@ -49,11 +49,59 @@
                 "model": "ers-arrow.glb",
                 "target": "/forum",
                 "innerHTMLSource": "b-block-to-forum.html"
+            },
+            {
+                "name": "exit-b-block-to-forum-2",
+                "position": [-31.9, 1, 6.2],
+                "rotation": [-90, -90, 0],
+                "scale": [1, 1, 1],
+                "model": "ers-arrow.glb",
+                "target": "/forum",
+                "innerHTMLSource": "b-block-to-forum-2.html"
             }
         ],
         "infospots":
         [
-            
+            {
+                "name": "info_b_0_01",
+                "position": [-35.5, 1, 7.7],
+                "rotation": [0, 0, 0],
+                "scale": [0.5, 0.5, 0.5],
+                "model": "ers-info.glb",
+                "innerHTMLSource": "b_0_01.html"
+            },
+            {
+                "name": "info_b_0_02",
+                "position": [-64.0, 1, 10.9],
+                "rotation": [0, 0, 0],
+                "scale": [0.5, 0.5, 0.5],
+                "model": "ers-info.glb",
+                "innerHTMLSource": "b_0_02.html"
+            },
+            {
+                "name": "info_b_0_03",
+                "position": [-43.7, 1, -5.3],
+                "rotation": [0, 0, 0],
+                "scale": [0.5, 0.5, 0.5],
+                "model": "ers-info.glb",
+                "innerHTMLSource": "b_0_03.html"
+            },
+            {
+                "name": "info_b_0_04",
+                "position": [-52.2, 1, -6.5],
+                "rotation": [0, 0, 0],
+                "scale": [0.5, 0.5, 0.5],
+                "model": "ers-info.glb",
+                "innerHTMLSource": "b_0_04.html"
+            },
+            {
+                "name": "info_b_0_05",
+                "position": [-94.9, 1, -0.7],
+                "rotation": [0, 0, 0],
+                "scale": [0.5, 0.5, 0.5],
+                "model": "ers-info.glb",
+                "innerHTMLSource": "b_0_05.html"
+            }
         ],
         "dijkstranodes":
         [

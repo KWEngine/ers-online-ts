@@ -96,6 +96,12 @@ body
   width:92.5%;
 }
 
+.ersinfo a
+{
+  color:green;
+  text-decoration: underline;
+}
+
 .ersinfo-footer
 {
   margin-top:1rem;
