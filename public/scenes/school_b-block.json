@@ -57,7 +57,102 @@
         ],
         "dijkstranodes":
         [
-
+            {
+                "id": 0,
+                "name":"b0_0",
+                "location": [-31.6, 0, -0.9],
+                "neighbours": [1]
+            },
+            {
+                "id": 1,
+                "name":"b0_1",
+                "location": [-33.5, 0, -0.9],
+                "neighbours": [0, 2, 4, 5]
+            },
+            {
+                "id": 2,
+                "name":"b0_2",
+                "location": [-33.5, 0, 6.2],
+                "neighbours": [1, 3]
+            },
+            {
+                "id": 3,
+                "name":"b0_3",
+                "location": [-33.8, 0, 12.5],
+                "neighbours": [2]
+            },
+            {
+                "id": 4,
+                "name":"b0_4",
+                "location": [-32.5, 0, -9.6],
+                "neighbours": [1]
+            },
+            {
+                "id": 5,
+                "name":"b0_5",
+                "location": [-43.2, 0, -1.0],
+                "neighbours": [1, 6, 7]
+            },
+            {
+                "id": 6,
+                "name":"b0_6",
+                "location": [-43.8, 0, -4.7],
+                "neighbours": [5]
+            },
+            {
+                "id": 7,
+                "name":"b0_7",
+                "location": [-52.4, 0, -1],
+                "neighbours": [5, 8, 9]
+            },
+            {
+                "id": 8,
+                "name":"b0_8",
+                "location": [-52.4, 0, -5.6],
+                "neighbours": [7]
+            },
+            {
+                "id": 9,
+                "name":"b0_9",
+                "location": [-62.2, 0, -0.6],
+                "neighbours": [7, 10, 11]
+            },
+            {
+                "id": 10,
+                "name":"b0_10",
+                "location": [-62.2, 0, 12],
+                "neighbours": [9]
+            },
+            {
+                "id": 11,
+                "name":"b0_11",
+                "location": [-66.5, 0, -0.6],
+                "neighbours": [9, 12]
+            },
+            {
+                "id": 12,
+                "name":"b0_12",
+                "location": [-78.0, 0, -0.6],
+                "neighbours": [11, 13]
+            },
+            {
+                "id": 13,
+                "name":"b0_13",
+                "location": [-82.8, 0, -0.6],
+                "neighbours": [12, 14]
+            },
+            {
+                "id": 14,
+                "name":"b0_14",
+                "location": [-90.0, 0, -0.6],
+                "neighbours": [13, 15]
+            },
+            {
+                "id": 15,
+                "name":"b0_15",
+                "location": [-94.5, 0, -0.6],
+                "neighbours": [14]
+            }
         ]
     }
 }
