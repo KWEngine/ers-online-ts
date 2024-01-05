@@ -11,7 +11,8 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         forum: resolve(__dirname, 'forum/index.html'),
         bblock0: resolve(__dirname, 'b-block/index.html'),
-        cblock0: resolve(__dirname, 'c-block/index.html')
+        cblock0: resolve(__dirname, 'c-block/index.html'),
+        cblock1: resolve(__dirname, 'c-block/1/index.html')
       },
     },
   },
