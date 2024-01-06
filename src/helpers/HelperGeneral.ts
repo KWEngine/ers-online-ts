@@ -4,6 +4,9 @@ import State from "../game/State";
 import { Vector3, Quaternion, Matrix4, Euler, Object3D, Mesh } from "three";
 import GameScene from "../scene/GameScene";
 import DijkstraGraph from "../game/DijkstraGraph";
+import ERSPortal from "../game/ERSPortal";
+import { getData } from "../inc";
+import ERSDoorLib from "../game/ERSDoorLib";
 
 class HelperGeneral
 {
@@ -312,6 +315,9 @@ class HelperGeneral
         let graph:DijkstraGraph = GameScene.instance.getDijkstraGraph();
         let searchterm:string = "";
         let pathname:string = window.location.pathname;
+        let tempPos:Vector3|null = null;
+        room = room.toLowerCase();
+
         if(pathname.length > 1 && pathname.endsWith("/"))
         {
             pathname = pathname.substring(0, pathname.length - 1);
@@ -324,7 +330,7 @@ class HelperGeneral
         {
             if(playerLocation.y > 2)
             {
-                if(room.charAt(0) == 'B')
+                if(room.charAt(0) == 'b')
                 {
                     if(room.charAt(1) == '1' || room.charAt(2) == '2')
                     {
@@ -332,10 +338,10 @@ class HelperGeneral
                     }
                     else
                     {
-                        searchterm = "exit-forum-to-b";
+                        searchterm = "exit-forum-to-b-right";
                     }
                 }
-                else if(room.startsWith("C"))
+                else if(room.startsWith("c"))
                 {
                     if(room.charAt(1) == '1' || room.charAt(2) == '2')
                     {
@@ -349,14 +355,14 @@ class HelperGeneral
             }
             else
             {
-                if(room.charAt(0) == 'B')
+                if(room.charAt(0) == 'b')
                 {
                     if(room.charAt(1) == '0')
                         searchterm = "exit-forum-to-b-right";
                     else
                         searchterm = "exit-forum-to-b-right";
                 }
-                else if(room.charAt(0) == 'C')
+                else if(room.charAt(0) == 'c')
                 {
                     if(room.charAt(1) == '0')
                         searchterm = "exit-forum-to-c";
@@ -365,21 +371,18 @@ class HelperGeneral
                 }
             }
         }
-        else if(pathname == "/c-block")
+        else
         {
             
-        }
-        else if(pathname == "/c-block/e1")
-        {
-            
-        }
-        else if(pathname == "/b-block")
-        {
-            
-        }
-        else if(pathname == "/b-block/e1")
-        {
-            
+            tempPos = HelperGeneral.findNearestPortalInCurrentLocation(this.getTargetNameForRoom(pathname, room));
+            if(tempPos != null)
+            {
+                let node:DijkstraNode|null = graph.getNearestDijkstraNodeForPosition(tempPos);
+                if(node != null)
+                {
+                    searchterm = node.getName();
+                }
+            }
         }
 
         if(searchterm.length == 0)
@@ -395,7 +398,107 @@ class HelperGeneral
         }
     }
     
+    private static getTargetNameForRoom(pathname:string, room:string):string
+    {
+        let result:string = "";
+        if(pathname == "/forum")
+        {
+            if(room.startsWith('b'))
+            {
+                return '/b-block';
+            }
+            else if(room.startsWith('c'))
+            {
+                return '/c-block';
+            }
+        }
+        else if(pathname == "/c-block")
+        {
+            if(room.startsWith('a') || room.startsWith('b'))
+            {
+                return '/forum';
+            }
+            else if(room.charAt(1) == '1')
+            {
+                return '/c-block/1'
+            }
+        }
+        else if(pathname == "/c-block/1")
+        {
+            if(room.startsWith('a') || room.startsWith('b'))
+            {
+                return '/forum';
+            }
+            else if(room.charAt(1) == '0')
+            {
+                return '/c-block'
+            }
+        }
+        else if(pathname == "/b-block")
+        {
+            if(room.startsWith('a') || room.startsWith('c'))
+            {
+                return '/forum';
+            }
+            else if(room.charAt(1) == '1')
+            {
+                return '/b-block/1'
+            }
+        }
 
+        return result;
+    }
+
+    public static findNearestPortalInCurrentLocation(target:string):Vector3|null
+    {
+        let playerPos:Vector3 = GameScene.instance.getPlayer().getPosition();
+
+        let portalList:ERSPortal[] = GameScene.instance.getPortals();
+        let deltaMin:number = HelperGeneral.MAXNUM;
+        let deltaIndex:number = -1;
+        for(let i:number = 0; i < portalList.length; i++)
+        {
+            if(portalList[i].getTarget() == target)
+            {
+                let dX = portalList[i].getPositionInstance().x - playerPos.x;
+                let dZ = portalList[i].getPositionInstance().z - playerPos.z;
+                let dXZ = dX * dX + dZ * dZ;
+                if(dXZ < deltaMin)
+                {
+                    deltaMin = dXZ;
+                    deltaIndex = i;
+                }
+            }
+        }
+        if(deltaIndex >= 0)
+        {
+            return portalList[deltaIndex].getPosition();
+        }
+        
+        return null;
+    }
+
+    private static async getRoomPosition(room:string, roomPos:Vector3):Promise<boolean>
+    {
+        room = room.toLowerCase();
+        let doors:any = await getData('/doors/doors.json');
+        let doorlib:ERSDoorLib = JSON.parse(doors);
+
+        if(room.startsWith('a'))
+        {
+            console.log(doorlib.a);
+        }
+        else if(room.startsWith('b'))
+        {
+            console.log(doorlib.b);
+        }
+        else if(room.startsWith('c'))
+        {
+            console.log(doorlib.c);
+        }
+        
+        return false;
+    }
 }
 
 export default HelperGeneral;

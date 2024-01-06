@@ -75,16 +75,16 @@ class DijkstraGraph
         return this._meshes;
     }
 
-    public getNearestDijkstraNode(g:GameObject):DijkstraNode|null
+    public getNearestDijkstraNodeForPosition(p:Vector3):DijkstraNode|null
     {
         let minDist:number = Number.MAX_SAFE_INTEGER;
         let minIndex:number = -1;
         
         for(let i:number = 0; i < this._nodes.length; i++)
         {
-            let diffX:number = g.getPositionInstance().x - this._nodes[i].getLocationInstance().x;
-            let diffY:number = g.getPositionInstance().y - this._nodes[i].getLocationInstance().y;
-            let diffZ:number = g.getPositionInstance().z - this._nodes[i].getLocationInstance().z;
+            let diffX:number = p.x - this._nodes[i].getLocationInstance().x;
+            let diffY:number = p.y - this._nodes[i].getLocationInstance().y;
+            let diffZ:number = p.z - this._nodes[i].getLocationInstance().z;
 
             if(diffY > 2.5)
             {
@@ -111,6 +111,12 @@ class DijkstraGraph
         {
             return null;
         }
+    }
+
+    public getNearestDijkstraNode(g:GameObject):DijkstraNode|null
+    {
+        let p:Vector3 = g.getPositionInstance();
+        return this.getNearestDijkstraNodeForPosition(p);
     }
 
     public remove(n:DijkstraNode)

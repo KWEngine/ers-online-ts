@@ -38,6 +38,7 @@ class GameScene
     private readonly _gameObjects:GameObject[] = [];
     private readonly _gameObjectsNew:GameObject[] = [];
     private readonly _hitboxes:HitboxG[] = [];
+    private readonly _portals:ERSPortal[] = [];
     private readonly _clock:Clock;
     private readonly _modelDatabase:Map<string, Group>;
     private readonly _hitboxDatabase:Map<string, Hitbox[]>;
@@ -545,6 +546,11 @@ class GameScene
         return [];
     }
 
+    public getPortals():ERSPortal[]
+    {
+        return this._portals;
+    }
+
     private addObjectInternal(o : GameObject):void
     {
         if(o instanceof RenderObject)
@@ -567,6 +573,11 @@ class GameScene
         {
             this._gameObjects.push(o);
             this._scene.add(o.get3DObject());
+
+            if(o instanceof ERSPortal)
+            {
+                this._portals.push(o as ERSPortal);
+            }
         }
     }
 
