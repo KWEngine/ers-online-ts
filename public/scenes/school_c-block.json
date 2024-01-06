@@ -49,6 +49,33 @@
                 "model": "ers-arrow.glb",
                 "target": "/forum",
                 "innerHTMLSource": "c-block-to-forum.html"
+            },
+            {
+                "name": "exit-c-block-to-c-block-1-0",
+                "position": [45.3, 1, 2.8],
+                "rotation": [-90, 0, 0],
+                "scale": [1, 1, 1],
+                "model": "ers-arrow.glb",
+                "target": "/c-block/1",
+                "innerHTMLSource": "c-block-to-c-block-1-0.html"
+            },
+            {
+                "name": "exit-c-block-to-c-block-1-1",
+                "position": [79.8, 1, -0.1],
+                "rotation": [-90, 0, 0],
+                "scale": [1, 1, 1],
+                "model": "ers-arrow.glb",
+                "target": "/c-block/1",
+                "innerHTMLSource": "c-block-to-c-block-1-1.html"
+            },
+            {
+                "name": "exit-c-block-to-c-block-1-2",
+                "position": [38.0, 1, -36.8],
+                "rotation": [-90, -90, 0],
+                "scale": [1, 1, 1],
+                "model": "ers-arrow.glb",
+                "target": "/c-block/1",
+                "innerHTMLSource": "c-block-to-c-block-1-2.html"
             }
         ],
         "infospots":
@@ -150,7 +177,7 @@
             {
                 "id": 15,
                 "name":"c0_15",
-                "location": [45.4, 0, -1.2],
+                "location": [45.4, 0, 0.8],
                 "neighbours": [1]
             },
             {
@@ -163,7 +190,7 @@
                 "id": 17,
                 "name":"c0_17",
                 "location": [67.7, 0, -3.4],
-                "neighbours": [16, 18]
+                "neighbours": [16, 18, 19]
             },
             {
                 "id": 18,

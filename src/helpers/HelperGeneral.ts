@@ -284,10 +284,7 @@ class HelperGeneral
         }
         else if(window.location.pathname == "/forum" || window.location.pathname == "/forum/")
         {
-            if(room == "A101" || room == "A102")
-            {
-                return true;
-            }
+            return room.charAt(0) == 'A';
         }
         else if(window.location.pathname == "/c-block" || window.location.pathname == "/c-block/")
         {
@@ -355,9 +352,9 @@ class HelperGeneral
                 if(room.charAt(0) == 'B')
                 {
                     if(room.charAt(1) == '0')
-                        searchterm = "exit-forum-to-b";
+                        searchterm = "exit-forum-to-b-right";
                     else
-                        searchterm = "exit-forum-high-to-b";
+                        searchterm = "exit-forum-to-b-right";
                 }
                 else if(room.charAt(0) == 'C')
                 {

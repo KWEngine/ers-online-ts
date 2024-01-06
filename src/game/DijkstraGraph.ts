@@ -104,6 +104,7 @@ class DijkstraGraph
         }
         if(minIndex >= 0)
         {
+            //console.log(minIndex);
             return this._nodes[minIndex];
         }
         else

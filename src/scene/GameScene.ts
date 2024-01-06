@@ -242,6 +242,7 @@ class GameScene
         if(this._navTarget != null)
         {
             let nearestNode:DijkstraNode|null = this._graph.getNearestDijkstraNode(this._player!);
+            //console.log(nearestNode?.getName());
             if(nearestNode != null)
             {
                 let target:DijkstraNode|null = this._graph.getNearestDijkstraNode(this._navTarget);
