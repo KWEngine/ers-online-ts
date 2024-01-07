@@ -243,7 +243,6 @@ class GameScene
         if(this._navTarget != null)
         {
             let nearestNode:DijkstraNode|null = this._graph.getNearestDijkstraNode(this._player!);
-            //console.log(nearestNode?.getName());
             if(nearestNode != null)
             {
                 let target:DijkstraNode|null = this._graph.getNearestDijkstraNode(this._navTarget);
@@ -600,7 +599,7 @@ class GameScene
         else
         {
             let exp:string[] = n.split(";");
-            let room:string = exp[0];
+            let room:string = exp[0].toLowerCase();
             if(HelperGeneral.isTargetInCurrentLocation(room))
             {
                 let x:number = parseFloat(exp[1]);
@@ -610,7 +609,6 @@ class GameScene
             }
             else
             {
-                // To do: Finde den nächstgelegenen Übergangspunkt!
                 let node:DijkstraNode|null = HelperGeneral.findNearestTraversalNode(room, this._player!.getPositionInstance());
                 if(node != null)
                 {

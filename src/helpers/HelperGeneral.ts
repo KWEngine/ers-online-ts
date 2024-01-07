@@ -287,23 +287,23 @@ class HelperGeneral
         }
         else if(window.location.pathname == "/forum" || window.location.pathname == "/forum/")
         {
-            return room.charAt(0) == 'A';
+            return room.charAt(0) == 'a';
         }
         else if(window.location.pathname == "/c-block" || window.location.pathname == "/c-block/")
         {
-            return room.charAt(0) == 'C' && room.charAt(1) == '0';
+            return room.charAt(0) == 'c' && room.charAt(1) == '0';
         }
-        else if(window.location.pathname == "/c-block/e1" || window.location.pathname == "/c-block/e1/")
+        else if(window.location.pathname == "/c-block/1" || window.location.pathname == "/c-block/1/")
         {
-            return room.charAt(0) == 'C' && room.charAt(1) == '1';
+            return room.charAt(0) == 'c' && room.charAt(1) == '1';
         }
         else if(window.location.pathname == "/b-block" || window.location.pathname == "/b-block/")
         {
-            return room.charAt(0) == 'B' && room.charAt(1) == '0';
+            return room.charAt(0) == 'c' && room.charAt(1) == '0';
         }
-        else if(window.location.pathname == "/b-block/e1" || window.location.pathname == "/b-block/e1/")
+        else if(window.location.pathname == "/b-block/1" || window.location.pathname == "/b-block/1/")
         {
-            return room.charAt(0) == 'B' && room.charAt(1) == '1';
+            return room.charAt(0) == 'b' && room.charAt(1) == '1';
         }
 
         return false;
