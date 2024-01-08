@@ -299,7 +299,7 @@ class HelperGeneral
         }
         else if(window.location.pathname == "/b-block" || window.location.pathname == "/b-block/")
         {
-            return room.charAt(0) == 'c' && room.charAt(1) == '0';
+            return room.charAt(0) == 'b' && room.charAt(1) == '0';
         }
         else if(window.location.pathname == "/b-block/1" || window.location.pathname == "/b-block/1/")
         {
