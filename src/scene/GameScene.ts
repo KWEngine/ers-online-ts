@@ -819,7 +819,7 @@ class GameScene
                 shareButtonLink.setAttribute('id', 'share-link');
 
                 let shareIcon:HTMLElement = document.createElement("img");
-                shareIcon.setAttribute('src', './img/share.png');
+                shareIcon.setAttribute('src', window.location.origin + '/img/share.png');
                 shareIcon.setAttribute('id', 'share-icon');
                 
                 shareButtonLink.appendChild(shareIcon);
@@ -834,7 +834,7 @@ class GameScene
                 helpButtonLink.setAttribute('id', 'help-link');
 
                 let helpIcon:HTMLElement = document.createElement("img");
-                helpIcon.setAttribute('src', './img/help.png');
+                helpIcon.setAttribute('src', window.location.origin + '/img/help.png');
                 helpIcon.setAttribute('id', 'help-icon');
                 
                 helpButtonLink.appendChild(helpIcon);
@@ -1016,8 +1016,7 @@ class GameScene
                     y = 0;
                 }
                 let z:number = parseFloat(this.getPlayer().getPositionInstance().z.toPrecision(2));
-                
-                let loc:string = window.location.href + '?x=' + x + '&y=' + y + '&z=' + z + '&r=' + r;
+                let loc:string = window.location.origin + window.location.pathname + '?x=' + x + '&y=' + y + '&z=' + z + '&r=' + r;
                 html = await QRCode.toString(loc);
                 html = html + '<br /><p id="p-share"><a href="' + loc + '">Link zur aktuellen Position</a></p>';
             }
