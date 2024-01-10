@@ -87,7 +87,13 @@ class ERSPlayer extends InteractiveObject
                 }
             }
         }
-       
+    }
+
+    public getRotationForShare():number
+    {
+        let r:number = GameScene.instance.getCamEulerY();
+        r = Math.round(HelperGeneral.rad2deg(-r));
+        return r;
     }
 
     private updateDirectionVector():void

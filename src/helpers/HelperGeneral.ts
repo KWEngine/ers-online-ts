@@ -23,6 +23,7 @@ class HelperGeneral
     public static readonly MAXNUM:number = 9999999.9;
     public static readonly RAYCASTOFFSET:number = 100;
     public static readonly PORTALCOOLDOWN:number = 5;
+    public static readonly BASEURL:string = "http://developers-arca.de:8000/";
     private static readonly ISMOBILE:boolean = HelperGeneral.checkIfMobileDevice();
     private static _infoScreenState:number = 0; // 0 = disabled, 1 = info, 2 = portal
 

@@ -536,6 +536,11 @@ class GameScene
         }
     }
 
+    public getCamEulerY():number
+    {
+        return this._cameraStateCurrent._euler.y;
+    }
+
     public getHitboxesForModel(m:string):Hitbox[]
     {
         if(this._hitboxDatabase.has(m))
@@ -806,6 +811,7 @@ class GameScene
                 headerCenter!.appendChild(table);
                 */
 
+                //share
                 let shareDiv:HTMLElement = document.createElement('div');
                 shareDiv.setAttribute('id', 'share');
 
@@ -820,7 +826,24 @@ class GameScene
                 shareDiv.appendChild(shareButtonLink);
                 headerCenter!.appendChild(shareDiv);
 
+                //help
+                let helpDiv:HTMLElement = document.createElement('div');
+                helpDiv.setAttribute('id', 'help');
+
+                let helpButtonLink:HTMLElement = document.createElement("a");
+                helpButtonLink.setAttribute('id', 'help-link');
+
+                let helpIcon:HTMLElement = document.createElement("img");
+                helpIcon.setAttribute('src', './img/help.png');
+                helpIcon.setAttribute('id', 'help-icon');
+                
+                helpButtonLink.appendChild(helpIcon);
+                helpDiv.appendChild(helpButtonLink);
+                headerCenter!.appendChild(helpDiv);
+                
+
                 shareButtonLink.addEventListener('click', this.share);
+                helpButtonLink.addEventListener('click', this.help);
             }
 
             let headerRight:HTMLElement|null = document.getElementById('header-right');
@@ -908,7 +931,6 @@ class GameScene
             HelperControls._motionMove[1] = 0;
             HelperControls._camPitchYawId = -1;
             HelperControls._camMoveStrafeId = -1;
-
         }
         else
         {
@@ -958,10 +980,15 @@ class GameScene
 
     public share(e:any)
     {
-        //GameScene.instance.showInfoInfo("");
+        GameScene.instance.showInfoInfo("", "share");
     }
 
-    public async showInfoInfo(innerHTMLSource:string)
+    public help(e:any)
+    {
+        GameScene.instance.showInfoInfo("", "help");
+    }
+
+    public async showInfoInfo(innerHTMLSource:string, specialMode:string = "")
     {
         let html:any = "";
         if(innerHTMLSource.length > 0)
@@ -971,12 +998,34 @@ class GameScene
         }
         else
         {
-            // share info
-            let x:number = this.getPlayer().getPositionInstance().x;
-            let y:number = this.getPlayer().getPositionInstance().y;
-            let z:number = this.getPlayer().getPositionInstance().z;
+            if(HelperGeneral.isMobileDevice() == false)
+            {
+                document.getElementById("pointerlock-msg")!.style.opacity = "0";
+                document.getElementById("pointerlock-msg")!.style.display = "none";
+            }
 
-            html = QRCode.toString('http://developers-arca.de:8000/?x=' + x + '&y=' + y + '&z=' + z);
+            if(specialMode == "share")
+            {
+                let r:number = this.getPlayer().getRotationForShare();
+
+                // share info
+                let x:number = parseFloat(this.getPlayer().getPositionInstance().x.toPrecision(2));
+                let y:number = parseFloat(this.getPlayer().getPositionInstance().y.toPrecision(2));
+                if(y < 0.01 && y > -0.01)
+                {
+                    y = 0;
+                }
+                let z:number = parseFloat(this.getPlayer().getPositionInstance().z.toPrecision(2));
+                
+                let loc:string = window.location.href + '?x=' + x + '&y=' + y + '&z=' + z + '&r=' + r;
+                html = await QRCode.toString(loc);
+                html = html + '<br /><p id="p-share"><a href="' + loc + '">Link zur aktuellen Position</a></p>';
+            }
+            else if(specialMode == "help")
+            {
+                let url = '/infohtml/help.html';
+                html = await getData(url);
+            }
         }
 
         HelperGeneral.setInfoSreenActive(1); // 0 = disabled, 1 = info, 2 = portal
