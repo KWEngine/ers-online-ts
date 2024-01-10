@@ -23,7 +23,7 @@ import ERSLocationSpot from "../game/ERSLocationSpot";
 import DijkstraGraph from "../game/DijkstraGraph";
 import DijkstraNode from "../game/DijkstraNode";
 import DijkstraSolver from "../game/DijkstraSolver";
-import HelperCookie from "../helpers/HelperCookie";
+import QRCode from 'qrcode';
 
 class GameScene
 {
@@ -791,6 +791,7 @@ class GameScene
             let headerCenter:HTMLElement|null = document.getElementById('header-center');
             if(headerCenter != null)
             {
+                /*
                 let table:HTMLTableElement = document.createElement('table');
                 table.setAttribute('id', 'data-position');
                 let row:HTMLTableRowElement = table.insertRow(0);
@@ -803,6 +804,23 @@ class GameScene
                 row.insertCell().setAttribute('id', 'data-position-z');
                 row.insertCell().innerText = ")";
                 headerCenter!.appendChild(table);
+                */
+
+                let shareDiv:HTMLElement = document.createElement('div');
+                shareDiv.setAttribute('id', 'share');
+
+                let shareButtonLink:HTMLElement = document.createElement("a");
+                shareButtonLink.setAttribute('id', 'share-link');
+
+                let shareIcon:HTMLElement = document.createElement("img");
+                shareIcon.setAttribute('src', './img/share.png');
+                shareIcon.setAttribute('id', 'share-icon');
+                
+                shareButtonLink.appendChild(shareIcon);
+                shareDiv.appendChild(shareButtonLink);
+                headerCenter!.appendChild(shareDiv);
+
+                shareButtonLink.addEventListener('click', this.share);
             }
 
             let headerRight:HTMLElement|null = document.getElementById('header-right');
@@ -938,10 +956,28 @@ class GameScene
         return this._debugMode;
     }
 
+    public share(e:any)
+    {
+        //GameScene.instance.showInfoInfo("");
+    }
+
     public async showInfoInfo(innerHTMLSource:string)
     {
-        let url = '/infohtml/' + innerHTMLSource;
-        const html:any = await getData(url);
+        let html:any = "";
+        if(innerHTMLSource.length > 0)
+        {
+            let url = '/infohtml/' + innerHTMLSource;
+            html = await getData(url);
+        }
+        else
+        {
+            // share info
+            let x:number = this.getPlayer().getPositionInstance().x;
+            let y:number = this.getPlayer().getPositionInstance().y;
+            let z:number = this.getPlayer().getPositionInstance().z;
+
+            html = QRCode.toString('http://developers-arca.de:8000/?x=' + x + '&y=' + y + '&z=' + z);
+        }
 
         HelperGeneral.setInfoSreenActive(1); // 0 = disabled, 1 = info, 2 = portal
         this.resetControlsForOverlay();

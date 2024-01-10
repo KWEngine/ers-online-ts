@@ -99,6 +99,7 @@ body
 .ersinfo a
 {
   color:green;
+  font-weight:bold;
   text-decoration: underline;
 }
 
@@ -285,7 +286,11 @@ body
   padding:0.1rem;
 }
 
-
+#share-icon
+{
+  height:2rem;
+  cursor:pointer;
+}
 
 #data-position
 {
@@ -403,7 +408,7 @@ body
 {
   #header-center
   {
-    display:none;
+    /*display:none;*/
   }
 
   #header-right
@@ -428,5 +433,26 @@ body
   .roomsearch option
   {
     font-size:1.15rem;
+  }
+}
+
+@media screen and (min-width:768px) 
+
+{
+  #infoscreen-inner
+  {
+    font-size:0.9rem;
+    width:50%;
+  }
+
+  #infoscreen-close
+  {
+    font-size:2rem;
+    position:relative;
+    height:4rem;
+    left:26%;
+    width:4rem;
+    top:0%;
+    line-height: 4rem;
   }
 }
