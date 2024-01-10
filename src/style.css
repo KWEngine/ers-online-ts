@@ -246,10 +246,11 @@ body
 {
   flex-grow:0;
   flex-shrink:0;
-  flex-basis:6rem;
+  flex-basis:4em;
   background-image:url('/img/ers-logo-header.png');
   background-size: contain;
   background-repeat: no-repeat;
+  background-position: left center;
   
 }
 #header-center
@@ -275,7 +276,7 @@ body
 #header .roomsearch
 {
   font-size:0.75rem;
-  min-width:4em;
+  min-width:12em;
   min-height:2em;
   border:1px solid white;
   box-shadow: 0 0 0.1rem 0.05rem black;
@@ -284,6 +285,11 @@ body
   color:black;
   text-align:right;
   padding:0.1rem;
+}
+
+#header .roomsearch:disabled
+{
+  opacity:0.33;
 }
 
 #share-icon
@@ -413,7 +419,7 @@ body
 
   #header-right
   {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     align-items:stretch;
   }
 
@@ -425,18 +431,19 @@ body
 
   .roomsearch
   {
-    font-size:1.15rem !important;
-    min-width:5em;
+    font-size:0.9rem !important;
+    
     flex-shrink:0;
   }
 
   .roomsearch option
   {
     font-size:1.15rem;
+    
   }
 }
 
-@media screen and (min-width:768px) 
+@media screen and (min-width:769px) 
 
 {
   #infoscreen-inner

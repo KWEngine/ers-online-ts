@@ -826,8 +826,8 @@ class GameScene
             let headerRight:HTMLElement|null = document.getElementById('header-right');
             if(headerRight != null)
             {
-                let p:HTMLElement = document.createElement('p');
-                p.innerText = "Raumsuche:";
+                //let p:HTMLElement = document.createElement('p');
+                //p.innerText = "Suche:";
     
                 let selectBlock:HTMLSelectElement = document.createElement('select');
                 selectBlock.setAttribute('class', 'roomsearch');
@@ -835,16 +835,16 @@ class GameScene
                 selectBlock.setAttribute('name', 'blocksearch');
                 let blockOptionEmpty:HTMLElement = document.createElement('option');
                 blockOptionEmpty.setAttribute('value', "");
-                blockOptionEmpty.innerText = "";
+                blockOptionEmpty.innerText = "Suchbereich wählen...";
                 let blockOptionA:HTMLElement = document.createElement('option');
                 blockOptionA.setAttribute('value', "A");
-                blockOptionA.innerText = "A";
+                blockOptionA.innerText = "A (Eingangsbereich)";
                 let blockOptionB:HTMLElement = document.createElement('option');
                 blockOptionB.setAttribute('value', "B");
-                blockOptionB.innerText = "B";
+                blockOptionB.innerText = "B (Bau-/Holz-/Farbtechnik)";
                 let blockOptionC:HTMLElement = document.createElement('option');
                 blockOptionC.setAttribute('value', "C");
-                blockOptionC.innerText = "C";
+                blockOptionC.innerText = "C (E-/Metalltechnik/Informatik)";
                 selectBlock.appendChild(blockOptionEmpty);
                 selectBlock.appendChild(blockOptionA);
                 selectBlock.appendChild(blockOptionB);
@@ -858,7 +858,7 @@ class GameScene
                 selectNumber.setAttribute('name', 'roomsearch');
                 selectNumber.disabled = true;
                 
-                headerRight.appendChild(p);
+                //headerRight.appendChild(p);
                 headerRight.appendChild(selectBlock);
                 headerRight.appendChild(selectNumber);
 
