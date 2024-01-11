@@ -346,9 +346,16 @@ body
     background-position: 48.5% 25%;
     z-index:1000;
     display:flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    align-content:center;
+
+}
+
+.loadingscreen-message
+{
+  font-size:0.7rem;
 }
 
 .loadingscreen-animation {
@@ -356,6 +363,8 @@ body
     position: relative;
     flex-basis: 80px;
     height: 80px;
+    width:80px;
+
   }
   .loadingscreen-animation div {
     position: absolute;
@@ -363,6 +372,7 @@ body
     height: 16px;
     border-radius: 50%;
     background: rgb(0, 50, 0);
+    box-shadow: 0 0 0.1em 0.2em yellow;
     animation: loadingscreen-animation 1.2s linear infinite;
   }
   .loadingscreen-animation div:nth-child(1) {
