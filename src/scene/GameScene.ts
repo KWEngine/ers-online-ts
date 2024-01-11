@@ -1011,6 +1011,11 @@ class GameScene
         GameScene.instance.showInfoInfo("", "help");
     }
 
+    public targetReached(e:any)
+    {
+        GameScene.instance.showInfoInfo("", "target");
+    }
+
     public async showInfoInfo(innerHTMLSource:string, specialMode:string = "")
     {
         let html:any = "";
@@ -1046,6 +1051,11 @@ class GameScene
             else if(specialMode == "help")
             {
                 let url = '/infohtml/help.html';
+                html = await getData(url);
+            }
+            else if(specialMode == "target")
+            {
+                let url = '/infohtml/targetReached.html';
                 html = await getData(url);
             }
         }
