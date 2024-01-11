@@ -6,18 +6,34 @@
             "coords": [-14.3, 0.0, 3.1]
         },
         {
-            "name": "101",
+            "name": "101 (Besprechung)",
             "coords": [-0.8, 3.0, -3.1]
         },
         {
-            "name": "102",
+            "name": "102 (Besprechung)",
             "coords": [7.4, 3.0, -2.3]
         }
     ],
     "b":
     [
         {
-            "name": "001",
+            "name": "013 (Farbtechnik)",
+            "coords": [-43.5, 0.0, 1.1]
+        },
+        {
+            "name": "020 (Holz)",
+            "coords": [-43.5, 0.0, 1.1]
+        },
+        {
+            "name": "023 (Holz/CNC)",
+            "coords": [-43.5, 0.0, 1.1]
+        },
+        {
+            "name": "027 (Dachdeckung)",
+            "coords": [-43.5, 0.0, 1.1]
+        },
+        {
+            "name": "028 (Bau)",
             "coords": [-43.5, 0.0, 1.1]
         }
     ],
