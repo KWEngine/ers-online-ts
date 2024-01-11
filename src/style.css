@@ -274,6 +274,13 @@ body
   display:flex;
   align-items: center;
 }
+
+#header-center div
+{
+  padding-left:1em;
+  padding-right:1em;
+}
+
 #header-right
 {
   flex-grow:0;
@@ -451,11 +458,6 @@ body
 
 @media screen and (max-width:768px) 
 {
-  #header-center
-  {
-    /*display:none;*/
-  }
-
   #header-right
   {
     font-size: 0.9rem;
