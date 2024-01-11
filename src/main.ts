@@ -11,6 +11,7 @@ let scene:string = getSceneFromLocation(window.location);
 GameScene.instance.load(scene)
     .then(result => {
         document.getElementById("loadingscreen")!.remove();
+        GameScene.instance.addCanonicalLink();
         GameScene.instance.showStartInfo();
         GameScene.instance.render();
     })

@@ -93,7 +93,7 @@ class ERSPlayer extends InteractiveObject
     {
         let r:number = GameScene.instance.getCamEulerY();
         r = Math.round(HelperGeneral.rad2deg(-r));
-        return r;
+        return r % 360;
     }
 
     private updateDirectionVector():void

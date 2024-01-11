@@ -43,6 +43,7 @@ class GameScene
     private readonly _modelDatabase:Map<string, Group>;
     private readonly _hitboxDatabase:Map<string, Hitbox[]>;
 
+    private _canonical:HTMLElement;
     private _targetElement:HTMLElement;
     private _navTarget:ERSLocationSpot|null;
     private _frameCounter:number;
@@ -73,6 +74,9 @@ class GameScene
     private constructor()
     {
         this._debugMode = false;
+        this._canonical = document.createElement('link');
+        this._canonical.setAttribute('rel', 'canonical');
+        this._canonical.setAttribute('href', window.location.origin + window.location.pathname);
 
         this._dtAccumulator = 0;
         this._frameCounter = 0;
@@ -229,7 +233,7 @@ class GameScene
         requestAnimationFrame(this.render);
         this._renderComposer.render();
 
-        
+        this.updateCanonicalLink();
     }
 
     private displayNavigationChips():void
@@ -786,6 +790,25 @@ class GameScene
                 */
             }
         }
+    }
+
+    public addCanonicalLink():void
+    {
+        let head:HTMLElement = document.getElementsByTagName('head')[0];
+        head.appendChild(this._canonical);
+    }
+
+    public updateCanonicalLink():void
+    {
+        let r:number = this.getPlayer().getRotationForShare();
+        let x:number = parseFloat(this.getPlayer().getPositionInstance().x.toPrecision(2));
+        let y:number = parseFloat(this.getPlayer().getPositionInstance().y.toPrecision(2));
+        if(y < 0.01 && y > -0.01)
+            y = 0;
+        let z:number = parseFloat(this.getPlayer().getPositionInstance().z.toPrecision(2));
+        let loc:string = window.location.origin + window.location.pathname + '?x=' + x + '&y=' + y + '&z=' + z + '&r=' + r;
+
+        this._canonical.setAttribute('href', loc);
     }
 
     private showHeader():void
