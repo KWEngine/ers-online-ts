@@ -1,4 +1,4 @@
-import { AmbientLight, PerspectiveCamera, Scene, WebGLRenderer, Vector3, Clock, Group, SphereGeometry, TextureLoader, SRGBColorSpace, MeshBasicMaterial, Mesh, DirectionalLight, Object3D, WebGLRenderTarget, ColorManagement, ACESFilmicToneMapping, HalfFloatType, RGBAFormat, Vector2, InstancedMesh, MeshStandardMaterial } from "three";
+import { AmbientLight, PerspectiveCamera, Scene, WebGLRenderer, Vector3, Clock, Group, SphereGeometry, TextureLoader, SRGBColorSpace, MeshBasicMaterial, Mesh, DirectionalLight, Object3D, WebGLRenderTarget, ColorManagement, ACESFilmicToneMapping, HalfFloatType, RGBAFormat, Vector2, InstancedMesh } from "three";
 import ModelLoader from "../model/ModelLoader";
 import ERSInfoSpot from "../game/ERSInfoSpot";
 import HelperScene from "../helpers/HelperScene";
@@ -1041,7 +1041,7 @@ class GameScene
                 let z:number = parseFloat(this.getPlayer().getPositionInstance().z.toPrecision(2));
                 let loc:string = window.location.origin + window.location.pathname + '?x=' + x + '&y=' + y + '&z=' + z + '&r=' + r;
                 html = await QRCode.toString(loc);
-                html = html + '<br /><p id="p-share"><a href="' + loc + '">Link zur aktuellen Position</a></p>';
+                html = '<p id="p-share">Teilen Sie ihre aktuelle Position via QR-Code oder als Link:</p>' + html + '<br /><p id="p-share"><a href="' + loc + '">Link zur aktuellen Position</a></p>';
             }
             else if(specialMode == "help")
             {
