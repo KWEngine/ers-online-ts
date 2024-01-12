@@ -12,6 +12,8 @@ html, body
 {
   margin:0;
   padding:0;
+  width:100vw;
+  height:100vh;
   touch-action: none;
   box-sizing: border-box;
   font-family: 'Monaco';
@@ -203,6 +205,7 @@ body
     background-color:transparent;
     z-index:2;
     user-select: none;
+    outline: none;
 }
 
 #navigation-mobile
