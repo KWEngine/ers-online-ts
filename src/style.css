@@ -314,12 +314,28 @@ body
   background-color:rgba(50, 50, 50, 0.4);
 }
 
-#share-icon, #help-icon
+#share-icon, #help-icon, #fs-icon
 {
   height:2rem;
   cursor:pointer;
-  margin-right:0.5em;
+  margin-right:0.25em;
+  margin-left:0.25em;
 }
+
+#share, #help, #fullscreen
+{
+  text-align:center;
+}
+
+#share-link img, #help-link img, #fs-link img
+{
+  display:block;
+}
+
+#share-link span, #help-link span, #fs-link span
+{
+  font-size:0.4rem;
+} 
 
 #p-share
 {

@@ -845,7 +845,11 @@ class GameScene
                 shareIcon.setAttribute('src', window.location.origin + '/img/share.png');
                 shareIcon.setAttribute('id', 'share-icon');
                 
+                let shareText = document.createElement('span');
+                shareText.innerHTML = "Teilen";
+
                 shareButtonLink.appendChild(shareIcon);
+                shareButtonLink.appendChild(shareText);
                 shareDiv.appendChild(shareButtonLink);
                 headerCenter!.appendChild(shareDiv);
 
@@ -859,11 +863,39 @@ class GameScene
                 let helpIcon:HTMLElement = document.createElement("img");
                 helpIcon.setAttribute('src', window.location.origin + '/img/help.png');
                 helpIcon.setAttribute('id', 'help-icon');
+
+                let helpText = document.createElement('span');
+                helpText.innerHTML = "Hilfe";
                 
                 helpButtonLink.appendChild(helpIcon);
+                helpButtonLink.appendChild(helpText);
                 helpDiv.appendChild(helpButtonLink);
                 headerCenter!.appendChild(helpDiv);
-                
+
+                if(HelperGeneral.isMobileDevice())
+                {
+                    // toggle fullscreen on mobile
+                    let fsDiv:HTMLElement = document.createElement('div');
+                    fsDiv.setAttribute('id', 'fullscreen');
+
+                    let fsButtonLink:HTMLElement = document.createElement("a");
+                    fsButtonLink.setAttribute('id', 'fs-link');
+
+                    let fsIcon:HTMLElement = document.createElement("img");
+                    fsIcon.setAttribute('src', window.location.origin + '/img/fullscreen.png');
+                    fsIcon.setAttribute('id', 'fs-icon');
+
+                    let fsText = document.createElement('span');
+                    fsText.innerHTML = "Vollbild";
+                    
+                    
+                    fsButtonLink.appendChild(fsIcon);
+                    fsButtonLink.appendChild(fsText);
+                    fsDiv.appendChild(fsButtonLink);
+                    headerCenter!.appendChild(fsDiv);
+
+                    fsButtonLink.addEventListener('click', HelperGeneral.toggleFullscreen);
+                }
 
                 shareButtonLink.addEventListener('click', this.share);
                 helpButtonLink.addEventListener('click', this.help);

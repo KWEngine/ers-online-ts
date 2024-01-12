@@ -500,6 +500,18 @@ class HelperGeneral
         
         return false;
     }
+
+    public static toggleFullscreen(e:any)
+    {
+        if(document.fullscreenElement)
+        {
+            document.exitFullscreen();
+        }
+        else
+        {
+            document.body.requestFullscreen();
+        }
+    }
 }
 
 export default HelperGeneral;
