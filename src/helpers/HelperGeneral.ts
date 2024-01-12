@@ -512,10 +512,10 @@ class HelperGeneral
             document.body.requestFullscreen();
         }
 
-        document.getElementById('app')!.style.top = "0";
+        /*document.getElementById('app')!.style.top = "0";
         document.getElementById('app')!.style.bottom = "0";
         document.getElementById('app')!.style.left = "0";
-        document.getElementById('app')!.style.right = "0";
+        document.getElementById('app')!.style.right = "0";*/
         GameScene.instance.updateViewport();
     }
 }
