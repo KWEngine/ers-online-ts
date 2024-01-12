@@ -873,7 +873,7 @@ class GameScene
                 headerCenter!.appendChild(helpDiv);
 
                 let userAgent = window.navigator.userAgent;
-                if(HelperGeneral.isMobileDevice() && userAgent.match(/iPhone/i) != null)
+                if(HelperGeneral.isMobileDevice() && userAgent.match(/iPhone/i) == null)
                 {
                     // toggle fullscreen on mobile
                     let fsDiv:HTMLElement = document.createElement('div');
