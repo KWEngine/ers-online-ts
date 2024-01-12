@@ -586,3 +586,11 @@ body
     line-height: 4rem;
   }
 }
+
+@supports(padding:max(0px)) {
+  body, #app 
+  {
+      padding-left: min(0vmin, env(safe-area-inset-left));
+      padding-right: min(0vmin, env(safe-area-inset-right));
+  }
+}
