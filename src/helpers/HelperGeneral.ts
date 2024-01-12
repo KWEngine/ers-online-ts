@@ -511,6 +511,7 @@ class HelperGeneral
         {
             document.body.requestFullscreen();
         }
+        GameScene.instance.updateViewport();
     }
 }
 
