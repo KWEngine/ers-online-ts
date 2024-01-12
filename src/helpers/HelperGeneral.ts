@@ -510,7 +510,10 @@ class HelperGeneral
         else
         {
             document.body.requestFullscreen();
+            document.getElementById("app")!.style.height = "" + window.innerHeight + "vh";
+            document.getElementById("app")!.style.width = "" + window.innerWidth + "vh";
         }
+
 
         //document.getElementById('app')!.style.top = "0";
         //document.getElementById('app')!.style.bottom = "0";
