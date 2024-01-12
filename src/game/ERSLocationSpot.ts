@@ -21,7 +21,7 @@ class ERSLocationSpot extends ERSRadiusObject
                 this.setPositionY(this.getPivotInstance().y + d * 0.1);
                 this.addRotationY(0.25);
 
-                if(this.isPlayerNearby() && this.isActivatedByPlayer() == false)
+                if(this.isPlayerNearby() && this.isActivatedByPlayer() == false && GameScene.instance.isOverlayVisible() == false)
                 {
                     this.setActivatedByPlayer(true);  
                     GameScene.instance.eraseNavTarget();

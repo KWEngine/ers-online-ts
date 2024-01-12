@@ -101,6 +101,14 @@
                 "scale": [0.5, 0.5, 0.5],
                 "model": "ers-info.glb",
                 "innerHTMLSource": "b_0_05.html"
+            },
+            {
+                "name": "info_b_0_06",
+                "position": [-69.0, 1, 23.85],
+                "rotation": [0, 0, 0],
+                "scale": [0.5, 0.5, 0.5],
+                "model": "ers-info.glb",
+                "innerHTMLSource": "b_0_06.html"
             }
         ],
         "dijkstranodes":
@@ -114,7 +122,7 @@
             {
                 "id": 1,
                 "name":"b0_1",
-                "location": [-33.5, 0, -0.9],
+                "location": [-32.5, 0, -0.9],
                 "neighbours": [0, 2, 4, 5]
             },
             {
@@ -133,7 +141,7 @@
                 "id": 4,
                 "name":"b0_4",
                 "location": [-32.5, 0, -9.6],
-                "neighbours": [1]
+                "neighbours": [1, 20, 21]
             },
             {
                 "id": 5,
@@ -169,7 +177,7 @@
                 "id": 10,
                 "name":"b0_10",
                 "location": [-62.2, 0, 12],
-                "neighbours": [9]
+                "neighbours": [9, 16]
             },
             {
                 "id": 11,
@@ -200,6 +208,42 @@
                 "name":"b0_15",
                 "location": [-94.5, 0, -0.6],
                 "neighbours": [14]
+            },
+            {
+                "id": 16,
+                "name":"b0_16",
+                "location": [-62.3, 0, 18.9],
+                "neighbours": [10, 17]
+            },
+            {
+                "id": 17,
+                "name":"b0_17",
+                "location": [-62.3, 0, 23.8],
+                "neighbours": [16, 18]
+            },
+            {
+                "id": 18,
+                "name":"b0_18",
+                "location": [-62.3, 0, 26.3],
+                "neighbours": [17]
+            },
+            {
+                "id": 19,
+                "name":"b0_19",
+                "location": [-69.0, 0, 23.8],
+                "neighbours": [17]
+            },
+            {
+                "id": 20,
+                "name":"b0_20",
+                "location": [-35.5, 0, -9.5],
+                "neighbours": [4]
+            },
+            {
+                "id": 21,
+                "name":"b0_21",
+                "location": [-32.5, 0, -13.7],
+                "neighbours": [4]
             }
         ]
     }

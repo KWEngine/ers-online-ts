@@ -15,7 +15,7 @@ class ERSInfoSpot extends ERSRadiusObject
             this.addRotationY(0.5);
         }
 
-        if(this.isPlayerNearby())
+        if(this.isPlayerNearby() && GameScene.instance.isOverlayVisible() == false)
         {
             if(this.isPlayerLookingAtMe() == true && this.isActivatedByPlayer() == false)
             {

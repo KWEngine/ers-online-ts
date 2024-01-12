@@ -50,6 +50,8 @@ class ERSPlayer extends InteractiveObject
                 this.moveOffsetByVector(c.getMTV());
             }
         }
+
+        //console.log(this.getPositionInstance());
     }
 
     private isLookingAt(p:Vector3):boolean

@@ -50,7 +50,6 @@ function onFocusLost(e:any)
     HelperControls._hasFocus = false;
 }
 
-
 function onKeyDown(e:any)
 {
     let inputDown:string = String(e.key).toLowerCase();
@@ -323,6 +322,8 @@ async function getRoomListForBlock(block:string):Promise<any[]>
     return [];  
 }
 
+
+
 // ============= BEGINNE PROGRAMM ============== //
 
 if(HelperGeneral.isMobileDevice())
@@ -358,6 +359,14 @@ else
     } 
 }
 
+// Zeichne Beta-Deko:
+let ribbon:HTMLElement = document.createElement('div');
+ribbon.setAttribute('class', 'betaribbon');
+let ribbonSpan:HTMLElement = document.createElement('span');
+ribbonSpan.innerText = "beta";
+ribbon.appendChild(ribbonSpan);
+document.getElementById('header')!.appendChild(ribbon);
+
 window.addEventListener('resize', onWindowResize, false );
 window.addEventListener('orientationchange', onWindowResize, false);
 document.addEventListener('focusin', onFocusGained); //?
@@ -369,5 +378,7 @@ if(HelperGeneral.isMobileDevice())
 {
     document.documentElement.style.fontSize = "80%";
 }
+
+
 
 export {getSceneFromLocation, getData, populateRoomListForBlock};
