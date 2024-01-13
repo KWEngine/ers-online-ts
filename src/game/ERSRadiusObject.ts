@@ -60,13 +60,16 @@ abstract class ERSRadiusObject extends InteractiveObject
 
     protected isPlayerNearby():boolean
     {
+        if(Math.abs(this._pivot.y - GameScene.instance.getPlayer().getPositionInstance().y) > 1.5)
+            return false;
+
         let x:number = this._pivot.x - GameScene.instance.getPlayer().getPositionInstance().x;
-        let y:number = (this._pivot.y - GameScene.instance.getPlayer().getPositionInstance().y) * 0.5;
         let z:number = this._pivot.z - GameScene.instance.getPlayer().getPositionInstance().z;
-        let distance:number = Math.sqrt(x * x + y * y + z * z);
+        let distance:number = Math.sqrt(x * x + z * z);
 
         if(distance > this._radiusOuter)
             this.setActivatedByPlayer(false);
+
 
         return distance < this._radiusInner;
     }
