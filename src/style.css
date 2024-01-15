@@ -56,6 +56,7 @@ body
     display:none;
     animation-name: info-animation;
     animation-duration: 0.5s;
+    z-index:2;
 }
 
 #infoscreen-inner
