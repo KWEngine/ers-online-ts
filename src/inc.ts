@@ -219,23 +219,23 @@ function onSelectionChanged(e:any)
 
 function getSceneFromLocation(loc:Location):string
 {
-    if(loc.pathname == "/")
+    if(loc.pathname == HelperGeneral.BASEURL + "/")
     {
         return 'school_outside_front';
     }
-    else if(loc.pathname == "/c-block/" || loc.pathname == "/c-block")
+    else if(loc.pathname == HelperGeneral.BASEURL + "/c-block/" || loc.pathname == HelperGeneral.BASEURL + "/c-block")
     {
         return 'school_c-block';
     }
-    else if(loc.pathname == "/c-block/1/" || loc.pathname == "/c-block/1")
+    else if(loc.pathname == HelperGeneral.BASEURL + "/c-block/1/" || loc.pathname == HelperGeneral.BASEURL + "/c-block/1")
     {
         return 'school_c-block_1'; 
     }
-    else if(loc.pathname == "/b-block/" || loc.pathname == "/b-block")
+    else if(loc.pathname == HelperGeneral.BASEURL + "/b-block/" || loc.pathname == HelperGeneral.BASEURL + "/b-block")
     {
         return 'school_b-block';
     }
-    else if(loc.pathname == "/forum/" || loc.pathname == "/forum")
+    else if(loc.pathname == HelperGeneral.BASEURL + "/forum/" || loc.pathname == HelperGeneral.BASEURL + "/forum")
     {
         return 'school_forum';
     }
@@ -266,13 +266,13 @@ async function populateRoomListForBlock(e:any)
 
             let option:HTMLElement = document.createElement('option');
             option.setAttribute('value', "");
-            option.innerText = "";
+            option.innerText = "---";
             selectNumber.appendChild(option);
 
             for(let i:number = 0; i < list.length; i++)
             {
                 let option:HTMLElement = document.createElement('option');
-                option.setAttribute('value', block + list[i].name + ";" + list[i].coords[0] + ";" + list[i].coords[1] + ";" + list[i].coords[2]);
+                option.setAttribute('value', block + list[i].target + ";" + list[i].coords[0] + ";" + list[i].coords[1] + ";" + list[i].coords[2]);
                 option.innerText = list[i].name;
                 selectNumber.appendChild(option);
 
@@ -305,7 +305,7 @@ async function populateRoomListForBlock(e:any)
 
 async function getRoomListForBlock(block:string):Promise<any[]>
 {
-    let doors:any = await getData('/doors/doors.json');
+    let doors:any = await getData(HelperGeneral.BASEURL + '/doors/doors.json');
     let doorlib:ERSDoorLib = JSON.parse(doors);
     if(block == "A")
     {

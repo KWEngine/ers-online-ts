@@ -5,6 +5,7 @@ import { defineConfig } from 'vite'
 //console.log(__dirname);
 
 export default defineConfig({
+  base: '/__rundgang',
   build: {
     rollupOptions: {
       input: {

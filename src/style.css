@@ -585,6 +585,11 @@ body
     top:0%;
     line-height: 4rem;
   }
+
+  #share-link span, #help-link span, #fs-link span
+{
+  font-size:0.6rem;
+} 
 }
 
 @supports(padding:max(0px)) {

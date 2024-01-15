@@ -23,7 +23,7 @@ class HelperGeneral
     public static readonly MAXNUM:number = 9999999.9;
     public static readonly RAYCASTOFFSET:number = 100;
     public static readonly PORTALCOOLDOWN:number = 5;
-    public static readonly BASEURL:string = "http://developers-arca.de:8000/";
+    public static readonly BASEURL:string = "/__rundgang";
     private static readonly ISMOBILE:boolean = HelperGeneral.checkIfMobileDevice();
     private static _infoScreenState:number = 0; // 0 = disabled, 1 = info, 2 = portal
 
@@ -162,7 +162,7 @@ class HelperGeneral
 
     public static hexToIntColor(rrggbb:string):number // erwartet: "rrggbb"
     {
-        let bbggrr:string = rrggbb.substr(4, 2) + rrggbb.substr(2, 2) + rrggbb.substr(0, 2);
+        let bbggrr:string = rrggbb.substring(4, 4+2) + rrggbb.substring(2, 2+2) + rrggbb.substring(0, 2);
         return parseInt(bbggrr, 16);
     }
 
@@ -282,27 +282,27 @@ class HelperGeneral
 
     public static isTargetInCurrentLocation(room:string):boolean
     {
-        if(window.location.pathname == "/")
+        if(window.location.pathname == "/__rundgang" || window.location.pathname == "/__rundgang/")
         {
             return false;
         }
-        else if(window.location.pathname == "/forum" || window.location.pathname == "/forum/")
+        else if(window.location.pathname == HelperGeneral.BASEURL + "/forum" || window.location.pathname == HelperGeneral.BASEURL + "/forum/")
         {
             return room.charAt(0) == 'a';
         }
-        else if(window.location.pathname == "/c-block" || window.location.pathname == "/c-block/")
+        else if(window.location.pathname == HelperGeneral.BASEURL + "/c-block" || window.location.pathname == HelperGeneral.BASEURL + "/c-block/")
         {
             return room.charAt(0) == 'c' && room.charAt(1) == '0';
         }
-        else if(window.location.pathname == "/c-block/1" || window.location.pathname == "/c-block/1/")
+        else if(window.location.pathname == HelperGeneral.BASEURL + "/c-block/1" || window.location.pathname == HelperGeneral.BASEURL + "/c-block/1/")
         {
             return room.charAt(0) == 'c' && room.charAt(1) == '1';
         }
-        else if(window.location.pathname == "/b-block" || window.location.pathname == "/b-block/")
+        else if(window.location.pathname == HelperGeneral.BASEURL + "/b-block" || window.location.pathname == HelperGeneral.BASEURL + "/b-block/")
         {
             return room.charAt(0) == 'b' && room.charAt(1) == '0';
         }
-        else if(window.location.pathname == "/b-block/1" || window.location.pathname == "/b-block/1/")
+        else if(window.location.pathname == HelperGeneral.BASEURL + "/b-block/1" || window.location.pathname == HelperGeneral.BASEURL + "/b-block/1/")
         {
             return room.charAt(0) == 'b' && room.charAt(1) == '1';
         }
@@ -319,15 +319,18 @@ class HelperGeneral
         let tempPos:Vector3|null = null;
         room = room.toLowerCase();
 
-        if(pathname.length > 1 && pathname.endsWith("/"))
+
+        //if(pathname.length > 1 && pathname.endsWith("/"))
+        if(pathname.endsWith("/"))
         {
             pathname = pathname.substring(0, pathname.length - 1);
         }
-        if(pathname == "/")
+
+        if(pathname == HelperGeneral.BASEURL)
         {
             searchterm = "exit-outside-front-to-forum";
         }
-        else if(pathname == "/forum")
+        else if(pathname == HelperGeneral.BASEURL + "/forum")
         {
             if(playerLocation.y > 2)
             {
@@ -402,7 +405,7 @@ class HelperGeneral
     private static getTargetNameForRoom(pathname:string, room:string):string
     {
         let result:string = "";
-        if(pathname == "/forum")
+        if(pathname == HelperGeneral.BASEURL + "/forum")
         {
             if(room.startsWith('b'))
             {
@@ -413,7 +416,7 @@ class HelperGeneral
                 return '/c-block';
             }
         }
-        else if(pathname == "/c-block")
+        else if(pathname == HelperGeneral.BASEURL + "/c-block")
         {
             if(room.startsWith('a') || room.startsWith('b'))
             {
@@ -424,7 +427,7 @@ class HelperGeneral
                 return '/c-block/1'
             }
         }
-        else if(pathname == "/c-block/1")
+        else if(pathname == HelperGeneral.BASEURL + "/c-block/1")
         {
             if(room.startsWith('a') || room.startsWith('b'))
             {
@@ -435,7 +438,7 @@ class HelperGeneral
                 return '/c-block'
             }
         }
-        else if(pathname == "/b-block")
+        else if(pathname == HelperGeneral.BASEURL + "/b-block")
         {
             if(room.startsWith('a') || room.startsWith('c'))
             {
@@ -482,7 +485,7 @@ class HelperGeneral
     private static async getRoomPosition(room:string, roomPos:Vector3):Promise<boolean>
     {
         room = room.toLowerCase();
-        let doors:any = await getData('/doors/doors.json');
+        let doors:any = await getData('./doors/doors.json');
         let doorlib:ERSDoorLib = JSON.parse(doors);
 
         if(room.startsWith('a'))

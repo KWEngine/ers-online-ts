@@ -324,7 +324,7 @@ class GameScene
         // entsprechenden JSON-Datei stehen:
         for(let i:number = 0; i < s.loads.models.length; i++)
         {
-            let model = await ModelLoader.instance.loadAsync("/models/" + s.loads.models[i]);
+            let model = await ModelLoader.instance.loadAsync(HelperGeneral.BASEURL + "/models/" + s.loads.models[i]);
             let hitboxes:Hitbox[] = [];
             HelperCollision.generateHitboxesFor(model.scene, hitboxes);
             HelperGeneral.disableInvisibleMeshes(model.scene);
@@ -454,17 +454,17 @@ class GameScene
     private async loadStaticModels()
     {
         // Lade 3D-Modell für Location-Spots:
-        let locationModel = await ModelLoader.instance.loadAsync("/models/ers-location.glb");
+        let locationModel = await ModelLoader.instance.loadAsync(HelperGeneral.BASEURL + "/models/ers-location.glb");
         HelperGeneral.disableInvisibleMeshes(locationModel.scene);
         this._modelDatabase.set("ers-location.glb", locationModel.scene);
 
         // Lade 3D-Modell für Info-Spots:
-        let infoModel = await ModelLoader.instance.loadAsync("/models/ers-info.glb");
+        let infoModel = await ModelLoader.instance.loadAsync(HelperGeneral.BASEURL + "/models/ers-info.glb");
         HelperGeneral.disableInvisibleMeshes(infoModel.scene);
         this._modelDatabase.set("ers-info.glb", infoModel.scene);
  
         // Lade 3D-Modell des Player-Objekts:
-        let playerModel = await ModelLoader.instance.loadAsync("/models/ers-player.glb");
+        let playerModel = await ModelLoader.instance.loadAsync(HelperGeneral.BASEURL + "/models/ers-player.glb");
         let playerHitbox:Hitbox[] = [];
         HelperGeneral.disableInvisibleMeshes(playerModel.scene);
         HelperCollision.generateHitboxesFor(playerModel.scene, playerHitbox);
@@ -472,13 +472,13 @@ class GameScene
         this._hitboxDatabase.set("ers-player.glb", playerHitbox);
 
         // Lade 3D-Modell für Portal-Spots:
-        let portalModel = await ModelLoader.instance.loadAsync("/models/ers-arrow.glb");
+        let portalModel = await ModelLoader.instance.loadAsync(HelperGeneral.BASEURL + "/models/ers-arrow.glb");
         HelperGeneral.disableInvisibleMeshes(portalModel.scene);
         HelperGeneral.addGlowToObject(portalModel.scene, 5);
         this._modelDatabase.set("ers-arrow.glb", portalModel.scene);
 
         // Lade 3D-Modell für Navi-Chips:
-        let chipModel = await ModelLoader.instance.loadAsync("/models/ers-dijkstrachip.glb");
+        let chipModel = await ModelLoader.instance.loadAsync(HelperGeneral.BASEURL + "/models/ers-dijkstrachip.glb");
         this._modelDatabase.set("ers-dijkstrachip.glb", chipModel.scene);
     }
 
@@ -486,7 +486,7 @@ class GameScene
     {
         const geometry = new SphereGeometry(GameScene.MAXCAMDISTANCE - 1, 40, 30);
         geometry.scale(-1, 1, 1);
-        const texture = this._textureLoader.load(img);
+        const texture = this._textureLoader.load(HelperGeneral.BASEURL + img);
         texture.colorSpace = SRGBColorSpace;
         const material = new MeshBasicMaterial({ map: texture });
         this._background = new Mesh(geometry, material);
@@ -842,7 +842,7 @@ class GameScene
                 shareButtonLink.setAttribute('id', 'share-link');
 
                 let shareIcon:HTMLElement = document.createElement("img");
-                shareIcon.setAttribute('src', window.location.origin + '/img/share.png');
+                shareIcon.setAttribute('src', HelperGeneral.BASEURL + '/img/share.png');
                 shareIcon.setAttribute('id', 'share-icon');
                 
                 let shareText = document.createElement('span');
@@ -861,7 +861,7 @@ class GameScene
                 helpButtonLink.setAttribute('id', 'help-link');
 
                 let helpIcon:HTMLElement = document.createElement("img");
-                helpIcon.setAttribute('src', window.location.origin + '/img/help.png');
+                helpIcon.setAttribute('src', HelperGeneral.BASEURL + '/img/help.png');
                 helpIcon.setAttribute('id', 'help-icon');
 
                 let helpText = document.createElement('span');
@@ -883,7 +883,7 @@ class GameScene
                     fsButtonLink.setAttribute('id', 'fs-link');
 
                     let fsIcon:HTMLElement = document.createElement("img");
-                    fsIcon.setAttribute('src', window.location.origin + '/img/fullscreen.png');
+                    fsIcon.setAttribute('src', HelperGeneral.BASEURL + '/img/fullscreen.png');
                     fsIcon.setAttribute('id', 'fs-icon');
 
                     let fsText = document.createElement('span');
@@ -1054,7 +1054,7 @@ class GameScene
         let html:any = "";
         if(innerHTMLSource.length > 0)
         {
-            let url = '/infohtml/' + innerHTMLSource;
+            let url = HelperGeneral.BASEURL + '/infohtml/' + innerHTMLSource;
             html = await getData(url);
         }
         else
@@ -1077,18 +1077,18 @@ class GameScene
                     y = 0;
                 }
                 let z:number = parseFloat(this.getPlayer().getPositionInstance().z.toPrecision(2));
-                let loc:string = window.location.origin + window.location.pathname + '?x=' + x + '&y=' + y + '&z=' + z + '&r=' + r;
+                let loc:string = window.location.pathname + '?x=' + x + '&y=' + y + '&z=' + z + '&r=' + r;
                 html = await QRCode.toString(loc);
                 html = '<p id="p-share">Teilen Sie ihre aktuelle Position via QR-Code oder als Link:</p>' + html + '<br /><p id="p-share"><a href="' + loc + '">Link zur aktuellen Position</a></p>';
             }
             else if(specialMode == "help")
             {
-                let url = '/infohtml/help.html';
+                let url = HelperGeneral.BASEURL + '/infohtml/help.html';
                 html = await getData(url);
             }
             else if(specialMode == "target")
             {
-                let url = '/infohtml/targetReached.html';
+                let url = HelperGeneral.BASEURL + '/infohtml/targetReached.html';
                 html = await getData(url);
             }
         }
@@ -1109,7 +1109,7 @@ class GameScene
 
     public async showPortalInfo(innerHTMLSource:string, target:string)
     {
-        let url = '/portalhtml/' + innerHTMLSource;
+        let url = HelperGeneral.BASEURL + '/portalhtml/' + innerHTMLSource;
         const html:any = await getData(url);
 
 
