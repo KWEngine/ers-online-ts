@@ -1077,7 +1077,7 @@ class GameScene
                     y = 0;
                 }
                 let z:number = parseFloat(this.getPlayer().getPositionInstance().z.toPrecision(2));
-                let loc:string = window.location.pathname + '?x=' + x + '&y=' + y + '&z=' + z + '&r=' + r;
+                let loc:string = window.location.origin + window.location.pathname + '?x=' + x + '&y=' + y + '&z=' + z + '&r=' + r;
                 html = await QRCode.toString(loc);
                 html = '<p id="p-share">Teilen Sie ihre aktuelle Position via QR-Code oder als Link:</p>' + html + '<br /><p id="p-share"><a href="' + loc + '">Link zur aktuellen Position</a></p>';
             }
