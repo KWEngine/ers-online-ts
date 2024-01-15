@@ -285,8 +285,8 @@ body
 
 #header-center div
 {
-  padding-left:0.33em;
-  padding-right:0.33em;
+  padding-left:1.5rem;
+  padding-right:1.5rem;
 }
 
 #header-right
@@ -342,7 +342,7 @@ body
 
 #share-link span, #help-link span, #fs-link span
 {
-  font-size:0.4rem;
+  font-size:0.5rem;
 } 
 
 #p-share
@@ -539,6 +539,12 @@ body
     max-width:6em;
   }
 
+  #header-center div
+  {
+    padding-left:0.35rem;
+    padding-right:0.35rem;
+  }
+
   #header-right
   {
     font-size: 0.9rem;
@@ -556,7 +562,7 @@ body
   .roomsearch
   {
     font-size:0.9rem !important;
-    
+    padding-top:0.1rem !important;
     flex-shrink:0;
   }
 
@@ -587,10 +593,15 @@ body
     line-height: 4rem;
   }
 
+  .roomsearch
+  {
+    padding-top:0.25rem !important;
+  }
+
   #share-link span, #help-link span, #fs-link span
-{
-  font-size:0.6rem;
-} 
+  {
+    font-size:0.7rem;
+  } 
 }
 
 @supports(padding:max(0px)) {
