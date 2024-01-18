@@ -72,7 +72,7 @@ body
   display:flex;
   flex-direction: column;
   justify-content: center;
-  max-height:97.5vh;
+  max-height:92.5vh;
 }
 
 #infoscreen-inner hr
@@ -83,7 +83,7 @@ body
 
 #infoscreen-inner svg
 {
-  height:90%;
+  max-height:90%;
 }
 
 
