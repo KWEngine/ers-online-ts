@@ -54,12 +54,22 @@ function onKeyDown(e:any)
 {
     let inputDown:string = String(e.key).toLowerCase();
     HelperControls._keys.set(inputDown, true);
+
+    if(e.key != "F5")
+    {
+        e.preventDefault();
+    }
 }
 
 function onKeyUp(e:any)
 {
     let inputUp:string = String(e.key).toLowerCase();
     HelperControls._keys.set(inputUp, false);
+    
+    if(e.key != "F5")
+    {
+        e.preventDefault();
+    }
 }
 
 function lockChange()
