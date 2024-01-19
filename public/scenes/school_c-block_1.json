@@ -56,7 +56,7 @@
                 "rotation": [-90, 90, 0],
                 "scale": [1, 1, 1],
                 "model": "ers-arrow.glb",
-                "target": "/forum",
+                "target": "/c-block",
                 "innerHTMLSource": "c-block-to-c-block-0-1.html"
             },
             {
@@ -65,7 +65,7 @@
                 "rotation": [-90, 90, 0],
                 "scale": [1, 1, 1],
                 "model": "ers-arrow.glb",
-                "target": "/forum",
+                "target": "/c-block",
                 "innerHTMLSource": "c-block-to-c-block-0-2.html"
             },
             {
@@ -74,7 +74,7 @@
                 "rotation": [-90, 0, 0],
                 "scale": [1, 1, 1],
                 "model": "ers-arrow.glb",
-                "target": "/forum",
+                "target": "/c-block",
                 "innerHTMLSource": "c-block-to-c-block-0-3.html"
             }
         ],

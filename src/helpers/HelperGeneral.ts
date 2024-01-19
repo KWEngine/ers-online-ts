@@ -376,8 +376,7 @@ class HelperGeneral
             }
         }
         else
-        {
-            
+        {            
             tempPos = HelperGeneral.findNearestPortalInCurrentLocation(this.getTargetNameForRoom(pathname, room));
             if(tempPos != null)
             {
@@ -433,7 +432,7 @@ class HelperGeneral
             {
                 return '/forum';
             }
-            else if(room.charAt(1) == '0')
+            else if(room.charAt(1) == '0' || room.includes("sporthalle"))
             {
                 return '/c-block'
             }
@@ -478,7 +477,6 @@ class HelperGeneral
         {
             return portalList[deltaIndex].getPosition();
         }
-        
         return null;
     }
 
