@@ -280,7 +280,7 @@ class HelperGeneral
         );
     }
 
-    public static isTargetInCurrentLocation(room:string):boolean
+    public static isTargetInCurrentLocation(room:string, x:number, y:number, z:number):boolean
     {
         if(window.location.pathname == "/__rundgang" || window.location.pathname == "/__rundgang/")
         {
@@ -292,19 +292,19 @@ class HelperGeneral
         }
         else if(window.location.pathname == HelperGeneral.BASEURL + "/c-block" || window.location.pathname == HelperGeneral.BASEURL + "/c-block/")
         {
-            return room.charAt(0) == 'c' && room.charAt(1) == '0';
+            return room.charAt(0) == 'c' && y < 1;
         }
         else if(window.location.pathname == HelperGeneral.BASEURL + "/c-block/1" || window.location.pathname == HelperGeneral.BASEURL + "/c-block/1/")
         {
-            return room.charAt(0) == 'c' && room.charAt(1) == '1';
+            return room.charAt(0) == 'c' && y > 1 && y < 4;
         }
         else if(window.location.pathname == HelperGeneral.BASEURL + "/b-block" || window.location.pathname == HelperGeneral.BASEURL + "/b-block/")
         {
-            return room.charAt(0) == 'b' && room.charAt(1) == '0';
+            return room.charAt(0) == 'b' && y < 1;
         }
         else if(window.location.pathname == HelperGeneral.BASEURL + "/b-block/1" || window.location.pathname == HelperGeneral.BASEURL + "/b-block/1/")
         {
-            return room.charAt(0) == 'b' && room.charAt(1) == '1';
+            return room.charAt(0) == 'b' && y > 1 && y < 4;
         }
 
         return false;

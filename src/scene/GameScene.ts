@@ -594,7 +594,7 @@ class GameScene
         this._gameObjectsNew.push(o);
     }
 
-    public spawnLocationSpotForRoom(block:string|null, n:string|null):void
+    public spawnLocationSpotForRoom(block:string|null, n:string|null, underConstruction:boolean = false):void
     {
         if(this._navTarget != null)
         {
@@ -609,12 +609,12 @@ class GameScene
         {
             let exp:string[] = n.split(";");
             let room:string = exp[0].toLowerCase();
-            if(HelperGeneral.isTargetInCurrentLocation(room))
+            let x:number = parseFloat(exp[1]);
+            let y:number = parseFloat(exp[2]);
+            let z:number = parseFloat(exp[3]);
+            if(HelperGeneral.isTargetInCurrentLocation(room, x, y, z))
             {
-                let x:number = parseFloat(exp[1]);
-                let y:number = parseFloat(exp[2]);
-                let z:number = parseFloat(exp[3]);
-                this._navTarget = this.spawnLocationSpot(x, y + 0.25, z);
+                this._navTarget = this.spawnLocationSpot(x, y + 0.25, z, false, underConstruction);
             }
             else
             {
@@ -625,21 +625,25 @@ class GameScene
                         node.getLocationInstance().x, 
                         node.getLocationInstance().y + 0.25, 
                         node.getLocationInstance().z,
-                        true
+                        true,
+                        false
                         );
                 }
             }
         }
-        
     }
 
-    private spawnLocationSpot(x:number, y:number, z:number, isTraversalSpot:boolean = false):ERSLocationSpot
+    private spawnLocationSpot(x:number, y:number, z:number, isTraversalSpot:boolean = false, isUnderConstruction:boolean = false):ERSLocationSpot
     {
         let model:Group = this._modelDatabase.get('ers-location.glb')!;
         let ls:ERSLocationSpot = new ERSLocationSpot(model, 'target', 'ers-location.glb');
         if(isTraversalSpot)
         {
             ls.markAsTraversalSpot();
+        }
+        else if(isUnderConstruction)
+        {
+            ls.markAsUnderConstruction();
         }
         ls.setPosition(x, y, z);
         ls.setPivot(x, y, z);
@@ -952,7 +956,8 @@ class GameScene
                     {
                         block = bs.options[bs.selectedIndex].value;
                         room = rs.options[rs.selectedIndex].value;
-                        GameScene.instance.spawnLocationSpotForRoom(block, room);
+                        let underConstruction = rs.options[rs.selectedIndex].classList.contains("underConstruction");
+                        GameScene.instance.spawnLocationSpotForRoom(block, room, underConstruction);
                     }
                     else
                     {

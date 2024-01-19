@@ -4,17 +4,20 @@
         {
             "name": "Sekretariat",
             "target": "Sekretariat",
-            "coords": [-14.3, 0.0, 3.1]
+            "coords": [-14.3, 0.0, 3.1],
+            "underConstruction": false
         },
         {
             "name": "101 (Besprechung)",
             "target": "101",
-            "coords": [-0.8, 3.0, -3.1]
+            "coords": [-0.8, 3.0, -3.1],
+            "underConstruction": false
         },
         {
             "name": "102 (Besprechung)",
             "target": "102",
-            "coords": [7.4, 3.0, -2.3]
+            "coords": [7.4, 3.0, -2.3],
+            "underConstruction": false
         }
     ],
     "b":
@@ -22,22 +25,32 @@
         {
             "name": "013 (Farbtechnik)",
             "target": "013",
-            "coords": [-62.3, 0.0, 26.3]
+            "coords": [-62.3, 0.0, 26.3],
+            "underConstruction": false
         },
         {
             "name": "023 (Holz/CNC)",
             "target": "023",
-            "coords": [-78.0, 0.0, -2.0]
+            "coords": [-78.0, 0.0, -2.0],
+            "underConstruction": false
         },
         {
             "name": "027 (Dachdeckung)",
             "target": "027",
-            "coords": [-35.5, 0.0, -9.5]
+            "coords": [-35.5, 0.0, -9.5],
+            "underConstruction": false
         },
         {
             "name": "028 (Bau)",
             "target": "028",
-            "coords": [-32.4, 0.0, -13.7]
+            "coords": [-32.4, 0.0, -13.7],
+            "underConstruction": false
+        },
+        {
+            "name": "104 (Robotik)",
+            "target": "104",
+            "coords": [-9.7, 4, 2.0],
+            "underConstruction": true
         }
     ],
     "c":
@@ -45,12 +58,20 @@
         {
             "name": "009 (Informatik)",
             "target": "009",
-            "coords": [39.8, 0, -49.6]
+            "coords": [39.8, 0, -49.6],
+            "underConstruction": false
         },
         {
             "name": "110 (BG IT)",
             "target": "110",
-            "coords": [43.1, 3, -24.9]
+            "coords": [43.1, 3, -24.9],
+            "underConstruction": false
+        },
+        {
+            "name": "Sporthalle",
+            "target": "Sporthalle",
+            "coords": [92, 0, -2.4],
+            "underConstruction": true
         }
         
     ]

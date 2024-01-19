@@ -5,6 +5,7 @@ class ERSLocationSpot extends ERSRadiusObject
 {
     private _counter:number = 0;
     private _isTraversalSpot:boolean = false;
+    private _isUnderConstruction:boolean = false;
 
     public act(): void
     {
@@ -25,7 +26,10 @@ class ERSLocationSpot extends ERSRadiusObject
                 {
                     this.setActivatedByPlayer(true);  
                     GameScene.instance.eraseNavTarget();
-                    GameScene.instance.showInfoInfo("", "target");
+                    if(this._isUnderConstruction == false)
+                    {
+                        GameScene.instance.showInfoInfo("", "target");
+                    }
                 } 
             }
             else
@@ -54,6 +58,17 @@ class ERSLocationSpot extends ERSRadiusObject
     public isTraversalSpot():boolean
     {
         return this._isTraversalSpot;
+    }
+
+    public markAsUnderConstruction():void
+    {
+        this.setVisible(false);
+        this._isUnderConstruction = true;   
+    }
+
+    public isUnderConstruction():boolean
+    {
+        return this._isUnderConstruction;
     }
 }
 export default ERSLocationSpot;

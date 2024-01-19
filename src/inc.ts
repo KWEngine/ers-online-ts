@@ -220,11 +220,13 @@ function onTouchDivRightReset(e:any)
     e.preventDefault();
 }
 
+/*
 function onSelectionChanged(e:any)
 {
     alert("[inc.ts] onSelectionChanged");
     //GameScene.instance.spawnLocationSpotForRoom("A102");
 }
+*/
 
 
 function getSceneFromLocation(loc:Location):string
@@ -283,6 +285,8 @@ async function populateRoomListForBlock(e:any)
             {
                 let option:HTMLElement = document.createElement('option');
                 option.setAttribute('value', block + list[i].target + ";" + list[i].coords[0] + ";" + list[i].coords[1] + ";" + list[i].coords[2]);
+                if(list[i].underConstruction == true)
+                    option.setAttribute('class', "underConstruction");
                 option.innerText = list[i].name;
                 selectNumber.appendChild(option);
 
