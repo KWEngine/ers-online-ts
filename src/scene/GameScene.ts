@@ -1115,13 +1115,13 @@ class GameScene
     public async showPortalInfo(innerHTMLSource:string, target:string)
     {
         let url = HelperGeneral.BASEURL + '/portalhtml/' + innerHTMLSource;
-        const html:any = await getData(url);
-
+        const html:any = await getData(url) as string;
+        let html2 = html.replaceAll("\{BASEURL\}", HelperGeneral.BASEURL);
 
         HelperGeneral.setInfoSreenActive(2); // 0 = disabled, 1 = info, 2 = portal
         this.resetControlsForOverlay();
         this.setOverlayVisible(true);
-        this.setInfoScreenVisible(true, html, target);
+        this.setInfoScreenVisible(true, html2, target);
     }
 
     public closePortalInfo():void
