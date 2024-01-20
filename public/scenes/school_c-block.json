@@ -97,14 +97,6 @@
                 "innerHTMLSource": "c_0_02.html"
             },
             {
-                "name": "info_c_0_03",
-                "position": [53.5, 1, -70.9],
-                "rotation": [0, 0, 0],
-                "scale": [0.5, 0.5, 0.5],
-                "model": "ers-info.glb",
-                "innerHTMLSource": "c_0_03.html"
-            },
-            {
                 "name": "info_c_0_04",
                 "position": [92, 1, -2.4],
                 "rotation": [0, 0, 0],
