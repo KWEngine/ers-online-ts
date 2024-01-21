@@ -48,7 +48,8 @@
                 "scale": [1, 1, 1],
                 "model": "ers-arrow.glb",
                 "target": "/forum",
-                "innerHTMLSource": "start-to-forum.html"
+                "innerHTMLSource": "start-to-forum.html",
+                "underConstruction": false
             }
         ],
         "infospots":

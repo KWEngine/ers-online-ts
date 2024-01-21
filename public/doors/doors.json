@@ -35,13 +35,13 @@
             "underConstruction": false
         },
         {
-            "name": "027 (Dachdeckung)",
+            "name": "027 (Dachdecker)",
             "target": "027",
             "coords": [-35.5, 0.0, -9.5],
             "underConstruction": false
         },
         {
-            "name": "028 (Bau)",
+            "name": "028 (Bau, Maurer/Zimmerer)",
             "target": "028",
             "coords": [-32.4, 0.0, -13.7],
             "underConstruction": false
@@ -49,7 +49,7 @@
         {
             "name": "104 (Robotik)",
             "target": "104",
-            "coords": [-9.7, 4, 2.0],
+            "coords": [-9.7, 3.0, 2.0],
             "underConstruction": true
         }
     ],

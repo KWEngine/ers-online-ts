@@ -7,10 +7,11 @@ class ERSPortal extends ERSRadiusObject
 {
     private _target:string = "";
     private _counter:number = 0;
+    private _isUnderConstruction:boolean = false;
 
     public act(): void 
     {
-        if(this.isActivatedByPlayer() == false)
+        if(this.isActivatedByPlayer() == false && this._isUnderConstruction == false)
         {
             let d:number = Math.sin(this._counter);
             this._counter += (Math.PI * 2.0) / 120.0;
@@ -21,7 +22,7 @@ class ERSPortal extends ERSRadiusObject
             );
         }
 
-        let playerNearby:boolean = this.isPlayerNearby();
+        let playerNearby:boolean = this._isUnderConstruction == false && this.isPlayerNearby();
         if(playerNearby == true && GameScene.instance.isOverlayVisible() == false)
         {
             let lookingAt:boolean = this.isPlayerLookingAtMe();
@@ -47,6 +48,17 @@ class ERSPortal extends ERSRadiusObject
     public getTarget():string
     {
         return this._target;
+    }
+
+    public markAsUnderConstruction():void
+    {
+        this.setVisible(false);
+        this._isUnderConstruction = true;   
+    }
+
+    public isUnderConstruction():boolean
+    {
+        return this._isUnderConstruction;
     }
 }
 export default ERSPortal;

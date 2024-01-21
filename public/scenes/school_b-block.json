@@ -48,7 +48,8 @@
                 "scale": [1, 1, 1],
                 "model": "ers-arrow.glb",
                 "target": "/forum",
-                "innerHTMLSource": "b-block-to-forum.html"
+                "innerHTMLSource": "b-block-to-forum.html",
+                "underConstruction": false
             },
             {
                 "name": "exit-b-block-to-forum-2",
@@ -57,7 +58,8 @@
                 "scale": [1, 1, 1],
                 "model": "ers-arrow.glb",
                 "target": "/forum",
-                "innerHTMLSource": "b-block-to-forum-2.html"
+                "innerHTMLSource": "b-block-to-forum-2.html",
+                "underConstruction": false
             }
         ],
         "infospots":

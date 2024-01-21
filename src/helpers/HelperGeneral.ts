@@ -288,7 +288,7 @@ class HelperGeneral
         }
         else if(window.location.pathname == HelperGeneral.BASEURL + "/forum" || window.location.pathname == HelperGeneral.BASEURL + "/forum/")
         {
-            return room.charAt(0) == 'a';
+            return room.charAt(0) == 'a' || (room.charAt(0) == 'b' && room.charAt(1) == '1');
         }
         else if(window.location.pathname == HelperGeneral.BASEURL + "/c-block" || window.location.pathname == HelperGeneral.BASEURL + "/c-block/")
         {
@@ -319,8 +319,6 @@ class HelperGeneral
         let tempPos:Vector3|null = null;
         room = room.toLowerCase();
 
-
-        //if(pathname.length > 1 && pathname.endsWith("/"))
         if(pathname.endsWith("/"))
         {
             pathname = pathname.substring(0, pathname.length - 1);
@@ -338,7 +336,7 @@ class HelperGeneral
                 {
                     if(room.charAt(1) == '1' || room.charAt(2) == '2')
                     {
-                        searchterm = "exit-forum-to-b-right"; // bis 1. Etage des B-Blocks frei ist: Workaround ;-)
+                        searchterm = "exit-forum-high-to-b"; // bis 1. Etage des B-Blocks frei ist: Workaround ;-)
                     }
                     else
                     {
@@ -362,9 +360,13 @@ class HelperGeneral
                 if(room.charAt(0) == 'b')
                 {
                     if(room.charAt(1) == '0')
+                    {
                         searchterm = "exit-forum-to-b-right";
+                    }
                     else
-                        searchterm = "exit-forum-to-b-right";
+                    {
+                        searchterm = "exit-forum-high-to-b";
+                    }
                 }
                 else if(room.charAt(0) == 'c')
                 {
@@ -454,7 +456,7 @@ class HelperGeneral
 
     public static findNearestPortalInCurrentLocation(target:string):Vector3|null
     {
-        let playerPos:Vector3 = GameScene.instance.getPlayer().getPosition();
+        let playerPos:Vector3 = GameScene.instance.getPlayer().getPositionInstance();
 
         let portalList:ERSPortal[] = GameScene.instance.getPortals();
         let deltaMin:number = HelperGeneral.MAXNUM;

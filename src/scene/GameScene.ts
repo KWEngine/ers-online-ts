@@ -402,6 +402,10 @@ class GameScene
             portal.setScale(inits.portals[i].scale[0], inits.portals[i].scale[1], inits.portals[i].scale[2]);
             portal.setTarget(inits.portals[i].target);
             portal.setInnerHTMLSource(inits.portals[i].innerHTMLSource);
+            if(inits.portals[i].underConstruction)
+            {
+                portal.markAsUnderConstruction();
+            }
             this.addObjectInternal(portal);
         }
 
@@ -626,7 +630,7 @@ class GameScene
                         node.getLocationInstance().y + 0.25, 
                         node.getLocationInstance().z,
                         true,
-                        false
+                        underConstruction
                         );
                 }
             }
@@ -641,7 +645,7 @@ class GameScene
         {
             ls.markAsTraversalSpot();
         }
-        else if(isUnderConstruction)
+        if(isUnderConstruction)
         {
             ls.markAsUnderConstruction();
         }
