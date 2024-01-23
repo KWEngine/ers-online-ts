@@ -14,7 +14,7 @@
             "underConstruction": false
         },
         {
-            "name": "102 (Besprechung)",
+            "name": "102 (Vorträge)",
             "target": "102",
             "coords": [7.4, 3.0, -2.3],
             "underConstruction": false
@@ -23,7 +23,7 @@
     "b":
     [
         {
-            "name": "013 (Farbtechnik, FOG)",
+            "name": "013 (Farbtechnik/FOG)",
             "target": "013",
             "coords": [-62.3, 0.0, 26.3],
             "underConstruction": false
@@ -41,7 +41,7 @@
             "underConstruction": false
         },
         {
-            "name": "028 (Bau, Maurer/Zimmerer)",
+            "name": "028 (Maurer/Zimmerer)",
             "target": "028",
             "coords": [-32.4, 0.0, -13.7],
             "underConstruction": false
@@ -62,13 +62,25 @@
             "underConstruction": false
         },
         {
+            "name": "014 (CNC-Technik)",
+            "target": "014",
+            "coords": [26.7, 0, -102.6],
+            "underConstruction": false
+        },
+        {
             "name": "040 (Anlagenmechanik)",
             "target": "040",
             "coords": [57.0, 0, -29.5],
             "underConstruction": false
         },
         {
-            "name": "054 (Elektrotechnik)",
+            "name": "049 (Fahrzeugtechnik)",
+            "target": "049",
+            "coords": [75.6, 0, -4.0],
+            "underConstruction": false
+        },
+        {
+            "name": "054 (Mechatronik/IT)",
             "target": "054",
             "coords": [82.0, 0, 13.0],
             "underConstruction": false
@@ -97,6 +109,5 @@
             "coords": [92, 0, -2.4],
             "underConstruction": true
         }
-        
     ]
 }
