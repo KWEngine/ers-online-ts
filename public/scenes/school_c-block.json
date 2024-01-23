@@ -63,8 +63,8 @@
             },
             {
                 "name": "exit-c-block-to-c-block-1-1",
-                "position": [79.8, 1, -0.1],
-                "rotation": [-90, 0, 0],
+                "position": [81.25, 1, 2.5],
+                "rotation": [-90, 90, 0],
                 "scale": [1, 1, 1],
                 "model": "ers-arrow.glb",
                 "target": "/c-block/1",
@@ -107,6 +107,14 @@
                 "scale": [0.5, 0.5, 0.5],
                 "model": "ers-info.glb",
                 "innerHTMLSource": "c_0_04.html"
+            },
+            {
+                "name": "info_c_0_03",
+                "position": [59.425, 1, -106.75],
+                "rotation": [0, 0, 0],
+                "scale": [0.5, 0.5, 0.5],
+                "model": "ers-info.glb",
+                "innerHTMLSource": "c_0_03.html"
             }
         ],
         "dijkstranodes":
@@ -120,8 +128,8 @@
             {
                 "id": 1,
                 "name":"c0_1",
-                "location": [44.7, 0, -5.8],
-                "neighbours": [0, 2, 15, 16]
+                "location": [44.7, 0, -5.0],
+                "neighbours": [0, 2, 24, 25]
             },
             {
                 "id": 2,
@@ -132,116 +140,179 @@
             {
                 "id": 3,
                 "name":"c0_3",
-                "location": [44.7, 0, -36.8],
+                "location": [44.7, 0, -29.5],
                 "neighbours": [2, 4, 7]
             },
             {
                 "id": 4,
                 "name":"c0_4",
-                "location": [38.9, 0, -36.8],
-                "neighbours": [3, 5]
+                "location": [57, 0, -29.5],
+                "neighbours": [3, 5, 6]
             },
             {
                 "id": 5,
                 "name":"c0_5",
-                "location": [39.2, 0, -46.1],
-                "neighbours": [4, 6, 7]
+                "location": [57.0, 0, -32.5],
+                "neighbours": [4]
             },
             {
                 "id": 6,
                 "name":"c0_6",
-                "location": [34.2, 0, -46.1],
-                "neighbours": [5]
+                "location": [57.0, 0, -27.5],
+                "neighbours": [4]
             },
             {
                 "id": 7,
                 "name":"c0_7",
-                "location": [45.0, 0, -45.8],
-                "neighbours": [3, 5, 8]
+                "location": [44.7, 0, -36.8],
+                "neighbours": [3, 8, 11]
             },
             {
                 "id": 8,
                 "name":"c0_8",
-                "location": [45.0, 0, -49.6],
-                "neighbours": [7, 9, 10]
+                "location": [38.9, 0, -36.8],
+                "neighbours": [7, 9]
             },
             {
                 "id": 9,
                 "name":"c0_9",
-                "location": [40.0, 0, -49.6],
-                "neighbours": [8]
+                "location": [39.2, 0, -46.1],
+                "neighbours": [8, 10, 11]
             },
             {
                 "id": 10,
                 "name":"c0_10",
-                "location": [45.0, 0, -56.2],
-                "neighbours": [8, 11]
+                "location": [34.2, 0, -46.1],
+                "neighbours": [9]
             },
             {
                 "id": 11,
                 "name":"c0_11",
-                "location": [45.0, 0, -65.2],
-                "neighbours": [10, 12]
+                "location": [45.0, 0, -45.8],
+                "neighbours": [7, 9, 12]
             },
             {
                 "id": 12,
                 "name":"c0_12",
-                "location": [46.1, 0, -71.0],
-                "neighbours": [11, 13]
+                "location": [45.0, 0, -49.8],
+                "neighbours": [11, 13, 14]
             },
             {
                 "id": 13,
                 "name":"c0_13",
-                "location": [42.3, 0, -71.3],
-                "neighbours": [12, 14]
+                "location": [40.0, 0, -49.8],
+                "neighbours": [12]
             },
             {
                 "id": 14,
                 "name":"c0_14",
-                "location": [34.5, 0, -71.3],
-                "neighbours": [13]
+                "location": [45.0, 0, -56.2],
+                "neighbours": [12, 15]
             },
             {
                 "id": 15,
                 "name":"c0_15",
-                "location": [45.4, 0, 0.8],
-                "neighbours": [1]
+                "location": [45.0, 0, -65.2],
+                "neighbours": [14, 16]
             },
             {
                 "id": 16,
                 "name":"c0_16",
-                "location": [61.4, 0, -3.8],
-                "neighbours": [1, 17]
+                "location": [46.1, 0, -71.0],
+                "neighbours": [15, 17]
             },
             {
                 "id": 17,
                 "name":"c0_17",
-                "location": [67.7, 0, -3.4],
-                "neighbours": [16, 18, 19]
+                "location": [42.3, 0, -71.3],
+                "neighbours": [16, 18]
             },
             {
                 "id": 18,
                 "name":"c0_18",
-                "location": [67.7, 0, -9.7],
+                "location": [34.5, 0, -71.3],
                 "neighbours": [17]
             },
             {
                 "id": 19,
                 "name":"c0_19",
-                "location": [75.5, 0, -2.2],
-                "neighbours": [17, 20]
+                "location": [59.425, 0, -71.0],
+                "neighbours": [16, 20]
             },
             {
                 "id": 20,
                 "name":"c0_20",
-                "location": [78.8, 0, -2.2],
+                "location": [59.425, 0, -88.0],
                 "neighbours": [19, 21]
             },
             {
                 "id": 21,
                 "name":"c0_21",
+                "location": [59.425, 0, -95.0],
+                "neighbours": [20, 22, 23]
+            },
+            {
+                "id": 22,
+                "name":"c0_22",
+                "location": [58.0, 0, -95.0],
+                "neighbours": [21]
+            },
+            {
+                "id": 23,
+                "name":"c0_23",
+                "location": [59.425, 0, -104.5],
+                "neighbours": [21]
+            },
+
+            {
+                "id": 24,
+                "name":"c0_24",
+                "location": [45.4, 0, 0.8],
+                "neighbours": [1]
+            },
+            {
+                "id": 25,
+                "name":"c0_25",
+                "location": [61.4, 0, -3.8],
+                "neighbours": [1, 26]
+            },
+            {
+                "id": 26,
+                "name":"c0_26",
+                "location": [67.7, 0, -3.4],
+                "neighbours": [25, 27, 28]
+            },
+            {
+                "id": 27,
+                "name":"c0_27",
+                "location": [67.7, 0, -9.7],
+                "neighbours": [26]
+            },
+            {
+                "id": 28,
+                "name":"c0_28",
+                "location": [75.5, 0, -2.2],
+                "neighbours": [26, 29]
+            },
+            {
+                "id": 29,
+                "name":"c0_29",
+                "location": [79.75, 0, -2.2],
+                "neighbours": [28, 30, 31]
+            },
+            {
+                "id": 30,
+                "name":"c0_30",
                 "location": [91.0, 0, -2.2],
-                "neighbours": [20]
+                "neighbours": [29]
+            },
+            
+
+            {
+                "id": 31,
+                "name":"c0_31",
+                "location": [79.75, 0, 12.0],
+                "neighbours": [29]
             }
         ]
     }
