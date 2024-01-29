@@ -345,7 +345,7 @@ class HelperGeneral
                 }
                 else if(room.startsWith("c"))
                 {
-                    if(room.charAt(1) == '1' || room.charAt(2) == '2')
+                    if(room.charAt(1) == '1' || room.charAt(1) == '2')
                     {
                         searchterm = "exit-forum-high-to-c";
                     }
