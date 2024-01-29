@@ -334,7 +334,7 @@ class HelperGeneral
             {
                 if(room.charAt(0) == 'b')
                 {
-                    if(room.charAt(1) == '1' || room.charAt(2) == '2')
+                    if(room.charAt(1) == '1' || room.charAt(1) == '2')
                     {
                         searchterm = "exit-forum-high-to-b"; // bis 1. Etage des B-Blocks frei ist: Workaround ;-)
                     }
