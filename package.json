@@ -9,18 +9,18 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@types/qrcode": "^1.5.5",
-    "@types/three": "^0.158.0",
-    "typescript": "^5.0.2",
-    "typescript-cookie": "^1.0.6",
-    "vite": "^4.4.5",
+    "@types/qrcode": "1.5.5",
+    "@types/three": "0.158.0",
+    "typescript": "5.0.2",
+    "typescript-cookie": "1.0.6",
+    "vite": "4.4.5",
     "esbuild": "0.14.17"
   },
   "dependencies": {
-    "qrcode": "^1.5.3",
-    "three": "^0.158.0",
-    "three-addons": "^1.2.0",
-    "three-gltfloader-static": "^1.152.0",
+    "qrcode": "1.5.3",
+    "three": "0.158.0",
+    "three-addons": "1.2.0",
+    "three-gltfloader-static": "1.152.0",
     "esbuild": "0.14.17"
   }
 }
