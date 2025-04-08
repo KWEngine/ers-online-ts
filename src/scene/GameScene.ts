@@ -392,33 +392,39 @@ class GameScene
             this.addObjectInternal(ro);
         }
 
-        for(let i: number = 0; i < inits.portals.length; i++)
+        if(inits.portals)
         {
-            let model:Group = this._modelDatabase.get(inits.portals[i].model)!;
-            let portal:ERSPortal = new ERSPortal(model, inits.portals[i].name, inits.portals[i].model);
-            portal.setPosition(inits.portals[i].position[0], inits.portals[i].position[1], inits.portals[i].position[2]);
-            portal.setPivot(inits.portals[i].position[0], inits.portals[i].position[1], inits.portals[i].position[2]);
-            portal.setRotation(inits.portals[i].rotation[0], inits.portals[i].rotation[1], inits.portals[i].rotation[2]);
-            portal.setScale(inits.portals[i].scale[0], inits.portals[i].scale[1], inits.portals[i].scale[2]);
-            portal.setTarget(inits.portals[i].target);
-            portal.setInnerHTMLSource(inits.portals[i].innerHTMLSource);
-            if(inits.portals[i].underConstruction)
+            for(let i: number = 0; i < inits.portals.length; i++)
             {
-                portal.markAsUnderConstruction();
+                let model:Group = this._modelDatabase.get(inits.portals[i].model)!;
+                let portal:ERSPortal = new ERSPortal(model, inits.portals[i].name, inits.portals[i].model);
+                portal.setPosition(inits.portals[i].position[0], inits.portals[i].position[1], inits.portals[i].position[2]);
+                portal.setPivot(inits.portals[i].position[0], inits.portals[i].position[1], inits.portals[i].position[2]);
+                portal.setRotation(inits.portals[i].rotation[0], inits.portals[i].rotation[1], inits.portals[i].rotation[2]);
+                portal.setScale(inits.portals[i].scale[0], inits.portals[i].scale[1], inits.portals[i].scale[2]);
+                portal.setTarget(inits.portals[i].target);
+                portal.setInnerHTMLSource(inits.portals[i].innerHTMLSource);
+                if(inits.portals[i].underConstruction)
+                {
+                    portal.markAsUnderConstruction();
+                }
+                this.addObjectInternal(portal);
             }
-            this.addObjectInternal(portal);
         }
 
-        for(let i: number = 0; i < inits.infospots.length; i++)
+        if(inits.infospots)
         {
-            let model:Group = this._modelDatabase.get(inits.infospots[i].model)!;
-            let infospot:ERSInfoSpot = new ERSInfoSpot(model, inits.infospots[i].name, inits.infospots[i].model);
-            infospot.setPosition(inits.infospots[i].position[0], inits.infospots[i].position[1], inits.infospots[i].position[2]);
-            infospot.setPivot(inits.infospots[i].position[0], inits.infospots[i].position[1], inits.infospots[i].position[2]);
-            infospot.setRotation(inits.infospots[i].rotation[0], inits.infospots[i].rotation[1], inits.infospots[i].rotation[2]);
-            infospot.setScale(inits.infospots[i].scale[0], inits.infospots[i].scale[1], inits.infospots[i].scale[2]);
-            infospot.setInnerHTMLSource(inits.infospots[i].innerHTMLSource);
-            this.addObjectInternal(infospot);
+            for(let i: number = 0; i < inits.infospots.length; i++)
+            {
+                let model:Group = this._modelDatabase.get(inits.infospots[i].model)!;
+                let infospot:ERSInfoSpot = new ERSInfoSpot(model, inits.infospots[i].name, inits.infospots[i].model);
+                infospot.setPosition(inits.infospots[i].position[0], inits.infospots[i].position[1], inits.infospots[i].position[2]);
+                infospot.setPivot(inits.infospots[i].position[0], inits.infospots[i].position[1], inits.infospots[i].position[2]);
+                infospot.setRotation(inits.infospots[i].rotation[0], inits.infospots[i].rotation[1], inits.infospots[i].rotation[2]);
+                infospot.setScale(inits.infospots[i].scale[0], inits.infospots[i].scale[1], inits.infospots[i].scale[2]);
+                infospot.setInnerHTMLSource(inits.infospots[i].innerHTMLSource);
+                this.addObjectInternal(infospot);
+            }
         }
 
         this.generatePlayer(inits);

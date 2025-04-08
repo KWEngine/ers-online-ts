@@ -251,6 +251,10 @@ function getSceneFromLocation(loc:Location):string
     {
         return 'school_forum';
     }
+    else if(loc.pathname == HelperGeneral.BASEURL + "/pausenhof_hinten/" || loc.pathname == HelperGeneral.BASEURL + "/pausenhof_hinten")
+    {
+        return 'school_outside_back';
+    }
 
     // Standard-Fallback-Location:
     return 'school_outside_front';
